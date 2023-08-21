@@ -8,6 +8,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { DataCard, DataTable, PageDrawer } from "../components";
+import { Grid } from "@mui/material";
 
 const DRAWER_WIDTH = 240;
 
@@ -19,13 +20,13 @@ export default function ResponsiveDrawer() {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", width: "100%" }}>
       <CssBaseline />
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
-          ml: { sm: `${DRAWER_WIDTH}px` },
+          width: { lg: `calc(100% - ${DRAWER_WIDTH}px)` },
+          ml: { lg: `${DRAWER_WIDTH}px` },
         }}
       >
         <Toolbar>
@@ -34,7 +35,7 @@ export default function ResponsiveDrawer() {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: { lg: "none" } }}
           >
             <MenuIcon />
           </IconButton>
@@ -45,7 +46,7 @@ export default function ResponsiveDrawer() {
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
+        sx={{ width: { lg: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
         aria-label="navigation-bar"
       >
         <PageDrawer
@@ -57,25 +58,60 @@ export default function ResponsiveDrawer() {
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
+          width: { xs: "100%", lg: `calc(100% - ${DRAWER_WIDTH}px)` },
+          padding: {
+            xs: 1,
+            md: 3,
+          },
+          display: "flex",
+          flexDirection: "column",
         }}
+        aria-label="main-body"
       >
         <Toolbar />
-        <Box
+        <Grid
           sx={{
             marginBottom: 2,
-            display: "flex",
-            justifyContent: "space-between",
-            gap: 1,
+            width: "100%",
           }}
+          container
+          spacing={1}
         >
-          <DataCard />
-          <DataCard />
-          <DataCard />
+          <Grid item xs={12} sm={6} lg={4}>
+            <DataCard
+              data={[
+                { id: 0, value: 33, label: "series A" },
+                { id: 1, value: 33, label: "series B" },
+                { id: 2, value: 33, label: "series C" },
+              ]}
+              title="Tickets by type"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} lg={4}>
+            <DataCard
+              data={[
+                { id: 0, value: 33, label: "series A" },
+                { id: 1, value: 33, label: "series B" },
+                { id: 2, value: 33, label: "series C" },
+              ]}
+              title="Tickets by priority"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} lg={4}>
+            <DataCard
+              data={[
+                { id: 0, value: 33, label: "series A" },
+                { id: 1, value: 33, label: "series B" },
+                { id: 2, value: 33, label: "series C" },
+              ]}
+              title="Tickets by "
+            />
+          </Grid>
+        </Grid>
+        <Box>
+          <DataTable />
         </Box>
-        <DataTable />
+        {/* <Box sx={{ display: { xs: "none", md: "block" } }}></Box> */}
       </Box>
     </Box>
   );

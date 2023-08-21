@@ -136,7 +136,7 @@ function PageDrawer({ open, onClose, width }: Props) {
           keepMounted: true, // Better open performance on mobile.
         }}
         sx={{
-          display: { xs: "block", sm: "none" },
+          display: { xs: "block", lg: "none" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: width,
@@ -148,7 +148,7 @@ function PageDrawer({ open, onClose, width }: Props) {
       <Drawer
         variant="permanent"
         sx={{
-          display: { xs: "none", sm: "block" },
+          display: { xs: "none", lg: "block" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: width,
