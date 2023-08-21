@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { DataTable, PageDrawer } from "../components";
+import { DataCard, DataTable, PageDrawer } from "../components";
 
 const DRAWER_WIDTH = 240;
 
@@ -63,15 +63,19 @@ export default function ResponsiveDrawer() {
         }}
       >
         <Toolbar />
-        <DataTable />
         <Box
           sx={{
-            marginTop: 2,
+            marginBottom: 2,
             display: "flex",
             justifyContent: "space-between",
             gap: 1,
           }}
-        ></Box>
+        >
+          <DataCard />
+          <DataCard />
+          <DataCard />
+        </Box>
+        <DataTable />
       </Box>
     </Box>
   );
