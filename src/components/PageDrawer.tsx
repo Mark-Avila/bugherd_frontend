@@ -1,7 +1,15 @@
 import Divider from "@mui/material/Divider";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
-import MailIcon from "@mui/icons-material/Mail";
+import {
+  AccountCircle,
+  BugReport,
+  DarkMode,
+  Dashboard,
+  FolderShared,
+  Home,
+  LightMode,
+  Logout,
+} from "@mui/icons-material";
 import {
   Box,
   Drawer,
@@ -9,15 +17,37 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Switch,
   Toolbar,
   Typography,
 } from "@mui/material";
+import { useContext } from "react";
+import { ColorModeContext } from "../App";
 
-interface DrawerBodyProps {
-  items: string[];
+interface IDrawerItem {
+  text: string;
+  icon: JSX.Element;
+  onClick: VoidFunction;
 }
 
-function DrawerBody({ items }: DrawerBodyProps) {
+function DrawerItem({ text, icon, onClick }: IDrawerItem) {
+  return (
+    <ListItem key={text} disablePadding>
+      <ListItemButton onClick={onClick}>
+        <ListItemIcon>{icon}</ListItemIcon>
+        <ListItemText primary={text} />
+      </ListItemButton>
+    </ListItem>
+  );
+}
+
+interface IDrawerBody {
+  items: IDrawerItem[];
+}
+
+function DrawerBody({ items }: IDrawerBody) {
+  const { toggle, mode } = useContext(ColorModeContext);
+
   return (
     <>
       <Toolbar
@@ -36,29 +66,29 @@ function DrawerBody({ items }: DrawerBodyProps) {
       </Box>
       <Divider />
       <List>
-        {items.map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
+        <DrawerItem
+          text="Profile"
+          icon={<AccountCircle />}
+          onClick={() => {}}
+        />
+        {items.map((item, index) => (
+          <DrawerItem
+            key={index}
+            text={item.text}
+            icon={item.icon}
+            onClick={item.onClick}
+          />
         ))}
       </List>
       <Divider />
       <List>
-        {items.map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <ListItem>
+          <ListItemIcon>
+            {mode === "light" ? <LightMode /> : <DarkMode />}
+          </ListItemIcon>
+          <Switch sx={{ margin: 0 }} onChange={toggle.toggleColorMode} />
+        </ListItem>
+        <DrawerItem text="Sign out" icon={<Logout />} onClick={() => {}} />
       </List>
     </>
   );
@@ -68,10 +98,34 @@ interface Props {
   open: boolean;
   onClose: VoidFunction;
   width: number;
-  items: string[];
 }
 
-function PageDrawer({ open, onClose, width, items }: Props) {
+function PageDrawer({ open, onClose, width }: Props) {
+  const handleOnItemClick = () => {};
+
+  const NavItems: IDrawerItem[] = [
+    {
+      text: "Dashboard",
+      icon: <Dashboard />,
+      onClick: handleOnItemClick,
+    },
+    {
+      text: "Home",
+      icon: <Home />,
+      onClick: handleOnItemClick,
+    },
+    {
+      text: "Projects",
+      icon: <FolderShared />,
+      onClick: handleOnItemClick,
+    },
+    {
+      text: "Ticket",
+      icon: <BugReport />,
+      onClick: handleOnItemClick,
+    },
+  ];
+
   return (
     <>
       <Drawer
@@ -89,7 +143,7 @@ function PageDrawer({ open, onClose, width, items }: Props) {
           },
         }}
       >
-        <DrawerBody items={items} />
+        <DrawerBody items={NavItems} />
       </Drawer>
       <Drawer
         variant="permanent"
@@ -102,7 +156,7 @@ function PageDrawer({ open, onClose, width, items }: Props) {
         }}
         open
       >
-        <DrawerBody items={items} />
+        <DrawerBody items={NavItems} />
       </Drawer>
     </>
   );

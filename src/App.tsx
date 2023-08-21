@@ -1,21 +1,54 @@
 import { Route, Routes } from "react-router-dom";
 import { Dashboard, Landing } from "./screens";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { createTheme } from "@mui/material";
+import { useState, useMemo, createContext } from "react";
+import { ThemeProvider } from "@emotion/react";
 
-const theme = createTheme({
-  // typography: {
-  //   fontFamily: ["'Montserrat'", "sans-serif"].join(","),
-  // },
+interface IColorModeContext {
+  mode: "light" | "dark";
+  toggle: { toggleColorMode: VoidFunction };
+}
+
+export const ColorModeContext = createContext<IColorModeContext>({
+  mode: "light",
+  toggle: { toggleColorMode: () => {} },
 });
 
 function App() {
+  const [mode, setMode] = useState<"light" | "dark">("light");
+  const colorMode = useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prev) => (prev === "light" ? "dark" : "light"));
+      },
+    }),
+    []
+  );
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+        },
+      }),
+    [mode]
+  );
+
+  const ColorMode: IColorModeContext = {
+    mode: mode,
+    toggle: colorMode,
+  };
+
   return (
-    <ThemeProvider theme={theme}>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </ThemeProvider>
+    <ColorModeContext.Provider value={ColorMode}>
+      <ThemeProvider theme={theme}>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
 
