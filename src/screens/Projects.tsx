@@ -8,13 +8,11 @@ import {
   Grid,
   IconButton,
   List,
-  ListItem,
-  ListItemText,
   Paper,
   Toolbar,
   Typography,
 } from "@mui/material";
-import { PageDrawer } from "../components";
+import { PageDrawer, TeamListItem } from "../components";
 import { useState } from "react";
 import { grey } from "@mui/material/colors";
 
@@ -44,9 +42,7 @@ function Projects() {
           >
             <Menu />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Projects
-          </Typography>
+          <Typography variant="h6">Projects</Typography>
         </Toolbar>
       </AppBar>
       <Box
@@ -76,8 +72,8 @@ function Projects() {
         <Toolbar />
         <Box component="header" display="flex" justifyContent="space-between">
           <Box sx={{ width: "100%" }}>
-            <Typography variant="h5">Kikoo weather services</Typography>
-            <Typography fontSize={14} color={grey[600]}>
+            <Typography variant="h6">Kikoo weather services</Typography>
+            <Typography fontSize={12} color={grey[600]}>
               Lorem ipsum dolor sit, amet consectetur adipisicing elit.
               Necessitatibus non, excepturi, eius vel rerum odio cupiditate ut
               molestias distinctio optio, consequuntur similique ducimus. Libero
@@ -96,42 +92,25 @@ function Projects() {
 
         <Divider sx={{ marginY: 4 }} />
 
-        {/* <Grid container spacing={2}>
+        <Grid container spacing={2}>
           <Grid item lg={4}>
-            <Paper>
+            <Typography variant="h6" marginBottom={2}>
+              Team
+            </Typography>
+            <Paper variant="outlined">
               <List>
-                <ListItem>
-                  <ListItemText
-                    primary="Mark Avila"
-                    primaryTypographyProps={{ fontSize: 14 }}
-                  />
-                </ListItem>
+                <TeamListItem name="Mark Avila" />
                 <Divider />
-                <ListItem>
-                  <ListItemText
-                    primary="John Remmon Castor"
-                    primaryTypographyProps={{ fontSize: 14 }}
-                  />
-                </ListItem>
+                <TeamListItem name="Harvey Alonday" />
                 <Divider />
-                <ListItem>
-                  <ListItemText
-                    primary="Harvey Alonday"
-                    primaryTypographyProps={{ fontSize: 14 }}
-                  />
-                </ListItem>
+                <TeamListItem name="John Remmon Castor" />
                 <Divider />
-                <ListItem>
-                  <ListItemText
-                    primary="Neilmathew Lacsamana"
-                    primaryTypographyProps={{ fontSize: 14 }}
-                  />
-                </ListItem>
+                <TeamListItem name="Neilmathew Lacsamana" />
               </List>
             </Paper>
           </Grid>
           <Grid item lg={6}></Grid>
-        </Grid> */}
+        </Grid>
       </Box>
     </Box>
   );
