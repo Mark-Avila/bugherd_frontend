@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { Dashboard, Landing } from "./screens";
+import { Dashboard, Landing, Projects } from "./screens";
 import { createTheme } from "@mui/material";
 import { useState, useMemo, createContext } from "react";
 import { ThemeProvider } from "@emotion/react";
@@ -46,6 +46,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/projects" element={<Projects />} />
         </Routes>
       </ThemeProvider>
     </ColorModeContext.Provider>
