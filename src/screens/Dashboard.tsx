@@ -1,23 +1,22 @@
 import * as React from "react";
 import "chart.js/auto";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import IconButton from "@mui/material/IconButton";
+import {
+  AppBar,
+  Box,
+  CssBaseline,
+  IconButton,
+  Toolbar,
+  Typography,
+  Grid,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import { DataCard, DataTable, PageDrawer } from "../components";
-import { Grid } from "@mui/material";
 
 const DRAWER_WIDTH = 240;
 
-export default function ResponsiveDrawer() {
+export default function Dashboard() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+  const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
 
   return (
     <Box sx={{ display: "flex", width: "100%" }}>
@@ -72,7 +71,6 @@ export default function ResponsiveDrawer() {
         <Grid
           sx={{
             marginBottom: 2,
-            width: "100%",
           }}
           container
           spacing={1}
@@ -104,14 +102,13 @@ export default function ResponsiveDrawer() {
                 { id: 1, value: 33, label: "series B" },
                 { id: 2, value: 33, label: "series C" },
               ]}
-              title="Tickets by "
+              title="Tickets by status"
             />
           </Grid>
         </Grid>
         <Box>
           <DataTable />
         </Box>
-        {/* <Box sx={{ display: { xs: "none", md: "block" } }}></Box> */}
       </Box>
     </Box>
   );

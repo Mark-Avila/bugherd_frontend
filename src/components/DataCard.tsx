@@ -23,7 +23,7 @@ function DataCard({ data, title }: Props) {
         width: "100%",
       }}
     >
-      <Box sx={{ marginX: 3, marginY: 1.5, width: "100%" }}>
+      <Box sx={{ marginX: 3, marginTop: 1.5, width: "100%" }}>
         <Typography>{title}</Typography>
       </Box>
       {smallScreen ? (
