@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 interface Props {
   title: string;
   children: ReactNode;
-  action: JSX.Element;
+  action?: JSX.Element;
 }
 
 function PageSection({ title, children, action }: Props) {
@@ -17,7 +17,7 @@ function PageSection({ title, children, action }: Props) {
         marginBottom={2}
       >
         <Typography variant="h6">{title}</Typography>
-        {action}
+        {action || null}
       </Box>
       {children}
     </>

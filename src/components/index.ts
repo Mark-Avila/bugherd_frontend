@@ -5,6 +5,8 @@ import ProjectTeamItem from "./stateless/ProjectTeamItem";
 import ProjectHeader from "./stateless/ProjectHeader";
 import ProjectTeamList from "./stateless/ProjectTeamList";
 import ProjectTicketList from "./stateless/ProjectTicketList";
+import ProjectTicketIdentity from "./stateless/ProjectTicketIdentity";
+import ProjectTicketDetails from "./stateless/ProjectTicketDetails";
 
 export {
   PageDrawer,
@@ -14,4 +16,6 @@ export {
   DataCard,
   ProjectTeamItem,
   ProjectTicketList,
+  ProjectTicketIdentity,
+  ProjectTicketDetails,
 };
