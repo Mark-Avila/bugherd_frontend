@@ -1,8 +1,10 @@
-import { Paper, Grid, Stack } from "@mui/material";
+import { Paper, Grid, Stack, Divider, List } from "@mui/material";
 import PageSection from "./PageSection";
 import ProjectTicketIdentity from "./ProjectTicketIdentity";
 import ProjectTicketDetails from "./ProjectTicketDetails";
 import ProjecTicketAssigned from "./ProjectTicketAssigned";
+import TicketCommentItem from "./TicketCommentItem";
+import TicketCommentInput from "./TicketCommentInput";
 
 function ProjectTicketInfo() {
   return (
@@ -19,6 +21,14 @@ function ProjectTicketInfo() {
             </Stack>
           </Grid>
         </Grid>
+        <Divider sx={{ marginY: 2 }} />
+        <PageSection title="Comments">
+          <List aria-label="ticket-comments-list">
+            <TicketCommentItem />
+          </List>
+          <Divider />
+          <TicketCommentInput />
+        </PageSection>
       </Paper>
     </PageSection>
   );

@@ -1,4 +1,4 @@
-import { Grid, Typography, Chip } from "@mui/material";
+import { Grid, Typography, Chip, Box } from "@mui/material";
 
 function ProjectTicketDetails() {
   return (
@@ -7,25 +7,25 @@ function ProjectTicketDetails() {
         <Typography fontSize="small" color="text.secondary">
           Status
         </Typography>
-        <Typography marginTop={1} variant="body2">
+        <Box marginTop={1}>
           <Chip label="Resolved" color="success" />
-        </Typography>
+        </Box>
       </Grid>
       <Grid item xs={3}>
         <Typography fontSize="small" color="text.secondary">
           Priority
         </Typography>
-        <Typography marginTop={1} variant="body2">
+        <Box marginTop={1}>
           <Chip label="Intermediate" color="warning" />
-        </Typography>
+        </Box>
       </Grid>
       <Grid item xs={3}>
         <Typography fontSize="small" color="text.secondary">
           Type
         </Typography>
-        <Typography marginTop={1} variant="body2">
+        <Box marginTop={1}>
           <Chip label="Issue" color="primary" />
-        </Typography>
+        </Box>
       </Grid>
       <Grid item xs={3}>
         <Typography fontSize="small" color="text.secondary">

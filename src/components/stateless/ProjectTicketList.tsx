@@ -36,13 +36,17 @@ function ProjectTicketList() {
           aria-label="ticket-table"
         >
           <TableHead>
-            <TableCell size="small" width={200}>
-              Title
-            </TableCell>
-            <TableCell size="small" width={400}>
-              Description
-            </TableCell>
-            <TableCell size="small">Author</TableCell>
+            <TableRow>
+              <TableCell component="th" size="small" width={200}>
+                Title
+              </TableCell>
+              <TableCell component="th" size="small" width={400}>
+                Description
+              </TableCell>
+              <TableCell component="th" size="small">
+                Author
+              </TableCell>
+            </TableRow>
           </TableHead>
           <TableBody>
             <TableRow>
