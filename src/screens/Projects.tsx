@@ -2,13 +2,10 @@ import { Menu } from "@mui/icons-material";
 import {
   AppBar,
   Box,
-  Chip,
   CssBaseline,
   Divider,
   Grid,
   IconButton,
-  Paper,
-  Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -16,12 +13,10 @@ import {
   PageDrawer,
   ProjectHeader,
   ProjectTeamList,
-  ProjectTicketDetails,
-  ProjectTicketIdentity,
+  ProjectTicketInfo,
   ProjectTicketList,
 } from "../components";
 import { useState } from "react";
-import PageSection from "../components/stateless/PageSection";
 
 const DRAWER_WIDTH = 240;
 
@@ -91,31 +86,7 @@ function Projects() {
         </Grid>
 
         <Divider sx={{ marginY: 2 }} />
-        <PageSection title="Selected Ticket Information">
-          <Paper variant="outlined" sx={{ padding: 2 }}>
-            <Grid container spacing={8}>
-              <Grid item xs={4}>
-                <ProjectTicketIdentity />
-              </Grid>
-              <Grid item xs={8}>
-                <Stack height="100%" direction="column" gap={6}>
-                  <ProjectTicketDetails />
-                  <Box marginBottom={1}>
-                    <Typography color="text.secondary" fontSize="small">
-                      Assigned members
-                    </Typography>
-                    <Stack direction="row" spacing={2} marginTop={1}>
-                      <Chip label="Mark Avila" />
-                      <Chip label="Harvey Alonday" />
-                      <Chip label="John Remmon Castor" />
-                      <Chip label="Neilmathew Lacsamana" />
-                    </Stack>
-                  </Box>
-                </Stack>
-              </Grid>
-            </Grid>
-          </Paper>
-        </PageSection>
+        <ProjectTicketInfo />
       </Box>
     </Box>
   );
