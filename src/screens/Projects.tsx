@@ -76,10 +76,10 @@ function Projects() {
         <Divider sx={{ marginY: 4 }} />
 
         <Grid container spacing={2} component="main">
-          <Grid item lg={4}>
+          <Grid item xs={12} lg={4}>
             <ProjectTeamList />
           </Grid>
-          <Grid item lg={8}>
+          <Grid item xs={12} lg={8}>
             <ProjectTicketList />
           </Grid>
         </Grid>
