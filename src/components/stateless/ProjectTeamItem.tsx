@@ -12,7 +12,7 @@ interface Props {
   name: string;
 }
 
-function TeamListItem({ name }: Props) {
+function ProjectTeamItem({ name }: Props) {
   const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => setExpanded((prev) => !prev);
@@ -46,4 +46,4 @@ function TeamListItem({ name }: Props) {
   );
 }
 
-export default TeamListItem;
+export default ProjectTeamItem;
