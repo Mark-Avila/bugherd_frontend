@@ -9,8 +9,15 @@ import {
   IconButton,
   List,
   Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { PageDrawer, TeamListItem } from "../components";
 import { useState } from "react";
@@ -21,6 +28,7 @@ const DRAWER_WIDTH = 240;
 function Projects() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
+  const theme = useTheme();
 
   return (
     <Box sx={{ display: "flex", width: "100%" }}>
@@ -80,23 +88,23 @@ function Projects() {
               magnam cumque necessitatibus labore est. Architecto?
             </Typography>
           </Box>
-          <Box
-            width="100%"
-            display="flex"
-            alignItems="start"
-            justifyContent="flex-end"
-          >
-            <Button variant="contained">New ticket</Button>
-          </Box>
         </Box>
 
         <Divider sx={{ marginY: 4 }} />
 
         <Grid container spacing={2}>
           <Grid item lg={4}>
-            <Typography variant="h6" marginBottom={2}>
-              Team
-            </Typography>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              marginBottom={2}
+            >
+              <Typography variant="h6">Team</Typography>
+              <Button sx={{ marginRight: 2 }} variant="contained" size="small">
+                Add member
+              </Button>
+            </Box>
             <Paper variant="outlined">
               <List>
                 <TeamListItem name="Mark Avila" />
@@ -109,7 +117,58 @@ function Projects() {
               </List>
             </Paper>
           </Grid>
-          <Grid item lg={6}></Grid>
+          <Grid item lg={8}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              marginBottom={2}
+            >
+              <Typography variant="h6">Tickets</Typography>
+              <Button variant="contained" size="small">
+                New ticket
+              </Button>
+            </Box>
+            <TableContainer variant="outlined" component={Paper}>
+              <Table
+                sx={{
+                  width: "100%",
+                  "& .MuiTableRow-root:hover": {
+                    backgroundColor: theme.palette.action.hover,
+                    cursor: "pointer",
+                  },
+                }}
+                aria-label="ticket-table"
+              >
+                <TableHead>
+                  <TableCell size="small" width={200}>
+                    Title
+                  </TableCell>
+                  <TableCell size="small" width={400}>
+                    Description
+                  </TableCell>
+                  <TableCell size="small">Author</TableCell>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>
+                      <Typography fontSize={12}>Ticket title</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography fontSize={12}>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography fontSize={12}>
+                        Mark Christian Avila
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
         </Grid>
       </Box>
     </Box>

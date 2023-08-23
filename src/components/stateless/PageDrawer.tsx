@@ -22,7 +22,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useContext } from "react";
-import { ColorModeContext } from "../App";
+import { ColorModeContext } from "../../App";
 
 interface IDrawerItem {
   text: string;
