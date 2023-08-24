@@ -2,6 +2,7 @@ import { Menu } from "@mui/icons-material";
 import {
   AppBar,
   Box,
+  Button,
   CssBaseline,
   Divider,
   Grid,
@@ -17,6 +18,7 @@ import {
   ProjectTicketList,
 } from "../components";
 import { useState } from "react";
+import PageSection from "../components/stateless/PageSection";
 
 const DRAWER_WIDTH = 240;
 
@@ -78,15 +80,39 @@ function Projects() {
 
         <Grid container spacing={2} component="main">
           <Grid item xs={12} lg={4}>
-            <ProjectTeamList />
+            <PageSection
+              title="Team"
+              action={
+                <Button
+                  sx={{ marginRight: 2 }}
+                  variant="contained"
+                  size="small"
+                >
+                  Add member
+                </Button>
+              }
+            >
+              <ProjectTeamList />
+            </PageSection>
           </Grid>
           <Grid item xs={12} lg={8}>
-            <ProjectTicketList />
+            <PageSection
+              title="Team"
+              action={
+                <Button variant="contained" size="small">
+                  New ticket
+                </Button>
+              }
+            >
+              <ProjectTicketList />
+            </PageSection>
           </Grid>
         </Grid>
 
         <Divider sx={{ marginY: 2 }} />
-        <ProjectTicketInfo />
+        <PageSection title="Selected Ticket Information">
+          <ProjectTicketInfo />
+        </PageSection>
       </Box>
     </Box>
   );
