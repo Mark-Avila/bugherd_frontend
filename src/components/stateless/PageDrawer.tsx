@@ -2,7 +2,6 @@ import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import {
   AccountCircle,
-  BugReport,
   DarkMode,
   Dashboard,
   FolderShared,
@@ -117,11 +116,6 @@ function PageDrawer({ open, onClose, width }: Props) {
     {
       text: "Projects",
       icon: <FolderShared />,
-      onClick: handleOnItemClick,
-    },
-    {
-      text: "Ticket",
-      icon: <BugReport />,
       onClick: handleOnItemClick,
     },
   ];

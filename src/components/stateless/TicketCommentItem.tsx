@@ -38,6 +38,7 @@ function TicketCommentItem() {
                 expedita sequi quo totam? Optio nihil deserunt at iure assumenda
                 rem facilis facere! Vitae ab debitis esse, eligendi laudantium
                 quidem minus."
+        sx={{ paddingRight: 30 }}
       />
     </ListItem>
   );
