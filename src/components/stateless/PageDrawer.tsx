@@ -5,7 +5,6 @@ import {
   DarkMode,
   Dashboard,
   FolderShared,
-  Home,
   LightMode,
   Logout,
 } from "@mui/icons-material";
@@ -22,6 +21,7 @@ import {
 } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 interface IDrawerItem {
   text: string;
@@ -100,23 +100,21 @@ interface Props {
 }
 
 function PageDrawer({ open, onClose, width }: Props) {
-  const handleOnItemClick = () => {};
+  const navigate = useNavigate();
+  const handleOnItemClick = (to: string) => {
+    navigate(to);
+  };
 
   const NavItems: IDrawerItem[] = [
     {
       text: "Dashboard",
       icon: <Dashboard />,
-      onClick: handleOnItemClick,
-    },
-    {
-      text: "Home",
-      icon: <Home />,
-      onClick: handleOnItemClick,
+      onClick: () => handleOnItemClick("/dashboard"),
     },
     {
       text: "Projects",
       icon: <FolderShared />,
-      onClick: handleOnItemClick,
+      onClick: () => handleOnItemClick("/projects"),
     },
   ];
 
