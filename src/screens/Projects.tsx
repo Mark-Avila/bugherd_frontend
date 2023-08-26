@@ -30,7 +30,7 @@ function Projects() {
       <Divider sx={{ marginY: 4 }} />
 
       <Grid container spacing={2} component="main">
-        <Grid item xs={12} lg={4}>
+        <Grid item xs={12} md={6} lg={4}>
           <PageSection
             title="Team"
             action={
@@ -51,7 +51,7 @@ function Projects() {
             <ProjectTeamList />
           </PageSection>
         </Grid>
-        <Grid item xs={12} lg={8}>
+        <Grid item xs={12} md={6} lg={8}>
           <PageSection
             title="Tickets"
             action={
