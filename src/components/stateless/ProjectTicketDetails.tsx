@@ -2,8 +2,16 @@ import { Grid, Typography, Chip, Box } from "@mui/material";
 
 function ProjectTicketDetails() {
   return (
-    <Grid container>
-      <Grid item xs={3}>
+    <Grid
+      container
+      sx={{
+        rowGap: {
+          xs: 2,
+          lg: 0,
+        },
+      }}
+    >
+      <Grid item xs={6} md={3}>
         <Typography fontSize="small" color="text.secondary">
           Status
         </Typography>
@@ -11,7 +19,7 @@ function ProjectTicketDetails() {
           <Chip label="Resolved" color="success" />
         </Box>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={6} md={3}>
         <Typography fontSize="small" color="text.secondary">
           Priority
         </Typography>
@@ -19,7 +27,7 @@ function ProjectTicketDetails() {
           <Chip label="Intermediate" color="warning" />
         </Box>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={6} md={3}>
         <Typography fontSize="small" color="text.secondary">
           Type
         </Typography>
@@ -27,7 +35,7 @@ function ProjectTicketDetails() {
           <Chip label="Issue" color="primary" />
         </Box>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={6} md={3}>
         <Typography fontSize="small" color="text.secondary">
           Time estimated
         </Typography>

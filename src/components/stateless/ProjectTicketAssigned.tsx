@@ -1,4 +1,4 @@
-import { Box, Chip, Stack, Typography } from "@mui/material";
+import { Box, Chip, Typography } from "@mui/material";
 
 function ProjecTicketAssigned() {
   return (
@@ -6,12 +6,15 @@ function ProjecTicketAssigned() {
       <Typography color="text.secondary" fontSize="small">
         Assigned members
       </Typography>
-      <Stack direction="row" spacing={2} marginTop={1}>
+      <Box
+        sx={{ width: "100%", display: "flex", gap: 1, flexWrap: "wrap" }}
+        marginTop={1}
+      >
         <Chip label="Mark Avila" />
         <Chip label="Harvey Alonday" />
         <Chip label="John Remmon Castor" />
         <Chip label="Neilmathew Lacsamana" />
-      </Stack>
+      </Box>
     </Box>
   );
 }

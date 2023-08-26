@@ -34,7 +34,16 @@ function Projects() {
           <PageSection
             title="Team"
             action={
-              <Button sx={{ marginRight: 2 }} variant="contained" size="small">
+              <Button
+                sx={{
+                  marginRight: {
+                    xs: 0,
+                    lg: 2,
+                  },
+                }}
+                variant="contained"
+                size="small"
+              >
                 Add member
               </Button>
             }
