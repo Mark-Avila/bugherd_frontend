@@ -24,6 +24,10 @@ function ProjectTicketInfo() {
       <PageSection title="Comments">
         <List aria-label="ticket-comments-list">
           <TicketCommentItem />
+          <TicketCommentItem />
+          <TicketCommentItem />
+          <TicketCommentItem />
+          <TicketCommentItem />
         </List>
         <Divider />
         <TicketCommentInput />

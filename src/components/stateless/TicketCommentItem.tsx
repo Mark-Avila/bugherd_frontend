@@ -16,6 +16,12 @@ function TicketCommentItem() {
           <MoreVert />
         </IconButton>
       }
+      sx={{
+        alignItems: {
+          xs: "start",
+          lg: "center",
+        },
+      }}
     >
       <ListItemAvatar>
         <Avatar alt="markavila-pic" />
@@ -38,7 +44,15 @@ function TicketCommentItem() {
                 expedita sequi quo totam? Optio nihil deserunt at iure assumenda
                 rem facilis facere! Vitae ab debitis esse, eligendi laudantium
                 quidem minus."
-        sx={{ paddingRight: 30 }}
+        sx={{
+          paddingRight: {
+            xs: 0,
+            lg: 30,
+          },
+          marginTop: {
+            xs: 0,
+          },
+        }}
       />
     </ListItem>
   );
