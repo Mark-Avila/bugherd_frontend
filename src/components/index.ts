@@ -6,6 +6,7 @@ import ProjectHeader from "./stateless/ProjectHeader";
 import ProjectTeamList from "./stateless/ProjectTeamList";
 import ProjectTicketList from "./stateless/ProjectTicketList";
 import ProjectTicketInfo from "./stateless/ProjectTicketInfo";
+import NewTicketModal from "./stateful/NewTicketModal";
 
 export {
   PageDrawer,
@@ -16,4 +17,5 @@ export {
   ProjectTeamItem,
   ProjectTicketList,
   ProjectTicketInfo,
+  NewTicketModal,
 };

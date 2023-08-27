@@ -1,15 +1,23 @@
-import { Box, Button, Divider, Grid, Toolbar } from "@mui/material";
+import { Box, Button, Divider, Grid, Modal, Toolbar } from "@mui/material";
 import {
+  NewTicketModal,
   ProjectHeader,
   ProjectTeamList,
   ProjectTicketInfo,
   ProjectTicketList,
 } from "../components";
 import PageSection from "../components/stateless/PageSection";
+import { useState } from "react";
 
 const DRAWER_WIDTH = 240;
 
 function Projects() {
+  const [ticketModal, setTicketModal] = useState(false);
+
+  const toggleTicketModal = () => setTicketModal((prev) => !prev);
+
+  const handleOnClose = () => setTicketModal(false);
+
   return (
     <Box
       component="main"
@@ -55,7 +63,11 @@ function Projects() {
           <PageSection
             title="Tickets"
             action={
-              <Button variant="contained" size="small">
+              <Button
+                onClick={toggleTicketModal}
+                variant="contained"
+                size="small"
+              >
                 New ticket
               </Button>
             }
@@ -69,6 +81,23 @@ function Projects() {
       <PageSection title="Selected Ticket Information">
         <ProjectTicketInfo />
       </PageSection>
+      <Modal open={ticketModal} onClose={handleOnClose}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 800,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 1,
+          }}
+        >
+          <NewTicketModal onClose={toggleTicketModal} />
+        </Box>
+      </Modal>
     </Box>
   );
 }
