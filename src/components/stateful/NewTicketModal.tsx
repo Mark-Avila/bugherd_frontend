@@ -99,8 +99,8 @@ function NewTicketModal({ onClose }: Props) {
       </Box>
 
       <Divider sx={{ mb: 3, mt: 1 }} />
-      <Grid container spacing={4}>
-        <Grid item xs={6}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
           <Stack spacing={2}>
             <TextField id="ticket-title" label="Title" size="small" fullWidth />
             <TextField
@@ -113,7 +113,7 @@ function NewTicketModal({ onClose }: Props) {
             />
           </Stack>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <Stack
             direction="column"
             height="100%"

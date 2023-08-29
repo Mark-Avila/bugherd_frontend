@@ -81,14 +81,20 @@ function Projects() {
       <PageSection title="Selected Ticket Information">
         <ProjectTicketInfo />
       </PageSection>
-      <Modal open={ticketModal} onClose={handleOnClose}>
+      <Modal
+        open={ticketModal}
+        onClose={handleOnClose}
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 800,
+            width: {
+              xs: "95%",
+              lg: 800,
+            },
+            mx: {
+              xs: 1,
+            },
             bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
