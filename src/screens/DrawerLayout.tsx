@@ -13,10 +13,11 @@ import { ReactNode, useState } from "react";
 const DRAWER_WIDTH = 240;
 
 interface Props {
+  title: string;
   children: ReactNode;
 }
 
-function DrawerLayout({ children }: Props) {
+function DrawerLayout({ title, children }: Props) {
   const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -41,7 +42,7 @@ function DrawerLayout({ children }: Props) {
             <Menu />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Dashboard
+            {title}
           </Typography>
         </Toolbar>
       </AppBar>

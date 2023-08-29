@@ -49,7 +49,7 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              <DrawerLayout>
+              <DrawerLayout title="Dashboard">
                 <Dashboard />
               </DrawerLayout>
             }
@@ -57,7 +57,7 @@ function App() {
           <Route
             path="/projects"
             element={
-              <DrawerLayout>
+              <DrawerLayout title="Kikoo weather services">
                 <Projects />
               </DrawerLayout>
             }
