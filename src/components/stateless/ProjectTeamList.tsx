@@ -5,7 +5,7 @@ function ProjectTeamList() {
   return (
     <Paper variant="outlined">
       <List>
-        <ProjectTeamItem name="Mark Avila" />
+        <ProjectTeamItem name="Mark Avila" isLead />
         <Divider />
         <ProjectTeamItem name="Harvey Alonday" />
         <Divider />

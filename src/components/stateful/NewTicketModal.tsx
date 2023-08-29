@@ -98,7 +98,7 @@ function NewTicketModal({ onClose }: Props) {
         </IconButton>
       </Box>
 
-      <Divider sx={{ marginY: 3 }} />
+      <Divider sx={{ mb: 3, mt: 1 }} />
       <Grid container spacing={4}>
         <Grid item xs={6}>
           <Stack spacing={2}>
