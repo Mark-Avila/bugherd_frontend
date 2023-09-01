@@ -1,14 +1,21 @@
-import { ChangeEvent, useState } from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography, { TypographyProps } from "@mui/material/Typography";
-import Container from "@mui/material/Container";
+import React, { ChangeEvent, useState } from "react";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  Grid,
+  Box,
+  Typography,
+  Container,
+  TextField,
+} from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { LockOutlined as LockOutlinedIcon } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import { SignInData } from "../types";
+import authService from "../services/authService";
+import { TypographyProps } from "@mui/material/Typography";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -33,20 +40,36 @@ interface Props {
 export default function SignIn({ handleScreen }: Props) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const signInData: SignInData = {
+      email,
+      password,
+    };
+
+    const response = await authService.signin(signInData);
+
+    if (response.status === 200) {
+      enqueueSnackbar("Successfully logged in");
+      navigate("/dashboard");
+    }
+
+    // console.log({
+    //   email: data.get("email"),
+    //   password: data.get("password"),
+    // });
   };
 
-  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) =>
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.currentTarget.value);
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
+  };
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.currentTarget.value);
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
