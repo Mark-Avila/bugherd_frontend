@@ -10,6 +10,8 @@ import Typography, { TypographyProps } from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MuiPhoneNumber from "mui-phone-number";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -47,7 +49,7 @@ export default function SignUp({ handleScreen }: Props) {
   const [password2, setPassword2] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [contact, setContact] = useState<string>("");
-  // const [bday, setContact] = useState<string>("");
+  const [bday, setBday] = useState<Dayjs | null>(dayjs("2022-04-17"));
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -168,6 +170,15 @@ export default function SignUp({ handleScreen }: Props) {
                   size="small"
                   fullWidth
                   onChange={handleContactOnChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <DatePicker
+                  sx={{ width: "100%" }}
+                  slotProps={{ textField: { size: "small" } }}
+                  label="Birthday"
+                  value={bday}
+                  onChange={(newDate) => setBday(newDate)}
                 />
               </Grid>
               <Grid item xs={12}>

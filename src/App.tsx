@@ -4,6 +4,8 @@ import { createTheme } from "@mui/material";
 import { useState, useMemo, createContext } from "react";
 import { ThemeProvider } from "@emotion/react";
 import DrawerLayout from "./screens/DrawerLayout";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 interface IColorModeContext {
   mode: "light" | "dark";
@@ -42,29 +44,31 @@ function App() {
   };
 
   return (
-    <ColorModeContext.Provider value={ColorMode}>
-      <ThemeProvider theme={theme}>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route
-            path="/dashboard"
-            element={
-              <DrawerLayout title="Dashboard">
-                <Dashboard />
-              </DrawerLayout>
-            }
-          />
-          <Route
-            path="/projects"
-            element={
-              <DrawerLayout title="Kikoo weather services">
-                <Projects />
-              </DrawerLayout>
-            }
-          />
-        </Routes>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <ColorModeContext.Provider value={ColorMode}>
+        <ThemeProvider theme={theme}>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route
+              path="/dashboard"
+              element={
+                <DrawerLayout title="Dashboard">
+                  <Dashboard />
+                </DrawerLayout>
+              }
+            />
+            <Route
+              path="/projects"
+              element={
+                <DrawerLayout title="Kikoo weather services">
+                  <Projects />
+                </DrawerLayout>
+              }
+            />
+          </Routes>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
+    </LocalizationProvider>
   );
 }
 
