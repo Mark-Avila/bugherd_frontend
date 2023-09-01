@@ -1,17 +1,23 @@
 import { ChangeEvent, useState } from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  Grid,
+  Box,
+  Typography,
+} from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography, { TypographyProps } from "@mui/material/Typography";
+import { TypographyProps } from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MuiPhoneNumber from "mui-phone-number";
 import { DatePicker } from "@mui/x-date-pickers";
+import { SignUpData } from "../types";
 import dayjs, { Dayjs } from "dayjs";
+import { useSnackbar } from "notistack";
+import authService from "../services/authService";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -50,14 +56,45 @@ export default function SignUp({ handleScreen }: Props) {
   const [email, setEmail] = useState<string>("");
   const [contact, setContact] = useState<string>("");
   const [bday, setBday] = useState<Dayjs | null>(dayjs("2022-04-17"));
+  const { enqueueSnackbar } = useSnackbar();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
+    if (password1 !== password2) {
+      enqueueSnackbar("Passwords do not match");
+      return;
+    }
+
+    if (!bday) {
+      enqueueSnackbar("Invalid Birthday");
+      return;
+    }
+
+    const password = password1;
+    const newContact = contact.replace(/ /g, "");
+
+    const signUpData: SignUpData = {
+      fname,
+      lname,
+      password,
+      email,
+      contact: newContact,
+      bday: bday.toISOString(),
+    };
+
+    console.log(signUpData);
+
+    try {
+      const response = await authService.signup(signUpData);
+
+      if (response.status === 201) {
+        enqueueSnackbar("Successfully registered");
+        handleScreen();
+      }
+    } catch (err: unknown) {
+      enqueueSnackbar((err as Error).message);
+    }
   };
 
   const handleOnChange = (
