@@ -1,4 +1,4 @@
-import * as React from "react";
+import { ChangeEvent, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -31,6 +31,9 @@ interface Props {
 }
 
 export default function SignIn({ handleScreen }: Props) {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -39,6 +42,11 @@ export default function SignIn({ handleScreen }: Props) {
       password: data.get("password"),
     });
   };
+
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setEmail(e.currentTarget.value);
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setPassword(e.currentTarget.value);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -73,6 +81,7 @@ export default function SignIn({ handleScreen }: Props) {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={handleEmailChange}
             />
             <TextField
               margin="normal"
@@ -83,6 +92,7 @@ export default function SignIn({ handleScreen }: Props) {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={handlePasswordChange}
             />
             <Button
               type="submit"
