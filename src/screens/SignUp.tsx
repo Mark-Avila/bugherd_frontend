@@ -12,12 +12,12 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { TypographyProps } from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import MuiPhoneNumber from "mui-phone-number";
 import { DatePicker } from "@mui/x-date-pickers";
-import { SignUpData } from "../types";
 import dayjs, { Dayjs } from "dayjs";
 import { useSnackbar } from "notistack";
 import authService from "../services/authService";
+import { MuiTelInput } from "mui-tel-input";
+import { SignUpData } from "../types";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -48,53 +48,147 @@ type InputField =
   | "email"
   | "contact";
 
+interface InputData<T> {
+  value: T;
+  label: string;
+  isError: boolean;
+}
+
+// interface SignUpFormInput {
+//   fname: InputData<string>;
+//   lname: InputData<string>;
+//   password1: InputData<string>;
+//   password2: InputData<string>;
+//   email: InputData<string>;
+//   contact: InputData<string>;
+//   bday: InputData<Dayjs | null>;
+// }
+
 export default function SignUp({ handleScreen }: Props) {
-  const [fname, setFname] = useState<string>("");
-  const [lname, setLname] = useState<string>("");
-  const [password1, setPassword1] = useState<string>("");
-  const [password2, setPassword2] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [contact, setContact] = useState<string>("");
-  const [bday, setBday] = useState<Dayjs | null>(dayjs("2022-04-17"));
+  // const [formData, setFormData] = useState<SignUpFormInput>();
+
+  const [fname, setFname] = useState<InputData<string>>({
+    value: "",
+    label: "First name",
+    isError: false,
+  });
+
+  const [lname, setLname] = useState<InputData<string>>({
+    value: "",
+    label: "Last name",
+    isError: false,
+  });
+
+  const [email, setEmail] = useState<InputData<string>>({
+    value: "",
+    label: "Email",
+    isError: false,
+  });
+
+  const [contact, setContact] = useState<InputData<string>>({
+    value: "+63",
+    label: "Phone number",
+    isError: false,
+  });
+
+  const [password1, setPassword1] = useState<InputData<string>>({
+    value: "",
+    label: "Password",
+    isError: false,
+  });
+
+  const [password2, setPassword2] = useState<InputData<string>>({
+    value: "",
+    label: "Confirm Password",
+    isError: false,
+  });
+
+  const [bday, setBday] = useState<InputData<Dayjs | null>>({
+    value: dayjs("2023-04-07"),
+    label: "Birthday",
+    isError: false,
+  });
+
   const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (password1 !== password2) {
-      enqueueSnackbar("Passwords do not match");
-      return;
+    // const { password1, password2, contact, fname, lname, email, bday } =
+    //   formData;
+
+    let flag = false;
+
+    if (fname.value === "") {
+      flag = true;
+      setFname((prev) => ({ ...prev, isError: true }));
     }
 
-    if (!bday) {
-      enqueueSnackbar("Invalid Birthday");
-      return;
+    if (lname.value === "") {
+      flag = true;
+      setLname((prev) => ({ ...prev, isError: true }));
     }
 
-    const password = password1;
-    const newContact = contact.replace(/ /g, "");
+    if (email.value === "") {
+      flag = true;
+      setEmail((prev) => ({ ...prev, isError: true }));
+    }
+
+    if (password1.value === "") {
+      flag = true;
+      setPassword1((prev) => ({ ...prev, isError: true }));
+    }
+
+    if (password2.value === "") {
+      flag = true;
+      setPassword2((prev) => ({ ...prev, isError: true }));
+    }
+
+    if (contact.value === "+63") {
+      flag = true;
+      setContact((prev) => ({ ...prev, isError: true }));
+    }
+
+    if (flag) {
+      return enqueueSnackbar("Missing fields", { variant: "error" });
+    }
+
+    if (password1.value !== password2.value) {
+      setPassword1((prev) => ({ ...prev, isError: true }));
+      setPassword2((prev) => ({ ...prev, isError: true }));
+      return enqueueSnackbar("Passwords do not match", {
+        variant: "error",
+      });
+    }
+
+    if (!bday.value) {
+      setBday((prev) => ({ ...prev, isError: true }));
+      return enqueueSnackbar("Invalid Birthday");
+    }
+
+    const newContact = contact.value.replace(/ /g, "");
 
     const signUpData: SignUpData = {
-      fname,
-      lname,
-      password,
-      email,
+      fname: fname.value,
+      lname: lname.value,
+      password: password1.value,
+      email: email.value,
       contact: newContact,
-      bday: bday.toISOString(),
+      bday: bday.value.toISOString(),
     };
 
     console.log(signUpData);
 
-    try {
-      const response = await authService.signup(signUpData);
+    // try {
+    //   const response = await authService.signup(signUpData);
 
-      if (response.status === 201) {
-        enqueueSnackbar("Successfully registered");
-        handleScreen();
-      }
-    } catch (err: unknown) {
-      enqueueSnackbar((err as Error).message);
-    }
+    //   if (response.status === 201) {
+    //     enqueueSnackbar("Successfully registered");
+    //     handleScreen();
+    //   }
+    // } catch (err: unknown) {
+    //   enqueueSnackbar((err as Error).message);
+    // }
   };
 
   const handleOnChange = (
@@ -103,20 +197,47 @@ export default function SignUp({ handleScreen }: Props) {
   ) => {
     switch (target) {
       case "fname":
-        setFname(e.currentTarget.value);
+        setFname((prev) => ({
+          ...prev,
+          value: e.target.value,
+          isError: false,
+        }));
         break;
       case "lname":
-        setLname(e.currentTarget.value);
-        break;
-      case "password1":
-        setPassword1(e.currentTarget.value);
-        break;
-      case "password2":
-        setPassword2(e.currentTarget.value);
+        setLname((prev) => ({
+          ...prev,
+          value: e.target.value,
+          isError: false,
+        }));
         break;
       case "email":
-        setEmail(e.currentTarget.value);
+        setEmail((prev) => ({
+          ...prev,
+          value: e.target.value,
+          isError: false,
+        }));
         break;
+      case "password1":
+        setPassword1((prev) => ({
+          ...prev,
+          value: e.target.value,
+          isError: false,
+        }));
+        break;
+      case "password2":
+        setPassword2((prev) => ({
+          ...prev,
+          value: e.target.value,
+          isError: false,
+        }));
+        break;
+      // case "contact":
+      //   setContact((prev) => ({
+      //     ...prev,
+      //     value: e.currentTarget.value,
+      //     isError: false,
+      //   }));
+      //   break;
 
       default:
         break;
@@ -125,10 +246,12 @@ export default function SignUp({ handleScreen }: Props) {
 
   // const handleContactOnChange = (value: string) => setContact(value);
 
-  const handleContactOnChange: (
-    e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void = (e) => {
-    setContact(e as string);
+  const handleContactOnChange = (val: string) => {
+    setContact((prev) => ({
+      ...prev,
+      value: val,
+      isError: false,
+    }));
   };
 
   return (
@@ -164,6 +287,7 @@ export default function SignUp({ handleScreen }: Props) {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     handleOnChange(e, "fname")
                   }
+                  error={fname.isError}
                   required
                   fullWidth
                   id="firstName"
@@ -179,6 +303,7 @@ export default function SignUp({ handleScreen }: Props) {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     handleOnChange(e, "lname")
                   }
+                  error={lname.isError}
                   id="lastName"
                   label="Last Name"
                   name="lastName"
@@ -193,6 +318,7 @@ export default function SignUp({ handleScreen }: Props) {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     handleOnChange(e, "email")
                   }
+                  error={email.isError}
                   id="email"
                   label="Email Address"
                   name="email"
@@ -201,12 +327,16 @@ export default function SignUp({ handleScreen }: Props) {
                 />
               </Grid>
               <Grid item xs={12}>
-                <MuiPhoneNumber
-                  variant="outlined"
-                  defaultCountry={"ph"}
-                  size="small"
-                  fullWidth
+                <MuiTelInput
+                  error={contact.isError}
+                  value={contact.value}
                   onChange={handleContactOnChange}
+                  fullWidth
+                  size="small"
+                  onlyCountries={["PH"]}
+                  defaultCountry="PH"
+                  forceCallingCode
+                  inputProps={{ maxLength: 12 }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -214,8 +344,10 @@ export default function SignUp({ handleScreen }: Props) {
                   sx={{ width: "100%" }}
                   slotProps={{ textField: { size: "small" } }}
                   label="Birthday"
-                  value={bday}
-                  onChange={(newDate) => setBday(newDate)}
+                  value={bday.value}
+                  onChange={(newDate) =>
+                    setBday((prev) => ({ ...prev, value: newDate }))
+                  }
                 />
               </Grid>
               <Grid item xs={12}>
@@ -228,6 +360,7 @@ export default function SignUp({ handleScreen }: Props) {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     handleOnChange(e, "password1")
                   }
+                  error={password1.isError}
                   type="password"
                   id="password"
                   autoComplete="new-password"
@@ -243,6 +376,7 @@ export default function SignUp({ handleScreen }: Props) {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     handleOnChange(e, "password2")
                   }
+                  error={lname.isError}
                   type="password"
                   id="password"
                   autoComplete="new-password"
