@@ -52,70 +52,65 @@ interface InputData<T> {
   value: T;
   label: string;
   isError: boolean;
+  helper: string;
 }
 
-// interface SignUpFormInput {
-//   fname: InputData<string>;
-//   lname: InputData<string>;
-//   password1: InputData<string>;
-//   password2: InputData<string>;
-//   email: InputData<string>;
-//   contact: InputData<string>;
-//   bday: InputData<Dayjs | null>;
-// }
-
 export default function SignUp({ handleScreen }: Props) {
-  // const [formData, setFormData] = useState<SignUpFormInput>();
+  const [strength, setStrength] = useState<number>(0);
 
   const [fname, setFname] = useState<InputData<string>>({
     value: "",
     label: "First name",
     isError: false,
+    helper: "",
   });
 
   const [lname, setLname] = useState<InputData<string>>({
     value: "",
     label: "Last name",
     isError: false,
+    helper: "",
   });
 
   const [email, setEmail] = useState<InputData<string>>({
     value: "",
     label: "Email",
     isError: false,
+    helper: "",
   });
 
   const [contact, setContact] = useState<InputData<string>>({
     value: "+63",
     label: "Phone number",
     isError: false,
+    helper: "",
   });
 
   const [password1, setPassword1] = useState<InputData<string>>({
     value: "",
     label: "Password",
     isError: false,
+    helper: "",
   });
 
   const [password2, setPassword2] = useState<InputData<string>>({
     value: "",
     label: "Confirm Password",
     isError: false,
+    helper: "",
   });
 
   const [bday, setBday] = useState<InputData<Dayjs | null>>({
     value: dayjs("2023-04-07"),
     label: "Birthday",
     isError: false,
+    helper: "",
   });
 
   const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // const { password1, password2, contact, fname, lname, email, bday } =
-    //   formData;
 
     let flag = false;
 
@@ -177,18 +172,34 @@ export default function SignUp({ handleScreen }: Props) {
       bday: bday.value.toISOString(),
     };
 
-    console.log(signUpData);
+    try {
+      const response = await authService.signup(signUpData);
 
-    // try {
-    //   const response = await authService.signup(signUpData);
+      if (response.status === 201) {
+        enqueueSnackbar("Successfully registered");
+        handleScreen();
+      }
+    } catch (err: unknown) {
+      enqueueSnackbar((err as Error).message);
+    }
+  };
 
-    //   if (response.status === 201) {
-    //     enqueueSnackbar("Successfully registered");
-    //     handleScreen();
-    //   }
-    // } catch (err: unknown) {
-    //   enqueueSnackbar((err as Error).message);
-    // }
+  const evaluatePassword = (password: string): number => {
+    let errors = [];
+    if (password.length < 8) {
+      errors.push("Your password must be at least 8 characters");
+    }
+    if (password.search(/[a-z]/i) < 0) {
+      errors.push("Your password must contain at least one letter.");
+    }
+    if (password.search(/[0-9]/) < 0) {
+      errors.push("Your password must contain at least one digit.");
+    }
+    if (errors.length > 0) {
+      alert(errors.join("\n"));
+      return false;
+    }
+    return true;
   };
 
   const handleOnChange = (
@@ -231,13 +242,6 @@ export default function SignUp({ handleScreen }: Props) {
           isError: false,
         }));
         break;
-      // case "contact":
-      //   setContact((prev) => ({
-      //     ...prev,
-      //     value: e.currentTarget.value,
-      //     isError: false,
-      //   }));
-      //   break;
 
       default:
         break;
@@ -284,30 +288,32 @@ export default function SignUp({ handleScreen }: Props) {
                   size="small"
                   autoComplete="given-name"
                   name="firstName"
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleOnChange(e, "fname")
-                  }
+                  id="firstName"
+                  label="First Name"
+                  helperText={fname.helper}
                   error={fname.isError}
                   required
                   fullWidth
-                  id="firstName"
-                  label="First Name"
                   autoFocus
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleOnChange(e, "fname")
+                  }
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   size="small"
+                  id="lastName"
+                  label="Last Name"
+                  name="lastName"
+                  autoComplete="family-name"
+                  error={lname.isError}
+                  helperText={lname.helper}
                   required
                   fullWidth
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     handleOnChange(e, "lname")
                   }
-                  error={lname.isError}
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -315,28 +321,30 @@ export default function SignUp({ handleScreen }: Props) {
                   size="small"
                   required
                   fullWidth
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleOnChange(e, "email")
-                  }
-                  error={email.isError}
                   id="email"
                   label="Email Address"
                   name="email"
                   type="email"
                   autoComplete="email"
+                  error={email.isError}
+                  helperText={email.helper}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleOnChange(e, "email")
+                  }
                 />
               </Grid>
               <Grid item xs={12}>
                 <MuiTelInput
                   error={contact.isError}
                   value={contact.value}
-                  onChange={handleContactOnChange}
+                  helperText={contact.helper}
+                  inputProps={{ maxLength: 12 }}
                   fullWidth
                   size="small"
                   onlyCountries={["PH"]}
                   defaultCountry="PH"
                   forceCallingCode
-                  inputProps={{ maxLength: 12 }}
+                  onChange={handleContactOnChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -357,13 +365,14 @@ export default function SignUp({ handleScreen }: Props) {
                   fullWidth
                   name="password"
                   label="Password"
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleOnChange(e, "password1")
-                  }
                   error={password1.isError}
+                  helperText={password1.helper}
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleOnChange(e, "password1")
+                  }
                 />
               </Grid>
               <Grid item xs={12}>
@@ -373,6 +382,7 @@ export default function SignUp({ handleScreen }: Props) {
                   fullWidth
                   name="password-2"
                   label="Re-enter password"
+                  helperText={password2.helper}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     handleOnChange(e, "password2")
                   }
