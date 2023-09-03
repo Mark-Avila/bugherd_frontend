@@ -18,6 +18,7 @@ import { useSnackbar } from "notistack";
 import authService from "../services/authService";
 import { MuiTelInput } from "mui-tel-input";
 import { SignUpData } from "../types";
+import PasswordStrength from "../components/stateless/PasswordStrength";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -113,35 +114,42 @@ export default function SignUp({ handleScreen }: Props) {
     e.preventDefault();
 
     let flag = false;
+    const emptyMsg = " is empty";
 
     if (fname.value === "") {
       flag = true;
       setFname((prev) => ({ ...prev, isError: true }));
+      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
     }
 
     if (lname.value === "") {
       flag = true;
       setLname((prev) => ({ ...prev, isError: true }));
+      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
     }
 
     if (email.value === "") {
       flag = true;
       setEmail((prev) => ({ ...prev, isError: true }));
+      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
     }
 
     if (password1.value === "") {
       flag = true;
       setPassword1((prev) => ({ ...prev, isError: true }));
+      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
     }
 
     if (password2.value === "") {
       flag = true;
       setPassword2((prev) => ({ ...prev, isError: true }));
+      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
     }
 
     if (contact.value === "+63") {
       flag = true;
       setContact((prev) => ({ ...prev, isError: true }));
+      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
     }
 
     if (flag) {
@@ -184,22 +192,25 @@ export default function SignUp({ handleScreen }: Props) {
     }
   };
 
-  const evaluatePassword = (password: string): number => {
-    let errors = [];
+  const evaluatePassword = (password: string) => {
+    if (password.length === 0) {
+      setStrength(0);
+      return;
+    }
     if (password.length < 8) {
-      errors.push("Your password must be at least 8 characters");
+      setStrength(25);
+      return;
     }
     if (password.search(/[a-z]/i) < 0) {
-      errors.push("Your password must contain at least one letter.");
+      setStrength(50);
+      return;
     }
     if (password.search(/[0-9]/) < 0) {
-      errors.push("Your password must contain at least one digit.");
+      setStrength(75);
+      return;
     }
-    if (errors.length > 0) {
-      alert(errors.join("\n"));
-      return false;
-    }
-    return true;
+
+    setStrength(100);
   };
 
   const handleOnChange = (
@@ -234,6 +245,7 @@ export default function SignUp({ handleScreen }: Props) {
           value: e.target.value,
           isError: false,
         }));
+        evaluatePassword(e.target.value);
         break;
       case "password2":
         setPassword2((prev) => ({
@@ -374,6 +386,9 @@ export default function SignUp({ handleScreen }: Props) {
                     handleOnChange(e, "password1")
                   }
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <PasswordStrength value={strength} />
               </Grid>
               <Grid item xs={12}>
                 <TextField
