@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import {
   Avatar,
   Button,
@@ -17,8 +17,9 @@ import dayjs, { Dayjs } from "dayjs";
 import { useSnackbar } from "notistack";
 import authService from "../services/authService";
 import { MuiTelInput } from "mui-tel-input";
+import * as yup from "yup";
+import { useFormik } from "formik";
 import { SignUpData } from "../types";
-import PasswordStrength from "../components/stateless/PasswordStrength";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -33,21 +34,11 @@ function Copyright(props: TypographyProps) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 interface Props {
   handleScreen: VoidFunction;
 }
-
-type InputField =
-  | "fname"
-  | "lname"
-  | "password1"
-  | "password2"
-  | "email"
-  | "contact";
 
 interface InputData<T> {
   value: T;
@@ -56,211 +47,84 @@ interface InputData<T> {
   helper: string;
 }
 
+const validationSchema = yup.object({
+  fname: yup
+    .string()
+    .min(2, "First name is too short")
+    .required("First name is required"),
+  lname: yup
+    .string()
+    .min(2, "Last name is too short")
+    .required("Last name is required"),
+  email: yup
+    .string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password1: yup.string().required("Password is required"),
+  password2: yup
+    .string()
+    .oneOf([yup.ref("password1"), undefined], "Passwords must match")
+    .required("Confirm password is required"),
+});
+
 export default function SignUp({ handleScreen }: Props) {
-  const [strength, setStrength] = useState<number>(0);
-
-  const [fname, setFname] = useState<InputData<string>>({
-    value: "",
-    label: "First name",
-    isError: false,
-    helper: "",
-  });
-
-  const [lname, setLname] = useState<InputData<string>>({
-    value: "",
-    label: "Last name",
-    isError: false,
-    helper: "",
-  });
-
-  const [email, setEmail] = useState<InputData<string>>({
-    value: "",
-    label: "Email",
-    isError: false,
-    helper: "",
-  });
+  const { enqueueSnackbar } = useSnackbar();
 
   const [contact, setContact] = useState<InputData<string>>({
-    value: "+63",
-    label: "Phone number",
-    isError: false,
-    helper: "",
-  });
-
-  const [password1, setPassword1] = useState<InputData<string>>({
     value: "",
-    label: "Password",
-    isError: false,
     helper: "",
-  });
-
-  const [password2, setPassword2] = useState<InputData<string>>({
-    value: "",
-    label: "Confirm Password",
     isError: false,
-    helper: "",
+    label: "Contact",
   });
 
   const [bday, setBday] = useState<InputData<Dayjs | null>>({
-    value: dayjs("2023-04-07"),
-    label: "Birthday",
-    isError: false,
+    value: dayjs("2023-01-01"),
     helper: "",
+    isError: false,
+    label: "Contact",
   });
 
-  const { enqueueSnackbar } = useSnackbar();
+  const formik = useFormik({
+    initialValues: {
+      fname: "",
+      lname: "",
+      email: "",
+      password1: "",
+      password2: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      // if (values.password1 !== values.password2) {
+      //   return enqueueSnackbar("Passwords do not match");
+      // }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    let flag = false;
-    const emptyMsg = " is empty";
-
-    if (fname.value === "") {
-      flag = true;
-      setFname((prev) => ({ ...prev, isError: true }));
-      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
-    }
-
-    if (lname.value === "") {
-      flag = true;
-      setLname((prev) => ({ ...prev, isError: true }));
-      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
-    }
-
-    if (email.value === "") {
-      flag = true;
-      setEmail((prev) => ({ ...prev, isError: true }));
-      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
-    }
-
-    if (password1.value === "") {
-      flag = true;
-      setPassword1((prev) => ({ ...prev, isError: true }));
-      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
-    }
-
-    if (password2.value === "") {
-      flag = true;
-      setPassword2((prev) => ({ ...prev, isError: true }));
-      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
-    }
-
-    if (contact.value === "+63") {
-      flag = true;
-      setContact((prev) => ({ ...prev, isError: true }));
-      setFname((prev) => ({ ...prev, helper: prev.label + emptyMsg }));
-    }
-
-    if (flag) {
-      return enqueueSnackbar("Missing fields", { variant: "error" });
-    }
-
-    if (password1.value !== password2.value) {
-      setPassword1((prev) => ({ ...prev, isError: true }));
-      setPassword2((prev) => ({ ...prev, isError: true }));
-      return enqueueSnackbar("Passwords do not match", {
-        variant: "error",
-      });
-    }
-
-    if (!bday.value) {
-      setBday((prev) => ({ ...prev, isError: true }));
-      return enqueueSnackbar("Invalid Birthday");
-    }
-
-    const newContact = contact.value.replace(/ /g, "");
-
-    const signUpData: SignUpData = {
-      fname: fname.value,
-      lname: lname.value,
-      password: password1.value,
-      email: email.value,
-      contact: newContact,
-      bday: bday.value.toISOString(),
-    };
-
-    try {
-      const response = await authService.signup(signUpData);
-
-      if (response.status === 201) {
-        enqueueSnackbar("Successfully registered");
-        handleScreen();
+      if (bday.value === null || !bday.value) {
+        return enqueueSnackbar("Birthday is invalid");
       }
-    } catch (err: unknown) {
-      enqueueSnackbar((err as Error).message);
-    }
-  };
 
-  const evaluatePassword = (password: string) => {
-    if (password.length === 0) {
-      setStrength(0);
-      return;
-    }
-    if (password.length < 8) {
-      setStrength(25);
-      return;
-    }
-    if (password.search(/[a-z]/i) < 0) {
-      setStrength(50);
-      return;
-    }
-    if (password.search(/[0-9]/) < 0) {
-      setStrength(75);
-      return;
-    }
+      const payload: SignUpData = {
+        fname: values.fname,
+        lname: values.lname,
+        email: values.email,
+        password: values.password1,
+        contact: contact.value.replace(/\s+/g, ""),
+        bday: bday.value.toISOString(),
+      };
 
-    setStrength(100);
-  };
+      try {
+        const response = await authService.signup(payload);
 
-  const handleOnChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    target: InputField
-  ) => {
-    switch (target) {
-      case "fname":
-        setFname((prev) => ({
-          ...prev,
-          value: e.target.value,
-          isError: false,
-        }));
-        break;
-      case "lname":
-        setLname((prev) => ({
-          ...prev,
-          value: e.target.value,
-          isError: false,
-        }));
-        break;
-      case "email":
-        setEmail((prev) => ({
-          ...prev,
-          value: e.target.value,
-          isError: false,
-        }));
-        break;
-      case "password1":
-        setPassword1((prev) => ({
-          ...prev,
-          value: e.target.value,
-          isError: false,
-        }));
-        evaluatePassword(e.target.value);
-        break;
-      case "password2":
-        setPassword2((prev) => ({
-          ...prev,
-          value: e.target.value,
-          isError: false,
-        }));
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  // const handleContactOnChange = (value: string) => setContact(value);
+        if (response.status === 201) {
+          enqueueSnackbar("Successfully registered");
+          handleScreen();
+        }
+      } catch (err: unknown) {
+        enqueueSnackbar((err as Error).message, {
+          variant: "error",
+        });
+      }
+    },
+  });
 
   const handleContactOnChange = (val: string) => {
     setContact((prev) => ({
@@ -291,72 +155,64 @@ export default function SignUp({ handleScreen }: Props) {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
+            onSubmit={formik.handleSubmit}
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  size="small"
-                  autoComplete="given-name"
-                  name="firstName"
                   id="firstName"
+                  name="fname"
                   label="First Name"
-                  helperText={fname.helper}
-                  error={fname.isError}
-                  required
+                  size="small"
+                  value={formik.values.fname}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  helperText={formik.touched.fname && formik.errors.fname}
+                  error={formik.touched.fname && Boolean(formik.errors.fname)}
                   fullWidth
-                  autoFocus
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleOnChange(e, "fname")
-                  }
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  size="small"
                   id="lastName"
+                  name="lname"
                   label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                  error={lname.isError}
-                  helperText={lname.helper}
-                  required
+                  size="small"
+                  value={formik.values.lname}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  helperText={formik.touched.lname && formik.errors.lname}
+                  error={formik.touched.lname && Boolean(formik.errors.lname)}
                   fullWidth
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleOnChange(e, "lname")
-                  }
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  size="small"
-                  required
-                  fullWidth
                   id="email"
-                  label="Email Address"
                   name="email"
+                  label="Email Address"
+                  size="small"
                   type="email"
-                  autoComplete="email"
-                  error={email.isError}
-                  helperText={email.helper}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleOnChange(e, "email")
-                  }
+                  fullWidth
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  helperText={formik.touched.email && formik.errors.email}
+                  error={formik.touched.email && Boolean(formik.errors.email)}
                 />
               </Grid>
               <Grid item xs={12}>
                 <MuiTelInput
-                  error={contact.isError}
+                  id="contact"
+                  name="contact"
                   value={contact.value}
+                  onChange={handleContactOnChange}
                   helperText={contact.helper}
-                  inputProps={{ maxLength: 12 }}
+                  error={contact.isError}
                   fullWidth
                   size="small"
-                  onlyCountries={["PH"]}
                   defaultCountry="PH"
-                  forceCallingCode
-                  onChange={handleContactOnChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -372,39 +228,45 @@ export default function SignUp({ handleScreen }: Props) {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  size="small"
-                  required
-                  fullWidth
-                  name="password"
+                  name="password1"
                   label="Password"
-                  error={password1.isError}
-                  helperText={password1.helper}
                   type="password"
-                  id="password"
-                  autoComplete="new-password"
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleOnChange(e, "password1")
+                  id="password-1"
+                  required
+                  size="small"
+                  fullWidth
+                  value={formik.values.password1}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  helperText={
+                    formik.touched.password1 && formik.errors.password1
+                  }
+                  error={
+                    formik.touched.password1 && Boolean(formik.errors.password1)
                   }
                 />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <PasswordStrength value={strength} />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <TextField
+                  name="password2"
+                  type="password"
+                  id="password-2"
                   size="small"
+                  label="Re-enter password"
                   required
                   fullWidth
-                  name="password-2"
-                  label="Re-enter password"
-                  helperText={password2.helper}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleOnChange(e, "password2")
+                  value={formik.values.password2}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  helperText={
+                    formik.touched.password2 && formik.errors.password2
                   }
-                  error={lname.isError}
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
+                  error={
+                    formik.touched.password2 && Boolean(formik.errors.password2)
+                  }
                 />
               </Grid>
             </Grid>
