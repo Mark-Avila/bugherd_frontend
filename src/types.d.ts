@@ -12,3 +12,10 @@ export interface SignUpData {
   contact: string;
   bday: string;
 }
+
+export interface ResponseBody {
+  message: string;
+  stack: string | null;
+  status: number;
+  success: boolean;
+}

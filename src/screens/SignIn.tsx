@@ -1,4 +1,3 @@
-import React, { ChangeEvent, useState } from "react";
 import {
   Avatar,
   Button,
@@ -13,9 +12,12 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { LockOutlined as LockOutlinedIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { SignInData } from "../types";
+import { ResponseBody, SignInData } from "../types";
 import authService from "../services/authService";
 import { TypographyProps } from "@mui/material/Typography";
+import * as yup from "yup";
+import { useFormik } from "formik";
+import { AxiosError } from "axios";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -37,39 +39,64 @@ interface Props {
   handleScreen: VoidFunction;
 }
 
+const validationSchema = yup.object({
+  email: yup
+    .string()
+    .email("Invalid Email address")
+    .required("Please enter your password"),
+  password: yup.string().required("Please enter your password"),
+});
+
 export default function SignIn({ handleScreen }: Props) {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  // const [email, setEmail] = useState<string>("");
+  // const [password, setPassword] = useState<string>("");
+
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      const payload: SignInData = {
+        email: values.email,
+        password: values.password,
+      };
 
-    const signInData: SignInData = {
-      email,
-      password,
-    };
+      authService
+        .signin(payload)
+        .then((response) => {
+          if (response.status === 200) {
+            enqueueSnackbar("Successfully logged in", {
+              variant: "success",
+            });
+            navigate("/dashboard");
+          }
+        })
+        .catch((err: AxiosError<ResponseBody>) => {
+          if (err.response) {
+            enqueueSnackbar(err.response.data.message, {
+              variant: "error",
+            });
+          }
+        });
+    },
+  });
 
-    const response = await authService.signin(signInData);
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
 
-    if (response.status === 200) {
-      enqueueSnackbar("Successfully logged in");
-      navigate("/dashboard");
-    }
+  // };
 
-    // console.log({
-    //   email: data.get("email"),
-    //   password: data.get("password"),
-    // });
-  };
-
-  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.currentTarget.value);
-  };
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.currentTarget.value);
-  };
+  // const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setEmail(e.currentTarget.value);
+  // };
+  // const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setPassword(e.currentTarget.value);
+  // };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -91,31 +118,43 @@ export default function SignIn({ handleScreen }: Props) {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            onSubmit={formik.handleSubmit}
             noValidate
-            sx={{ mt: 1 }}
+            sx={{
+              mt: 4,
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
           >
             <TextField
-              margin="normal"
-              required
-              fullWidth
               id="email"
               label="Email Address"
               name="email"
-              autoComplete="email"
-              autoFocus
-              onChange={handleEmailChange}
-            />
-            <TextField
-              margin="normal"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              helperText={formik.touched.email && formik.errors.email}
+              error={formik.touched.email && Boolean(formik.errors.email)}
               required
               fullWidth
+              size="small"
+              autoFocus
+            />
+            <TextField
               name="password"
               label="Password"
               type="password"
               id="password"
-              autoComplete="current-password"
-              onChange={handlePasswordChange}
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              helperText={formik.touched.password && formik.errors.password}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              size="small"
+              required
+              fullWidth
             />
             <Button
               type="submit"
