@@ -1,5 +1,5 @@
 import PageDrawer from "./stateless/PageDrawer";
-import DataTable from "./stateless/DataTable";
+import ProjectList from "./stateless/ProjectList";
 import DataCard from "./stateful/DataCard";
 import ProjectTeamItem from "./stateless/ProjectTeamItem";
 import ProjectHeader from "./stateless/ProjectHeader";
@@ -10,7 +10,7 @@ import NewTicketModal from "./stateful/NewTicketModal";
 
 export {
   PageDrawer,
-  DataTable,
+  ProjectList,
   ProjectTeamList,
   ProjectHeader,
   DataCard,

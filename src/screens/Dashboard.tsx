@@ -1,6 +1,6 @@
 import "chart.js/auto";
-import { Box, Toolbar, Grid } from "@mui/material";
-import { DataCard, DataTable } from "../components";
+import { Box, Toolbar, Grid, Pagination } from "@mui/material";
+import { DataCard, ProjectList } from "../components";
 
 const DRAWER_WIDTH = 240;
 
@@ -58,8 +58,16 @@ export default function Dashboard() {
           />
         </Grid>
       </Grid>
-      <Box>
-        <DataTable />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "end",
+          gap: 4,
+        }}
+      >
+        <ProjectList />
+        <Pagination count={10} color="primary" />
       </Box>
     </Box>
   );
