@@ -2,9 +2,15 @@ import "chart.js/auto";
 import { Box, Toolbar, Grid, Pagination } from "@mui/material";
 import { DataCard, ProjectList } from "../components";
 
-const DRAWER_WIDTH = 240;
-
 export default function Dashboard() {
+  const DRAWER_WIDTH = 240;
+
+  const templateData = [
+    { id: 0, value: 33, label: "series A" },
+    { id: 1, value: 33, label: "series B" },
+    { id: 2, value: 33, label: "series C" },
+  ];
+
   return (
     <Box
       component="main"
@@ -28,34 +34,13 @@ export default function Dashboard() {
         spacing={1}
       >
         <Grid item xs={12} sm={6} lg={4}>
-          <DataCard
-            data={[
-              { id: 0, value: 33, label: "series A" },
-              { id: 1, value: 33, label: "series B" },
-              { id: 2, value: 33, label: "series C" },
-            ]}
-            title="Tickets by type"
-          />
+          <DataCard data={templateData} title="Tickets by type" />
         </Grid>
         <Grid item xs={12} sm={6} lg={4}>
-          <DataCard
-            data={[
-              { id: 0, value: 33, label: "series A" },
-              { id: 1, value: 33, label: "series B" },
-              { id: 2, value: 33, label: "series C" },
-            ]}
-            title="Tickets by priority"
-          />
+          <DataCard data={templateData} title="Tickets by priority" />
         </Grid>
         <Grid item xs={12} sm={6} lg={4}>
-          <DataCard
-            data={[
-              { id: 0, value: 33, label: "series A" },
-              { id: 1, value: 33, label: "series B" },
-              { id: 2, value: 33, label: "series C" },
-            ]}
-            title="Tickets by status"
-          />
+          <DataCard data={templateData} title="Tickets by status" />
         </Grid>
       </Grid>
       <Box

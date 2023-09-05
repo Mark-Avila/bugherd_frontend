@@ -9,13 +9,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-// import { GridColDef } from "@mui/x-data-grid";
-
-// const columns: GridColDef[] = [
-//   { field: "project", headerName: "Project", flex: 1 },
-//   { field: "description", headerName: "Description", flex: 1 },
-//   { field: "assigned", headerName: "Assigned", flex: 1 },
-// ];
 
 const rows = [
   {
@@ -83,7 +76,7 @@ export default function ProjectList() {
         </TableHead>
         <TableBody>
           {rows.map((item) => (
-            <TableRow>
+            <TableRow key={item.id}>
               <TableCell>
                 <Typography fontSize={12}>{item.project}</Typography>
               </TableCell>
