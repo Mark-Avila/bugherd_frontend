@@ -9,12 +9,12 @@ import {
   TextField,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { TypographyProps } from "@mui/material/Typography";
 import { LockOutlined as LockOutlinedIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { ResponseBody, SignInData } from "../types";
 import authService from "../services/authService";
-import { TypographyProps } from "@mui/material/Typography";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { AxiosError } from "axios";
@@ -43,14 +43,11 @@ const validationSchema = yup.object({
   email: yup
     .string()
     .email("Invalid Email address")
-    .required("Please enter your password"),
+    .required("Please enter your email"),
   password: yup.string().required("Please enter your password"),
 });
 
 export default function SignIn({ handleScreen }: Props) {
-  // const [email, setEmail] = useState<string>("");
-  // const [password, setPassword] = useState<string>("");
-
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -85,18 +82,6 @@ export default function SignIn({ handleScreen }: Props) {
         });
     },
   });
-
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-
-  // };
-
-  // const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setEmail(e.currentTarget.value);
-  // };
-  // const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setPassword(e.currentTarget.value);
-  // };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -140,7 +125,6 @@ export default function SignIn({ handleScreen }: Props) {
               required
               fullWidth
               size="small"
-              autoFocus
             />
             <TextField
               name="password"
