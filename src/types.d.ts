@@ -13,9 +13,16 @@ export interface SignUpData {
   bday: string;
 }
 
-export interface ResponseBody {
+export interface ResponseBody<T> {
   message: string;
   stack: string | null;
   status: number;
   success: boolean;
+  data: T;
+}
+
+export interface Project {
+  id: number;
+  title: string;
+  descr: string;
 }

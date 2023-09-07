@@ -14,10 +14,9 @@ import { LockOutlined as LockOutlinedIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { ResponseBody, SignInData } from "../types";
-import authService from "../services/authService";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { AxiosError } from "axios";
+import { useSigninMutation } from "../slices/userStore";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -51,6 +50,8 @@ export default function SignIn({ handleScreen }: Props) {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
+  const [signin] = useSigninMutation();
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -63,21 +64,20 @@ export default function SignIn({ handleScreen }: Props) {
         password: values.password,
       };
 
-      authService
-        .signin(payload)
-        .then((response) => {
-          if (response.status === 200) {
-            enqueueSnackbar("Successfully logged in", {
+      signin(payload)
+        .unwrap()
+        .then((res: ResponseBody<unknown>) => {
+          if (res.success) {
+            enqueueSnackbar(res.message, {
               variant: "success",
             });
+
             navigate("/dashboard");
           }
         })
-        .catch((err: AxiosError<ResponseBody>) => {
-          if (err.response) {
-            enqueueSnackbar(err.response.data.message, {
-              variant: "error",
-            });
+        .catch((err) => {
+          if ("message" in err.data) {
+            enqueueSnackbar(err.data.message, { variant: "error" });
           }
         });
     },
