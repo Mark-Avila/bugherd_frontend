@@ -17,6 +17,7 @@ import { ResponseBody, SignInData } from "../types";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useSigninMutation } from "../api/userApiSlice";
+import { useSnackError } from "../hooks";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -49,7 +50,7 @@ const validationSchema = yup.object({
 export default function SignIn({ handleScreen }: Props) {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-
+  const { handleErrorMessage } = useSnackError();
   const [signin] = useSigninMutation();
 
   const formik = useFormik({
@@ -76,11 +77,7 @@ export default function SignIn({ handleScreen }: Props) {
           }
         })
         .catch((err) => {
-          if ("error" in err) {
-            enqueueSnackbar("Connection failed", { variant: "error" });
-          } else if ("message" in err.data) {
-            enqueueSnackbar(err.data.message, { variant: "error" });
-          }
+          handleErrorMessage(err);
         });
     },
   });

@@ -20,6 +20,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { ResponseBody, SignUpData } from "../types";
 import { useSignupMutation } from "../api/userApiSlice";
+import { useSnackError } from "../hooks";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -69,6 +70,7 @@ const validationSchema = yup.object({
 
 export default function SignUp({ handleScreen }: Props) {
   const { enqueueSnackbar } = useSnackbar();
+  const { handleErrorMessage } = useSnackError();
 
   const [contact, setContact] = useState<InputData<string>>({
     value: "",
@@ -119,11 +121,7 @@ export default function SignUp({ handleScreen }: Props) {
           }
         })
         .catch((err) => {
-          if ("error" in err) {
-            enqueueSnackbar("Connection failed", { variant: "error" });
-          } else if ("message" in err.data) {
-            enqueueSnackbar(err.data.message, { variant: "error" });
-          }
+          handleErrorMessage(err);
         });
     },
   });

@@ -1,19 +1,17 @@
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { useSnackbar } from "notistack";
+import { ResponseBody } from "../types";
 
-// Define a type guard function
-function isFetchBaseQueryError(err: unknown): err is { error: string } {
-  return typeof err === "object" && err !== null && "error" in err;
-}
+type ErrorBody = ResponseBody<unknown>;
 
-// Usage in your code
 function useSnackError() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleErrorMessage = (err: unknown) => {
-    if (isFetchBaseQueryError(err)) {
+  const handleErrorMessage = (err: FetchBaseQueryError) => {
+    if ("error" in err) {
       enqueueSnackbar("Connection failed", { variant: "error" });
-    } else if (typeof err === "object" && err !== null && "message" in err) {
-      enqueueSnackbar((err as { message: string }).message, {
+    } else if ("message" in (err.data as ErrorBody)) {
+      enqueueSnackbar((err.data as ErrorBody).message, {
         variant: "error",
       });
     }
