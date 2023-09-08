@@ -16,7 +16,7 @@ import { useSnackbar } from "notistack";
 import { ResponseBody, SignInData } from "../types";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { useSigninMutation } from "../slices/userStore";
+import { useSigninMutation } from "../slices/userApiSlice";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -76,7 +76,9 @@ export default function SignIn({ handleScreen }: Props) {
           }
         })
         .catch((err) => {
-          if ("message" in err.data) {
+          if ("error" in err) {
+            enqueueSnackbar("Connection failed", { variant: "error" });
+          } else if ("message" in err.data) {
             enqueueSnackbar(err.data.message, { variant: "error" });
           }
         });

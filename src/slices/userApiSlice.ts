@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { ResponseBody, SignInData } from "../types";
+import type { SignInData, SignUpData } from "../types";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_ROUTE + "/user",
@@ -15,7 +15,14 @@ export const userApiSlice = createApi({
         body: data,
       }),
     }),
+    signup: builder.mutation({
+      query: (data: SignUpData) => ({
+        url: "/signup",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useSigninMutation } = userApiSlice;
+export const { useSigninMutation, useSignupMutation } = userApiSlice;

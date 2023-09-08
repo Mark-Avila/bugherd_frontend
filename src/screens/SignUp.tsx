@@ -15,11 +15,11 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useSnackbar } from "notistack";
-import authService from "../services/authService";
 import { MuiTelInput } from "mui-tel-input";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { SignUpData } from "../types";
+import { ResponseBody, SignUpData } from "../types";
+import { useSignupMutation } from "../slices/userApiSlice";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -84,6 +84,8 @@ export default function SignUp({ handleScreen }: Props) {
     label: "Contact",
   });
 
+  const [signup] = useSignupMutation();
+
   const formik = useFormik({
     initialValues: {
       fname: "",
@@ -93,13 +95,10 @@ export default function SignUp({ handleScreen }: Props) {
       password2: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
-      // if (values.password1 !== values.password2) {
-      //   return enqueueSnackbar("Passwords do not match");
-      // }
-
+    onSubmit: (values) => {
       if (bday.value === null || !bday.value) {
-        return enqueueSnackbar("Birthday is invalid");
+        enqueueSnackbar("Birthday is invalid");
+        return;
       }
 
       const payload: SignUpData = {
@@ -111,18 +110,21 @@ export default function SignUp({ handleScreen }: Props) {
         bday: bday.value.toISOString(),
       };
 
-      try {
-        const response = await authService.signup(payload);
-
-        if (response.status === 201) {
-          enqueueSnackbar("Successfully registered");
-          handleScreen();
-        }
-      } catch (err: unknown) {
-        enqueueSnackbar((err as Error).message, {
-          variant: "error",
+      signup(payload)
+        .unwrap()
+        .then((res: ResponseBody<unknown>) => {
+          if (res.success) {
+            enqueueSnackbar("Successfully registered", { variant: "success" });
+            handleScreen();
+          }
+        })
+        .catch((err) => {
+          if ("error" in err) {
+            enqueueSnackbar("Connection failed", { variant: "error" });
+          } else if ("message" in err.data) {
+            enqueueSnackbar(err.data.message, { variant: "error" });
+          }
         });
-      }
     },
   });
 
