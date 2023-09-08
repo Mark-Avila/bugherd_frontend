@@ -48,8 +48,8 @@ function DataCard({ data, title }: Props) {
           series={[
             {
               data: data,
-              innerRadius: 25,
-              outerRadius: 70,
+              innerRadius: 15,
+              outerRadius: 50,
               paddingAngle: 5,
               cornerRadius: 5,
               startAngle: -90,
@@ -58,7 +58,7 @@ function DataCard({ data, title }: Props) {
             },
           ]}
           width={320}
-          height={180}
+          height={150}
         />
       )}
     </Card>

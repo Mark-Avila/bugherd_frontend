@@ -1,5 +1,12 @@
 import "chart.js/auto";
-import { Box, Toolbar, Grid, Pagination } from "@mui/material";
+import {
+  Box,
+  Toolbar,
+  Button,
+  Grid,
+  Pagination,
+  Typography,
+} from "@mui/material";
 import { DataCard, ProjectList } from "../components";
 
 export default function Dashboard() {
@@ -26,34 +33,46 @@ export default function Dashboard() {
       aria-label="main-body"
     >
       <Toolbar />
-      <Grid
-        sx={{
-          marginBottom: 2,
-        }}
-        container
-        spacing={1}
-      >
-        <Grid item xs={12} sm={6} lg={4}>
-          <DataCard data={templateData} title="Tickets by type" />
+      <Grid container spacing={1}>
+        <Grid item xs={12} lg={4}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={6} lg={12}>
+              <DataCard data={templateData} title="Tickets by type" />
+            </Grid>
+            <Grid item xs={12} sm={6} lg={12}>
+              <DataCard data={templateData} title="Tickets by priority" />
+            </Grid>
+            <Grid item xs={12} sm={6} lg={12}>
+              <DataCard data={templateData} title="Tickets by status" />
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={6} lg={4}>
-          <DataCard data={templateData} title="Tickets by priority" />
-        </Grid>
-        <Grid item xs={12} sm={6} lg={4}>
-          <DataCard data={templateData} title="Tickets by status" />
+        <Grid item xs={12} lg={8}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "end",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+                marginBottom: 2,
+              }}
+            >
+              <Typography variant="h6">Projects</Typography>
+              <Button variant="contained" size="small">
+                New Project
+              </Button>
+            </Box>
+            <ProjectList />
+            <Pagination count={10} sx={{ mt: 2 }} color="primary" />
+          </Box>
         </Grid>
       </Grid>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "end",
-          gap: 4,
-        }}
-      >
-        <ProjectList />
-        <Pagination count={10} color="primary" />
-      </Box>
     </Box>
   );
 }
