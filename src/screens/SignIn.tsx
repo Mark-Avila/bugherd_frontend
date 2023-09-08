@@ -16,7 +16,7 @@ import { useSnackbar } from "notistack";
 import { ResponseBody, SignInData } from "../types";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { useSigninMutation } from "../slices/userApiSlice";
+import { useSigninMutation } from "../api/userApiSlice";
 
 function Copyright(props: TypographyProps) {
   return (

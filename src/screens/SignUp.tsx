@@ -19,7 +19,7 @@ import { MuiTelInput } from "mui-tel-input";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { ResponseBody, SignUpData } from "../types";
-import { useSignupMutation } from "../slices/userApiSlice";
+import { useSignupMutation } from "../api/userApiSlice";
 
 function Copyright(props: TypographyProps) {
   return (
