@@ -50,7 +50,7 @@ const validationSchema = yup.object({
 export default function SignIn({ handleScreen }: Props) {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const { handleErrorMessage } = useSnackError();
+  const { snackbarError } = useSnackError();
   const [signin] = useSigninMutation();
 
   const formik = useFormik({
@@ -77,7 +77,7 @@ export default function SignIn({ handleScreen }: Props) {
           }
         })
         .catch((err) => {
-          handleErrorMessage(err);
+          snackbarError(err);
         });
     },
   });

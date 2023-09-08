@@ -70,7 +70,7 @@ const validationSchema = yup.object({
 
 export default function SignUp({ handleScreen }: Props) {
   const { enqueueSnackbar } = useSnackbar();
-  const { handleErrorMessage } = useSnackError();
+  const { snackbarError } = useSnackError();
 
   const [contact, setContact] = useState<InputData<string>>({
     value: "",
@@ -121,7 +121,7 @@ export default function SignUp({ handleScreen }: Props) {
           }
         })
         .catch((err) => {
-          handleErrorMessage(err);
+          snackbarError(err);
         });
     },
   });

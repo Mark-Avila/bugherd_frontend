@@ -7,7 +7,7 @@ type ErrorBody = ResponseBody<unknown>;
 function useSnackError() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleErrorMessage = (err: FetchBaseQueryError) => {
+  const snackbarError = (err: FetchBaseQueryError) => {
     if ("error" in err) {
       enqueueSnackbar("Connection failed", { variant: "error" });
     } else if ("message" in (err.data as ErrorBody)) {
@@ -17,7 +17,7 @@ function useSnackError() {
     }
   };
 
-  return { handleErrorMessage };
+  return { snackbarError };
 }
 
 export default useSnackError;
