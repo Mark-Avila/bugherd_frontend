@@ -26,3 +26,15 @@ export interface Project {
   title: string;
   descr: string;
 }
+
+export interface User {
+  id: number;
+  fname: string;
+  lname: string;
+  email: string;
+  password: string;
+  contact: string;
+  role: 0 | 1 | 2;
+  bday: string;
+  createdat: string;
+}
