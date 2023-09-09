@@ -1,4 +1,9 @@
-import { Route, Routes } from "react-router-dom";
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
 import { Dashboard, Landing, Projects } from "./screens";
 import { createTheme } from "@mui/material";
 import { useState, useMemo, createContext } from "react";
@@ -7,6 +12,7 @@ import DrawerLayout from "./screens/DrawerLayout";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { SnackbarProvider } from "notistack";
+import PrivateRoute from "./components/stateful/PrivateRoute";
 
 interface IColorModeContext {
   mode: "light" | "dark";
@@ -17,6 +23,32 @@ export const ColorModeContext = createContext<IColorModeContext>({
   mode: "light",
   toggle: { toggleColorMode: () => {} },
 });
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <>
+      <Route path="/" element={<Landing />} />
+      <Route element={<PrivateRoute />} path="">
+        <Route
+          path="/dashboard"
+          element={
+            <DrawerLayout title="Dashboard">
+              <Dashboard />
+            </DrawerLayout>
+          }
+        />
+      </Route>
+      <Route
+        path="/projects"
+        element={
+          <DrawerLayout title="Kikoo weather services">
+            <Projects />
+          </DrawerLayout>
+        }
+      />
+    </>
+  )
+);
 
 function App() {
   const [mode, setMode] = useState<"light" | "dark">("light");
@@ -49,25 +81,7 @@ function App() {
       <ColorModeContext.Provider value={ColorMode}>
         <SnackbarProvider>
           <ThemeProvider theme={theme}>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <DrawerLayout title="Dashboard">
-                    <Dashboard />
-                  </DrawerLayout>
-                }
-              />
-              <Route
-                path="/projects"
-                element={
-                  <DrawerLayout title="Kikoo weather services">
-                    <Projects />
-                  </DrawerLayout>
-                }
-              />
-            </Routes>
+            <RouterProvider router={router} />
           </ThemeProvider>
         </SnackbarProvider>
       </ColorModeContext.Provider>
