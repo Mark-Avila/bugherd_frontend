@@ -10,17 +10,31 @@ import {
 import { DataCard, ProjectList } from "../components";
 import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
 import { useEffect } from "react";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { ResponseBody } from "../types";
+import { useDispatch } from "react-redux";
+import { logout } from "../slices/authSlice";
 
 export default function Dashboard() {
   const DRAWER_WIDTH = 240;
 
-  const { data, isLoading, isError } = useGetCurrentProjectQuery();
+  const { data, isLoading, isError, error } = useGetCurrentProjectQuery();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!isError && !isLoading) {
       console.log(data);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (isError && !isLoading && error) {
+      const err = error as FetchBaseQueryError;
+      if ((err.data as ResponseBody<unknown>).status === 403) {
+        dispatch(logout());
+      }
+    }
+  }, [error]);
 
   const templateData = [
     { id: 0, value: 33, label: "series A" },

@@ -8,6 +8,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
         url: "/user/signin",
         method: "POST",
         body: data,
+        credentials: "include",
       }),
     }),
     signup: builder.mutation({
