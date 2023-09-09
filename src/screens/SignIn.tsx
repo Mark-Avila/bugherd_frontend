@@ -18,6 +18,8 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { useSigninMutation } from "../api/userApiSlice";
 import { useSnackError } from "../hooks";
+import { useDispatch } from "react-redux";
+import { setUser } from "../slices/authSlice";
 
 function Copyright(props: TypographyProps) {
   return (
@@ -52,6 +54,7 @@ export default function SignIn({ handleScreen }: Props) {
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
   const [signin] = useSigninMutation();
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -72,7 +75,7 @@ export default function SignIn({ handleScreen }: Props) {
             enqueueSnackbar(res.message, {
               variant: "success",
             });
-
+            dispatch(setUser(res.data));
             navigate("/dashboard");
           }
         })
