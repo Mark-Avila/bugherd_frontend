@@ -8,9 +8,19 @@ import {
   Typography,
 } from "@mui/material";
 import { DataCard, ProjectList } from "../components";
+import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
+import { useEffect } from "react";
 
 export default function Dashboard() {
   const DRAWER_WIDTH = 240;
+
+  const { data, isLoading, isError } = useGetCurrentProjectQuery();
+
+  useEffect(() => {
+    if (!isError && !isLoading) {
+      console.log(data);
+    }
+  }, [data]);
 
   const templateData = [
     { id: 0, value: 33, label: "series A" },
