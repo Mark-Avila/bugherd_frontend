@@ -14,11 +14,13 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { ResponseBody } from "../types";
 import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
+import LoadingScreen from "./LoadingScreen";
 
 export default function Dashboard() {
   const DRAWER_WIDTH = 240;
 
-  const { data, isLoading, isError, error } = useGetCurrentProjectQuery();
+  const { data, isLoading, isFetching, isError, error } =
+    useGetCurrentProjectQuery();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -41,6 +43,10 @@ export default function Dashboard() {
     { id: 1, value: 33, label: "series B" },
     { id: 2, value: 33, label: "series C" },
   ];
+
+  if (isLoading && isFetching) {
+    return <LoadingScreen />;
+  }
 
   return (
     <Box
