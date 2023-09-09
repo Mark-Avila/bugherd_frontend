@@ -13,7 +13,7 @@ import { TypographyProps } from "@mui/material/Typography";
 import { LockOutlined as LockOutlinedIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { ResponseBody, SignInData } from "../types";
+import { ResponseBody, SignInData, User } from "../types";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useSigninMutation } from "../api/userApiSlice";
@@ -70,7 +70,7 @@ export default function SignIn({ handleScreen }: Props) {
 
       signin(payload)
         .unwrap()
-        .then((res: ResponseBody<unknown>) => {
+        .then((res: ResponseBody<User>) => {
           if (res.success) {
             enqueueSnackbar(res.message, {
               variant: "success",
