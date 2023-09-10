@@ -9,17 +9,39 @@ import {
   Chip,
   Grid,
   Button,
-  List,
-  ListItem,
-  ListItemText,
 } from "@mui/material";
 import { UserList } from "..";
+import * as yup from "yup";
+import { useFormik } from "formik";
 
 interface Props {
   onClose: VoidFunction;
 }
 
+const validationSchema = yup.object({
+  title: yup
+    .string()
+    .min(2, "Title is too short")
+    .max(30, "Title is too long")
+    .required("Please enter a title"),
+  description: yup
+    .string()
+    .min(2, "Description is too short")
+    .required("Please enter a description"),
+});
+
 function NewProjectModal({ onClose }: Props) {
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+      description: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      console.log(JSON.stringify(values));
+    },
+  });
+
   return (
     <>
       <Box
@@ -41,14 +63,36 @@ function NewProjectModal({ onClose }: Props) {
       <Grid container spacing={2} mt={1}>
         <Grid item xs={12} lg={6}>
           <Stack spacing={2}>
-            <TextField size="small" label="Title" id="project-title" />
+            <TextField
+              size="small"
+              label="Title"
+              id="project-title"
+              name="title"
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              helperText={formik.touched.title && formik.errors.title}
+              error={formik.touched.title && Boolean(formik.errors.title)}
+              fullWidth
+            />
             <TextField
               size="small"
               label="Description"
               id="project-desc"
+              name="description"
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              helperText={
+                formik.touched.description && formik.errors.description
+              }
+              error={
+                formik.touched.description && Boolean(formik.errors.description)
+              }
               multiline
               rows={5}
             />
+
             <Typography fontSize={12}>Assigned</Typography>
             <Box sx={{ display: "flex", flexWrap: "wrap", mt: 1, gap: 1 }}>
               <Chip label="Mark Christian Avila" />
@@ -75,7 +119,9 @@ function NewProjectModal({ onClose }: Props) {
       </Grid>
       <Divider sx={{ my: 2 }} />
       <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
-        <Button variant="contained">SUBMIT</Button>
+        <Button onClick={() => formik.handleSubmit()} variant="contained">
+          SUBMIT
+        </Button>
       </Box>
     </>
   );

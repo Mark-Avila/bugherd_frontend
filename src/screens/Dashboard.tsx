@@ -23,7 +23,6 @@ import { logout } from "../slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
 import { useToggle } from "../hooks";
 
-//TODO: Convert to ProjectTeamList to UserList
 //TODO: Use formik for title and description
 //TODO: Assigned members to be controlled by a state
 //TODO: Search Functionality
