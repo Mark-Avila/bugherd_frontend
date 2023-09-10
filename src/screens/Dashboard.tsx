@@ -1,13 +1,14 @@
 import "chart.js/auto";
 import {
   Box,
-  Toolbar,
+  Modal,
   Button,
   Grid,
   Pagination,
   Typography,
+  Toolbar,
 } from "@mui/material";
-import { DataCard, ProjectList } from "../components";
+import { DataCard, NewProjectModal, ProjectList } from "../components";
 import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
 import { useEffect } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -19,24 +20,24 @@ import LoadingScreen from "./LoadingScreen";
 export default function Dashboard() {
   const DRAWER_WIDTH = 240;
 
-  const { data, isLoading, isFetching, isError, error } =
-    useGetCurrentProjectQuery();
-  const dispatch = useDispatch();
+  // const { data, isLoading, isFetching, isError, error } =
+  //   useGetCurrentProjectQuery();
+  // const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!isError && !isLoading) {
-      console.log(data);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (!isError && !isLoading) {
+  //     console.log(data);
+  //   }
+  // }, [data]);
 
-  useEffect(() => {
-    if (isError && !isLoading && error) {
-      const err = error as FetchBaseQueryError;
-      if ((err.data as ResponseBody<unknown>).status === 403) {
-        dispatch(logout());
-      }
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (isError && !isLoading && error) {
+  //     const err = error as FetchBaseQueryError;
+  //     if ((err.data as ResponseBody<unknown>).status === 403) {
+  //       dispatch(logout());
+  //     }
+  //   }
+  // }, [error]);
 
   const templateData = [
     { id: 0, value: 33, label: "series A" },
@@ -44,9 +45,9 @@ export default function Dashboard() {
     { id: 2, value: 33, label: "series C" },
   ];
 
-  if (isLoading && isFetching) {
-    return <LoadingScreen />;
-  }
+  // if (isLoading && isFetching) {
+  //   return <LoadingScreen />;
+  // }
 
   return (
     <Box
@@ -62,6 +63,28 @@ export default function Dashboard() {
       }}
       aria-label="main-body"
     >
+      <Modal
+        open={true}
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
+        <Box
+          sx={{
+            width: {
+              xs: "95%",
+              lg: 700,
+            },
+            mx: {
+              xs: 1,
+            },
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 2,
+            borderRadius: 1,
+          }}
+        >
+          <NewProjectModal />
+        </Box>
+      </Modal>
       <Toolbar />
       <Grid container spacing={1}>
         <Grid item xs={12} lg={4}>
