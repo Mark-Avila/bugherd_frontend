@@ -15,7 +15,11 @@ import {
 } from "@mui/material";
 import { UserList } from "..";
 
-function NewProjectModal() {
+interface Props {
+  onClose: VoidFunction;
+}
+
+function NewProjectModal({ onClose }: Props) {
   return (
     <>
       <Box
@@ -29,7 +33,7 @@ function NewProjectModal() {
         <Typography variant="h6" ml={2} fontSize="small">
           New Project
         </Typography>
-        <IconButton>
+        <IconButton onClick={onClose}>
           <Close />
         </IconButton>
       </Box>

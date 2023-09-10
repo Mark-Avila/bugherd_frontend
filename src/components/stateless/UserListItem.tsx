@@ -36,7 +36,6 @@ function UserListItem({ name, isLead, isButton }: Props) {
             primary={name}
             primaryTypographyProps={{ fontSize: 12 }}
           />
-          {isLead && <Chip label="Leader" size="small" color="primary" />}
         </ListItemButton>
       ) : (
         <ListItem>

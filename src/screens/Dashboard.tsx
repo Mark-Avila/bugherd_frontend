@@ -21,6 +21,7 @@ import { ResponseBody } from "../types";
 import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
+import { useToggle } from "../hooks";
 
 //TODO: Convert to ProjectTeamList to UserList
 //TODO: Use formik for title and description
@@ -28,8 +29,34 @@ import LoadingScreen from "./LoadingScreen";
 //TODO: Search Functionality
 //TODO: Document code before implementing new features lol
 
+const DRAWER_WIDTH = 240;
+
+const ContainerStyle = {
+  width: { xs: "100%", lg: `calc(100% - ${DRAWER_WIDTH}px)` },
+  padding: {
+    xs: 1,
+    md: 3,
+  },
+  display: "flex",
+  flexDirection: "column",
+};
+
+const ModalWrapper = {
+  width: {
+    xs: "95%",
+    lg: 700,
+  },
+  mx: {
+    xs: 1,
+  },
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 2,
+  borderRadius: 1,
+};
+
 export default function Dashboard() {
-  const DRAWER_WIDTH = 240;
+  const [isProjToggled, toggleProj] = useToggle(false);
 
   // const { data, isLoading, isFetching, isError, error } =
   //   useGetCurrentProjectQuery();
@@ -56,46 +83,22 @@ export default function Dashboard() {
     { id: 2, value: 33, label: "series C" },
   ];
 
-  // if (isLoading && isFetching) {
-  //   return <LoadingScreen />;
-  // }
-
   return (
-    <Box
-      component="main"
-      sx={{
-        width: { xs: "100%", lg: `calc(100% - ${DRAWER_WIDTH}px)` },
-        padding: {
-          xs: 1,
-          md: 3,
-        },
-        display: "flex",
-        flexDirection: "column",
-      }}
-      aria-label="main-body"
-    >
-      <Modal
-        open={true}
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-      >
-        <Box
+    <Box component="main" sx={ContainerStyle} aria-label="main-body">
+      {isProjToggled && (
+        <Modal
+          open={true}
           sx={{
-            width: {
-              xs: "95%",
-              lg: 700,
-            },
-            mx: {
-              xs: 1,
-            },
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 2,
-            borderRadius: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <NewProjectModal />
-        </Box>
-      </Modal>
+          <Box sx={ModalWrapper}>
+            <NewProjectModal onClose={toggleProj} />
+          </Box>
+        </Modal>
+      )}
       <Toolbar />
       <Grid container spacing={1}>
         <Grid item xs={12} lg={4}>
@@ -128,7 +131,7 @@ export default function Dashboard() {
               }}
             >
               <Typography variant="h6">Projects</Typography>
-              <Button variant="contained" size="small">
+              <Button onClick={toggleProj} variant="contained" size="small">
                 New Project
               </Button>
             </Box>
