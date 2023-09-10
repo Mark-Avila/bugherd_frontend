@@ -13,7 +13,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { ProjectTeamList } from "..";
+import { UserList } from "..";
 
 function NewProjectModal() {
   return (
@@ -64,7 +64,7 @@ function NewProjectModal() {
               id="project-search"
             />
             <Box sx={{ height: 200 }}>
-              <ProjectTeamList />
+              <UserList />
             </Box>
           </Stack>
         </Grid>

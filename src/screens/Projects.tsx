@@ -2,7 +2,7 @@ import { Box, Button, Divider, Grid, Modal, Toolbar } from "@mui/material";
 import {
   NewTicketModal,
   ProjectHeader,
-  ProjectTeamList,
+  UserList,
   ProjectTicketInfo,
   ProjectTicketList,
 } from "../components";
@@ -56,7 +56,7 @@ function Projects() {
               </Button>
             }
           >
-            <ProjectTeamList />
+            <UserList />
           </PageSection>
         </Grid>
         <Grid item xs={12} md={6} lg={8}>

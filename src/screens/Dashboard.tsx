@@ -8,7 +8,7 @@ import {
   Typography,
   Toolbar,
 } from "@mui/material";
-import { DataCard, NewProjectModal, ProjectList } from "../components";
+import { DataCard, NewProjectModal, UserList } from "../components";
 import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
 import { useEffect } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
 
+//TODO: Convert to ProjectTeamList to UserList
 //TODO: Use formik for title and description
 //TODO: Assigned members to be controlled by a state
 //TODO: Search Functionality
@@ -126,7 +127,7 @@ export default function Dashboard() {
                 New Project
               </Button>
             </Box>
-            <ProjectList />
+            <UserList />
             <Pagination count={10} sx={{ mt: 2 }} color="primary" />
           </Box>
         </Grid>

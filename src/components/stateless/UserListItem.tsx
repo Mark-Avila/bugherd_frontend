@@ -15,7 +15,7 @@ interface Props {
   isLead?: boolean;
 }
 
-function ProjectTeamItem({ name, isLead }: Props) {
+function UserListItem({ name, isLead }: Props) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleOnOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -69,4 +69,4 @@ function ProjectTeamItem({ name, isLead }: Props) {
   );
 }
 
-export default ProjectTeamItem;
+export default UserListItem;
