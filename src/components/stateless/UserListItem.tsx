@@ -4,6 +4,7 @@ import {
   Chip,
   IconButton,
   ListItem,
+  ListItemButton,
   ListItemSecondaryAction,
   ListItemText,
   Popover,
@@ -13,9 +14,10 @@ import { useState } from "react";
 interface Props {
   name: string;
   isLead?: boolean;
+  isButton?: boolean;
 }
 
-function UserListItem({ name, isLead }: Props) {
+function UserListItem({ name, isLead, isButton }: Props) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleOnOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -28,18 +30,28 @@ function UserListItem({ name, isLead }: Props) {
 
   return (
     <>
-      <ListItem>
-        <ListItemText
-          primary={name}
-          primaryTypographyProps={{ fontSize: 12 }}
-        />
-        {isLead && <Chip label="Leader" size="small" color="primary" />}
-        <ListItemSecondaryAction>
-          <IconButton edge="end" onClick={handleOnOpen}>
-            <InfoOutlined />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
+      {isButton ? (
+        <ListItemButton>
+          <ListItemText
+            primary={name}
+            primaryTypographyProps={{ fontSize: 12 }}
+          />
+          {isLead && <Chip label="Leader" size="small" color="primary" />}
+        </ListItemButton>
+      ) : (
+        <ListItem>
+          <ListItemText
+            primary={name}
+            primaryTypographyProps={{ fontSize: 12 }}
+          />
+          {isLead && <Chip label="Leader" size="small" color="primary" />}
+          <ListItemSecondaryAction>
+            <IconButton edge="end" onClick={handleOnOpen}>
+              <InfoOutlined />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+      )}
       <Popover
         id={`${name}-popover`}
         open={open}

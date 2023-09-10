@@ -1,25 +1,29 @@
 import { Divider, List, Paper } from "@mui/material";
 import UserListItem from "./UserListItem";
 
-function UserList() {
+interface Props {
+  isButton?: boolean;
+}
+
+function UserList({ isButton }: Props) {
   return (
     <Paper sx={{ height: "100%" }} variant="outlined">
       <List sx={{ height: "100%", overflow: "auto" }}>
-        <UserListItem name="Mark Avila" isLead />
+        <UserListItem isButton={isButton} name="Mark Avila" isLead />
         <Divider />
-        <UserListItem name="Harvey Alonday" />
+        <UserListItem isButton={isButton} name="Harvey Alonday" />
         <Divider />
-        <UserListItem name="John Remmon Castor" />
+        <UserListItem isButton={isButton} name="John Remmon Castor" />
         <Divider />
-        <UserListItem name="Neilmathew Lacsamana" />
+        <UserListItem isButton={isButton} name="Neilmathew Lacsamana" />
         <Divider />
-        <UserListItem name="Mark Avila" isLead />
+        <UserListItem isButton={isButton} name="Mark Avila" isLead />
         <Divider />
-        <UserListItem name="Harvey Alonday" />
+        <UserListItem isButton={isButton} name="Harvey Alonday" />
         <Divider />
-        <UserListItem name="John Remmon Castor" />
+        <UserListItem isButton={isButton} name="John Remmon Castor" />
         <Divider />
-        <UserListItem name="Neilmathew Lacsamana" />
+        <UserListItem isButton={isButton} name="Neilmathew Lacsamana" />
       </List>
     </Paper>
   );

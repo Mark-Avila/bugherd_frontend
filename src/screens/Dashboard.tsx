@@ -8,7 +8,12 @@ import {
   Typography,
   Toolbar,
 } from "@mui/material";
-import { DataCard, NewProjectModal, UserList } from "../components";
+import {
+  DataCard,
+  NewProjectModal,
+  ProjectList,
+  UserList,
+} from "../components";
 import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
 import { useEffect } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -127,7 +132,7 @@ export default function Dashboard() {
                 New Project
               </Button>
             </Box>
-            <UserList />
+            <ProjectList />
             <Pagination count={10} sx={{ mt: 2 }} color="primary" />
           </Box>
         </Grid>

@@ -64,7 +64,7 @@ function NewProjectModal() {
               id="project-search"
             />
             <Box sx={{ height: 200 }}>
-              <UserList />
+              <UserList isButton />
             </Box>
           </Stack>
         </Grid>
