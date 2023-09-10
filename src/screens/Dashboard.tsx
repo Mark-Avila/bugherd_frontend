@@ -17,6 +17,10 @@ import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
 
+//TODO: Use formik for title and description
+//TODO: Assigned members to be controlled by a state
+//TODO: Search Functionality
+
 export default function Dashboard() {
   const DRAWER_WIDTH = 240;
 
