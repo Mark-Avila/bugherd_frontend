@@ -20,6 +20,7 @@ import LoadingScreen from "./LoadingScreen";
 //TODO: Use formik for title and description
 //TODO: Assigned members to be controlled by a state
 //TODO: Search Functionality
+//TODO: Document code before implementing new features lol
 
 export default function Dashboard() {
   const DRAWER_WIDTH = 240;
