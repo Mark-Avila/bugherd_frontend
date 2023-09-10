@@ -23,7 +23,6 @@ import { logout } from "../slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
 import { useToggle } from "../hooks";
 
-//TODO: Use formik for title and description
 //TODO: Assigned members to be controlled by a state
 //TODO: Search Functionality
 //TODO: Document code before implementing new features lol
