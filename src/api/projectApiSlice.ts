@@ -1,10 +1,15 @@
 import { Project, ResponseBody } from "../types";
 import { apiSlice } from "./apiSlice";
 
+type ProjectListResponse = ResponseBody<Project[]>;
+
 export const projectApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getCurrentProject: builder.query<ResponseBody<Project[]>, void>({
+    getCurrentProject: builder.query<ProjectListResponse, void>({
       query: () => ({ url: "/project/current", credentials: "include" }),
+    }),
+    getAllProjects: builder.query<ProjectListResponse, void>({
+      query: () => "/project",
     }),
     createProject: builder.mutation({
       query: (data: Project) => ({
@@ -16,4 +21,5 @@ export const projectApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetCurrentProjectQuery } = projectApiSlice;
+export const { useGetCurrentProjectQuery, useGetAllProjectsQuery } =
+  projectApiSlice;
