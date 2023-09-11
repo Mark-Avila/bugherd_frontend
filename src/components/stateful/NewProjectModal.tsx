@@ -1,4 +1,4 @@
-import { Close, KeyboardArrowRight } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import {
   Stack,
   Box,
@@ -11,9 +11,9 @@ import {
   Paper,
   List,
   ListItemText,
-  ListItemButton,
   ListItemSecondaryAction,
   ListItem,
+  ListItemButton,
 } from "@mui/material";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -37,7 +37,47 @@ interface Props {
   onClose: VoidFunction;
 }
 
+interface DummyUser {
+  id: number;
+  fname: string;
+  lname: string;
+}
+
+const dummyUserData: DummyUser[] = [
+  {
+    id: 1,
+    fname: "Mark",
+    lname: "Avila",
+  },
+  {
+    id: 2,
+    fname: "Neilmathew",
+    lname: "Lacsamana",
+  },
+  {
+    id: 3,
+    fname: "Harvey",
+    lname: "Alonday",
+  },
+  {
+    id: 4,
+    fname: "John Remmon",
+    lname: "Castor",
+  },
+  {
+    id: 5,
+    fname: "Elie Joy",
+    lname: "Grajo",
+  },
+];
+
 function NewProjectModal({ onClose }: Props) {
+  const [assigned, setAssigned] = useState<DummyUser[]>([]);
+
+  const appendToAssign = (newUserId: DummyUser) => {
+    setAssigned((prev) => [...prev, newUserId]);
+  };
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -130,42 +170,22 @@ function NewProjectModal({ onClose }: Props) {
               }}
             >
               <List>
-                <ListItem>
-                  <ListItemText
-                    primaryTypographyProps={{ fontSize: 12, color: "primary" }}
-                    primary="Mark Christian Avila (Leader)"
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton size="small">
-                      <Close />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-                <Divider />
-                <ListItem>
-                  <ListItemText
-                    primaryTypographyProps={{ fontSize: 12 }}
-                    primary="Mark Christian Avila"
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton size="small">
-                      <Close />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-                <Divider />
-                <ListItem>
-                  <ListItemText
-                    primaryTypographyProps={{ fontSize: 12 }}
-                    primary="Mark Christian Avila"
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton size="small">
-                      <Close />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-                <Divider />
+                {assigned.map((item) => (
+                  <ListItem>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        fontSize: 12,
+                        color: "primary",
+                      }}
+                      primary={item.fname + " " + item.lname}
+                    />
+                    <ListItemSecondaryAction>
+                      <IconButton size="small">
+                        <Close />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                ))}
               </List>
             </Paper>
           </Stack>
@@ -189,6 +209,18 @@ function NewProjectModal({ onClose }: Props) {
               }}
             >
               <List>
+                {dummyUserData.map((user, index) => (
+                  <ListItemButton
+                    onClick={() => appendToAssign(user)}
+                    key={index}
+                    divider
+                  >
+                    <ListItemText
+                      primaryTypographyProps={{ fontSize: 12 }}
+                      primary={`${user.fname} ${user.lname}`}
+                    />
+                  </ListItemButton>
+                ))}
                 {/* <TempListItem />
                 <TempListItem />
                 <TempListItem />
