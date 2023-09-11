@@ -9,7 +9,7 @@ export const projectApiSlice = apiSlice.injectEndpoints({
       query: () => ({ url: "/project/current", credentials: "include" }),
     }),
     getAllProjects: builder.query<ProjectListResponse, void>({
-      query: () => "/project",
+      query: () => ({ url: "/project", credentials: "include" }),
     }),
     createProject: builder.mutation({
       query: (data: Project) => ({

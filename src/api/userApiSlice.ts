@@ -18,6 +18,9 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getUsers: builder.query({
+      query: () => ({ url: "/user", credentials: "include" }),
+    }),
   }),
 });
 

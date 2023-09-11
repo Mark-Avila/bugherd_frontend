@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSet } from "../../hooks";
 
 //TODO: Add select leader option
@@ -168,40 +168,42 @@ function NewProjectModal({ onClose }: Props) {
                 height: "0px",
               }}
             >
-              <List>
-                {assigned.values.map((item, index) => (
-                  <ListItem key={index + 100} divider>
-                    <ListItemText
-                      primaryTypographyProps={{
-                        fontSize: 12,
-                        color: leader === item.id.toString() ? "primary" : "",
-                      }}
-                      primary={
-                        (leader === item.id.toString() ? "(Leader) " : "") +
-                        item.fname +
-                        " " +
-                        item.lname
-                      }
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton
-                        onClick={() =>
-                          setLeader(
-                            item.id.toString() === leader
-                              ? ""
-                              : item.id.toString()
-                          )
+              {!isLoading && (
+                <List>
+                  {assigned.values.map((item, index) => (
+                    <ListItem key={index + 100} divider>
+                      <ListItemText
+                        primaryTypographyProps={{
+                          fontSize: 12,
+                          color: leader === item.id.toString() ? "primary" : "",
+                        }}
+                        primary={
+                          (leader === item.id.toString() ? "(Leader) " : "") +
+                          item.fname +
+                          " " +
+                          item.lname
                         }
-                      >
-                        <AssignmentInd />
-                      </IconButton>
-                      <IconButton onClick={() => assigned.remove(item)}>
-                        <Close fontSize="small" />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
+                      />
+                      <ListItemSecondaryAction>
+                        <IconButton
+                          onClick={() =>
+                            setLeader(
+                              item.id.toString() === leader
+                                ? ""
+                                : item.id.toString()
+                            )
+                          }
+                        >
+                          <AssignmentInd />
+                        </IconButton>
+                        <IconButton onClick={() => assigned.remove(item)}>
+                          <Close fontSize="small" />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
             </Paper>
           </Stack>
         </Grid>
