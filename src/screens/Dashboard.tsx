@@ -22,6 +22,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
 import { useToggle } from "../hooks";
+import { ModalWrapper } from "../components";
 
 //TODO: Assigned members to be controlled by a state
 //TODO: Search Functionality
@@ -39,19 +40,24 @@ const ContainerStyle = {
   flexDirection: "column",
 };
 
-const ModalWrapper = {
-  width: {
-    xs: "95%",
-    lg: 700,
-  },
-  mx: {
-    xs: 1,
-  },
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 2,
-  borderRadius: 1,
-};
+// const ModalWrapper = {
+//   width: {
+//     xs: "95%",
+//     lg: 700,
+//   },
+//   height: {
+//     lg: 500,
+//   },
+//   mx: {
+//     xs: 1,
+//   },
+//   display: "flex",
+//   overflow: "auto",
+//   bgcolor: "background.paper",
+//   boxShadow: 24,
+//   p: 2,
+//   borderRadius: 1,
+// };
 
 export default function Dashboard() {
   const [isProjToggled, toggleProj] = useToggle(false);
@@ -83,20 +89,9 @@ export default function Dashboard() {
 
   return (
     <Box component="main" sx={ContainerStyle} aria-label="main-body">
-      {isProjToggled && (
-        <Modal
-          open={true}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={ModalWrapper}>
-            <NewProjectModal onClose={toggleProj} />
-          </Box>
-        </Modal>
-      )}
+      <ModalWrapper onClose={toggleProj} open={isProjToggled}>
+        <NewProjectModal onClose={toggleProj} />
+      </ModalWrapper>
       <Toolbar />
       <Grid container spacing={1}>
         <Grid item xs={12} lg={4}>

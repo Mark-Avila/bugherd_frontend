@@ -6,9 +6,9 @@ import {
   TextField,
   IconButton,
   Divider,
-  Chip,
   Grid,
   Button,
+  Paper,
 } from "@mui/material";
 import { UserList } from "..";
 import * as yup from "yup";
@@ -43,7 +43,27 @@ function NewProjectModal({ onClose }: Props) {
   });
 
   return (
-    <>
+    <Box
+      sx={{
+        width: {
+          xs: "95%",
+          lg: 700,
+        },
+        height: {
+          lg: 500,
+        },
+        mx: {
+          xs: 1,
+        },
+        display: "flex",
+        flexDirection: "column",
+        overflow: "auto",
+        bgcolor: "background.paper",
+        boxShadow: 24,
+        p: 2,
+        borderRadius: 1,
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -60,9 +80,9 @@ function NewProjectModal({ onClose }: Props) {
         </IconButton>
       </Box>
       <Divider />
-      <Grid container spacing={2} mt={1}>
+      <Grid sx={{ flexGrow: 1 }} container spacing={2} mt={1}>
         <Grid item xs={12} lg={6}>
-          <Stack spacing={2}>
+          <Stack spacing={2} height="100%">
             <TextField
               size="small"
               label="Title"
@@ -90,20 +110,25 @@ function NewProjectModal({ onClose }: Props) {
                 formik.touched.description && Boolean(formik.errors.description)
               }
               multiline
-              rows={5}
+              rows={3}
             />
 
             <Typography fontSize={12}>Assigned</Typography>
-            <Box sx={{ display: "flex", flexWrap: "wrap", mt: 1, gap: 1 }}>
-              <Chip label="Mark Christian Avila" />
-              <Chip label="Mark Christian Avila" />
-              <Chip label="Mark Christian Avila" />
-            </Box>
+            <Paper
+              variant="outlined"
+              sx={{
+                flexGrow: 1,
+                overflow: "auto",
+                height: "0px",
+              }}
+            >
+              <UserList isButton />
+            </Paper>
           </Stack>
         </Grid>
 
         <Grid item xs={12} lg={6}>
-          <Stack spacing={2}>
+          <Stack spacing={2} height="100%">
             <Typography fontSize={12}>Assign members</Typography>
             <TextField
               variant="filled"
@@ -111,9 +136,16 @@ function NewProjectModal({ onClose }: Props) {
               label="Search"
               id="project-search"
             />
-            <Box sx={{ height: 200 }}>
+            <Paper
+              variant="outlined"
+              sx={{
+                flexGrow: 1,
+                overflow: "auto",
+                height: "0px",
+              }}
+            >
               <UserList isButton />
-            </Box>
+            </Paper>
           </Stack>
         </Grid>
       </Grid>
@@ -123,7 +155,7 @@ function NewProjectModal({ onClose }: Props) {
           SUBMIT
         </Button>
       </Box>
-    </>
+    </Box>
   );
 }
 
