@@ -8,6 +8,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Popover,
+  Divider,
 } from "@mui/material";
 import { useState } from "react";
 
@@ -76,6 +77,7 @@ function UserListItem({ name, isLead, isButton }: Props) {
           />
         </Box>
       </Popover>
+      <Divider />
     </>
   );
 }

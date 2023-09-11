@@ -1,4 +1,4 @@
-import { Close } from "@mui/icons-material";
+import { Close, KeyboardArrowRight } from "@mui/icons-material";
 import {
   Stack,
   Box,
@@ -9,14 +9,17 @@ import {
   Grid,
   Button,
   Paper,
+  List,
+  ListItemText,
+  ListItemButton,
+  ListItemSecondaryAction,
+  ListItem,
 } from "@mui/material";
-import { UserList } from "..";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import { useState } from "react";
 
-interface Props {
-  onClose: VoidFunction;
-}
+//TODO: Add select leader option
 
 const validationSchema = yup.object({
   title: yup
@@ -29,6 +32,10 @@ const validationSchema = yup.object({
     .min(2, "Description is too short")
     .required("Please enter a description"),
 });
+
+interface Props {
+  onClose: VoidFunction;
+}
 
 function NewProjectModal({ onClose }: Props) {
   const formik = useFormik({
@@ -122,7 +129,44 @@ function NewProjectModal({ onClose }: Props) {
                 height: "0px",
               }}
             >
-              <UserList isButton />
+              <List>
+                <ListItem>
+                  <ListItemText
+                    primaryTypographyProps={{ fontSize: 12, color: "primary" }}
+                    primary="Mark Christian Avila (Leader)"
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton size="small">
+                      <Close />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <Divider />
+                <ListItem>
+                  <ListItemText
+                    primaryTypographyProps={{ fontSize: 12 }}
+                    primary="Mark Christian Avila"
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton size="small">
+                      <Close />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <Divider />
+                <ListItem>
+                  <ListItemText
+                    primaryTypographyProps={{ fontSize: 12 }}
+                    primary="Mark Christian Avila"
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton size="small">
+                      <Close />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <Divider />
+              </List>
             </Paper>
           </Stack>
         </Grid>
@@ -144,7 +188,14 @@ function NewProjectModal({ onClose }: Props) {
                 height: "0px",
               }}
             >
-              <UserList isButton />
+              <List>
+                {/* <TempListItem />
+                <TempListItem />
+                <TempListItem />
+                <TempListItem />
+                <TempListItem /> */}
+              </List>
+              {/* <UserList isButton /> */}
             </Paper>
           </Stack>
         </Grid>
