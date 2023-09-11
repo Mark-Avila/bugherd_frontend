@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function useSet<T>(initialValues = []) {
+function useSet<T>(initialValues: T[] = []) {
   const [set, setSet] = useState(new Set<T>(initialValues));
 
   const add = (value: T) => {

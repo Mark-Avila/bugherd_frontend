@@ -1,4 +1,4 @@
-import { Close } from "@mui/icons-material";
+import { Close, AssignmentInd } from "@mui/icons-material";
 import {
   Stack,
   Box,
@@ -18,6 +18,7 @@ import {
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useState } from "react";
+import { useSet } from "../../hooks";
 
 //TODO: Add select leader option
 
@@ -72,11 +73,9 @@ const dummyUserData: DummyUser[] = [
 ];
 
 function NewProjectModal({ onClose }: Props) {
-  const [assigned, setAssigned] = useState<DummyUser[]>([]);
+  const assigned = useSet<DummyUser>([]);
 
-  const appendToAssign = (newUserId: DummyUser) => {
-    setAssigned((prev) => [...prev, newUserId]);
-  };
+  const [leader, setLeader] = useState("");
 
   const formik = useFormik({
     initialValues: {
@@ -170,18 +169,26 @@ function NewProjectModal({ onClose }: Props) {
               }}
             >
               <List>
-                {assigned.map((item) => (
-                  <ListItem>
+                {assigned.values.map((item, index) => (
+                  <ListItem key={index + 100} divider>
                     <ListItemText
                       primaryTypographyProps={{
                         fontSize: 12,
-                        color: "primary",
+                        color: leader === item.id.toString() ? "primary" : "",
                       }}
-                      primary={item.fname + " " + item.lname}
+                      primary={
+                        (leader === item.id.toString() ? "(Leader) " : "") +
+                        item.fname +
+                        " " +
+                        item.lname
+                      }
                     />
                     <ListItemSecondaryAction>
-                      <IconButton size="small">
-                        <Close />
+                      <IconButton onClick={() => setLeader(item.id.toString())}>
+                        <AssignmentInd />
+                      </IconButton>
+                      <IconButton onClick={() => assigned.remove(item)}>
+                        <Close fontSize="small" />
                       </IconButton>
                     </ListItemSecondaryAction>
                   </ListItem>
@@ -211,8 +218,8 @@ function NewProjectModal({ onClose }: Props) {
               <List>
                 {dummyUserData.map((user, index) => (
                   <ListItemButton
-                    onClick={() => appendToAssign(user)}
-                    key={index}
+                    onClick={() => assigned.add(user)}
+                    key={index + 100}
                     divider
                   >
                     <ListItemText
