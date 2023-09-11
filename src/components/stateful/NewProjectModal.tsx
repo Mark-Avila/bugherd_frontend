@@ -19,6 +19,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { useState, useEffect } from "react";
 import { useSet } from "../../hooks";
+import { useGetUsersQuery } from "../../api/userApiSlice";
 
 //TODO: Add select leader option
 
@@ -74,8 +75,21 @@ const dummyUserData: DummyUser[] = [
 
 function NewProjectModal({ onClose }: Props) {
   const assigned = useSet<DummyUser>([]);
-
   const [leader, setLeader] = useState("");
+
+  const { data, isLoading, isError, error, isSuccess } = useGetUsersQuery();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      console.log(error);
+    }
+  }, [isError]);
 
   const formik = useFormik({
     initialValues: {

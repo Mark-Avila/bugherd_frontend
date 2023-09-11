@@ -1,5 +1,7 @@
-import type { SignInData, SignUpData } from "../types";
+import type { ResponseBody, SignInData, SignUpData, User } from "../types";
 import { apiSlice } from "./apiSlice";
+
+type UserListResponse = ResponseBody<User[]>;
 
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,10 +20,11 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    getUsers: builder.query({
-      query: () => ({ url: "/user", credentials: "include" }),
+    getUsers: builder.query<UserListResponse, void>({
+      query: () => ({ url: "/user/all", credentials: "include" }),
     }),
   }),
 });
 
-export const { useSigninMutation, useSignupMutation } = userApiSlice;
+export const { useSigninMutation, useSignupMutation, useGetUsersQuery } =
+  userApiSlice;
