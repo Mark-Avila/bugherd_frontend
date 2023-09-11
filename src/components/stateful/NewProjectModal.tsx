@@ -184,7 +184,15 @@ function NewProjectModal({ onClose }: Props) {
                       }
                     />
                     <ListItemSecondaryAction>
-                      <IconButton onClick={() => setLeader(item.id.toString())}>
+                      <IconButton
+                        onClick={() =>
+                          setLeader(
+                            item.id.toString() === leader
+                              ? ""
+                              : item.id.toString()
+                          )
+                        }
+                      >
                         <AssignmentInd />
                       </IconButton>
                       <IconButton onClick={() => assigned.remove(item)}>
