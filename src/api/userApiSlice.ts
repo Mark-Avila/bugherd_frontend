@@ -1,8 +1,6 @@
 import type { ResponseBody, SignInData, SignUpData, User } from "../types";
 import { apiSlice } from "./apiSlice";
 
-type UserListResponse = ResponseBody<User[]>;
-
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     signin: builder.mutation({
@@ -20,7 +18,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    getUsers: builder.query<UserListResponse, void>({
+    getUsers: builder.query<ResponseBody<User[]>, void>({
       query: () => ({ url: "/user/all", credentials: "include" }),
     }),
   }),

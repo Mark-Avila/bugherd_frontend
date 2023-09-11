@@ -1,4 +1,4 @@
-import { Close, AssignmentInd } from "@mui/icons-material";
+import { Close, AssignmentInd, Check, CheckCircle } from "@mui/icons-material";
 import {
   Stack,
   Box,
@@ -20,6 +20,7 @@ import { useFormik } from "formik";
 import { useState, useEffect } from "react";
 import { useSet } from "../../hooks";
 import { useGetUsersQuery } from "../../api/userApiSlice";
+import { User } from "../../types";
 
 //TODO: Add select leader option
 
@@ -101,6 +102,10 @@ function NewProjectModal({ onClose }: Props) {
       console.log(JSON.stringify(values));
     },
   });
+
+  // const isAlreadyAssigned = (id: number) => {
+  //   return assigned.values
+  // }
 
   return (
     <Box
@@ -239,26 +244,27 @@ function NewProjectModal({ onClose }: Props) {
                 height: "0px",
               }}
             >
-              <List>
-                {dummyUserData.map((user, index) => (
-                  <ListItemButton
-                    onClick={() => assigned.add(user)}
-                    key={index + 100}
-                    divider
-                  >
-                    <ListItemText
-                      primaryTypographyProps={{ fontSize: 12 }}
-                      primary={`${user.fname} ${user.lname}`}
-                    />
-                  </ListItemButton>
-                ))}
-                {/* <TempListItem />
-                <TempListItem />
-                <TempListItem />
-                <TempListItem />
-                <TempListItem /> */}
-              </List>
-              {/* <UserList isButton /> */}
+              {!isLoading && isSuccess && (
+                <List>
+                  {data.data.map((user: User, index) => (
+                    <ListItemButton
+                      onClick={() => assigned.add(user)}
+                      key={index + 100}
+                      divider
+                    >
+                      <ListItemText
+                        primaryTypographyProps={{ fontSize: 12 }}
+                        primary={`${user.fname} ${user.lname}`}
+                      />
+                      {assigned.has(user) && (
+                        <ListItemSecondaryAction>
+                          <CheckCircle color="success" />
+                        </ListItemSecondaryAction>
+                      )}
+                    </ListItemButton>
+                  ))}
+                </List>
+              )}
             </Paper>
           </Stack>
         </Grid>

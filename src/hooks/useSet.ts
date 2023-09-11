@@ -19,12 +19,15 @@ function useSet<T>(initialValues: T[] = []) {
     setSet(new Set());
   };
 
+  const has = (value: T): boolean => set.has(value);
+
   const values = Array.from(set);
 
   return {
     add,
     remove,
     clear,
+    has,
     values,
     size: values.length,
   };
