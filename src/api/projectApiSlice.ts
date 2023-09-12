@@ -16,10 +16,14 @@ export const projectApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         url: "/project",
         body: data,
+        credentials: "include",
       }),
     }),
   }),
 });
 
-export const { useGetCurrentProjectQuery, useGetAllProjectsQuery } =
-  projectApiSlice;
+export const {
+  useCreateProjectMutation,
+  useGetCurrentProjectQuery,
+  useGetAllProjectsQuery,
+} = projectApiSlice;

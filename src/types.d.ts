@@ -22,9 +22,10 @@ export interface ResponseBody<T> {
 }
 
 export interface Project {
-  id: number;
+  id?: number;
   title: string;
   descr: string;
+  user_id: string;
 }
 
 export interface User {
@@ -37,4 +38,11 @@ export interface User {
   role: 0 | 1 | 2;
   bday: string;
   createdat: string;
+}
+
+export interface ProjectAssign {
+  id?: number;
+  user_id: number;
+  project_id: number;
+  num: number;
 }

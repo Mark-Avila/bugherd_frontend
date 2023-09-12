@@ -19,9 +19,11 @@ import {
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useState, useEffect, ChangeEvent } from "react";
-import { useDebounce, useSet } from "../../hooks";
+import { useDebounce, useSet, useSnackError } from "../../hooks";
 import { useGetUsersQuery } from "../../api/userApiSlice";
-import { User } from "../../types";
+import { Project, ResponseBody, User } from "../../types";
+import { useCreateProjectMutation } from "../../api/projectApiSlice";
+import { useSnackbar } from "notistack";
 
 //TODO: Add select leader option
 
@@ -41,61 +43,32 @@ interface Props {
   onClose: VoidFunction;
 }
 
-interface DummyUser {
-  id: number;
-  fname: string;
-  lname: string;
-}
-
-const dummyUserData: DummyUser[] = [
-  {
-    id: 1,
-    fname: "Mark",
-    lname: "Avila",
-  },
-  {
-    id: 2,
-    fname: "Neilmathew",
-    lname: "Lacsamana",
-  },
-  {
-    id: 3,
-    fname: "Harvey",
-    lname: "Alonday",
-  },
-  {
-    id: 4,
-    fname: "John Remmon",
-    lname: "Castor",
-  },
-  {
-    id: 5,
-    fname: "Elie Joy",
-    lname: "Grajo",
-  },
-];
-
 function NewProjectModal({ onClose }: Props) {
-  const assigned = useSet<DummyUser>([]);
+  const assigned = useSet<User>([]);
   const [leader, setLeader] = useState("");
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(search, 500);
 
-  const { data, isLoading, isError, error, isSuccess } = useGetUsersQuery({
+  const users = useGetUsersQuery({
     name: debouncedSearch,
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      console.log(data);
-    }
-  }, [isSuccess]);
+  const [createProject, project] = useCreateProjectMutation();
+
+  // useEffect(() => {
+  //   if (users.isSuccess) {
+  //     console.log(users.data);
+  //   }
+  // }, [users.isSuccess]);
 
   useEffect(() => {
-    if (isError) {
-      console.log(error);
+    if (project.isSuccess) {
+      console.log(project.data);
     }
-  }, [isError]);
+  }, [project.isSuccess]);
+
+  const { enqueueSnackbar } = useSnackbar();
+  const { snackbarError } = useSnackError();
 
   const formik = useFormik({
     initialValues: {
@@ -104,17 +77,27 @@ function NewProjectModal({ onClose }: Props) {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(JSON.stringify(values));
+      const payload: Project = {
+        title: values.title,
+        descr: values.description,
+        user_id: leader,
+      };
+
+      createProject(payload)
+        .unwrap()
+        .then((res: ResponseBody<unknown>) => {
+          enqueueSnackbar(res.message);
+          onClose();
+        })
+        .catch((err) => {
+          snackbarError(err);
+        });
     },
   });
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
-
-  // const isAlreadyAssigned = (id: number) => {
-  //   return assigned.values
-  // }
 
   return (
     <Box
@@ -196,7 +179,7 @@ function NewProjectModal({ onClose }: Props) {
                 height: "0px",
               }}
             >
-              {!isLoading && (
+              {!users.isLoading && (
                 <List>
                   {assigned.values.map((item, index) => (
                     <ListItem key={index + 100} divider>
@@ -260,9 +243,9 @@ function NewProjectModal({ onClose }: Props) {
                 height: "0px",
               }}
             >
-              {!isLoading && isSuccess && (
+              {!users.isLoading && users.isSuccess && (
                 <List>
-                  {data.data.map((user: User, index) => (
+                  {users.data.data.map((user: User, index) => (
                     <ListItemButton
                       onClick={() => assigned.add(user)}
                       key={index + 100}
