@@ -1,4 +1,4 @@
-import { Close, AssignmentInd, Check, CheckCircle } from "@mui/icons-material";
+import { Close, AssignmentInd, CheckCircle } from "@mui/icons-material";
 import {
   Stack,
   Box,
@@ -14,11 +14,12 @@ import {
   ListItemSecondaryAction,
   ListItem,
   ListItemButton,
+  Tooltip,
 } from "@mui/material";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { useState, useEffect } from "react";
-import { useSet } from "../../hooks";
+import { useState, useEffect, ChangeEvent } from "react";
+import { useDebounce, useSet } from "../../hooks";
 import { useGetUsersQuery } from "../../api/userApiSlice";
 import { User } from "../../types";
 
@@ -77,8 +78,12 @@ const dummyUserData: DummyUser[] = [
 function NewProjectModal({ onClose }: Props) {
   const assigned = useSet<DummyUser>([]);
   const [leader, setLeader] = useState("");
+  const [search, setSearch] = useState<string>("");
+  const debouncedSearch = useDebounce(search, 500);
 
-  const { data, isLoading, isError, error, isSuccess } = useGetUsersQuery();
+  const { data, isLoading, isError, error, isSuccess } = useGetUsersQuery({
+    name: debouncedSearch,
+  });
 
   useEffect(() => {
     if (isSuccess) {
@@ -102,6 +107,10 @@ function NewProjectModal({ onClose }: Props) {
       console.log(JSON.stringify(values));
     },
   });
+
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
 
   // const isAlreadyAssigned = (id: number) => {
   //   return assigned.values
@@ -204,20 +213,25 @@ function NewProjectModal({ onClose }: Props) {
                         }
                       />
                       <ListItemSecondaryAction>
-                        <IconButton
-                          onClick={() =>
-                            setLeader(
-                              item.id.toString() === leader
-                                ? ""
-                                : item.id.toString()
-                            )
-                          }
-                        >
-                          <AssignmentInd />
-                        </IconButton>
-                        <IconButton onClick={() => assigned.remove(item)}>
-                          <Close fontSize="small" />
-                        </IconButton>
+                        <Tooltip title="Project Manager">
+                          <IconButton
+                            onClick={() =>
+                              setLeader(
+                                item.id.toString() === leader
+                                  ? ""
+                                  : item.id.toString()
+                              )
+                            }
+                          >
+                            <AssignmentInd />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Remove from team">
+                          <IconButton onClick={() => assigned.remove(item)}>
+                            <Close fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
                       </ListItemSecondaryAction>
                     </ListItem>
                   ))}
@@ -231,6 +245,8 @@ function NewProjectModal({ onClose }: Props) {
           <Stack spacing={2} height="100%">
             <Typography fontSize={12}>Assign members</Typography>
             <TextField
+              value={search}
+              onChange={handleSearch}
               variant="filled"
               size="small"
               label="Search"
