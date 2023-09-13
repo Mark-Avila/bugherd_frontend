@@ -21,9 +21,11 @@ import { useFormik } from "formik";
 import { useState, useEffect, ChangeEvent } from "react";
 import { useDebounce, useSet, useSnackError } from "../../hooks";
 import { useGetUsersQuery } from "../../api/userApiSlice";
-import { Project, ResponseBody, User } from "../../types";
+import { Project, ProjectAssign, ResponseBody, User } from "../../types";
 import { useCreateProjectMutation } from "../../api/projectApiSlice";
 import { useSnackbar } from "notistack";
+import { useCreateProjectAssignMutation } from "../../api/projectAssignApiSlice";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 
 //TODO: Add select leader option
 
@@ -55,17 +57,19 @@ function NewProjectModal({ onClose }: Props) {
 
   const [createProject, project] = useCreateProjectMutation();
 
+  const [createProjectAssign] = useCreateProjectAssignMutation();
+
   // useEffect(() => {
   //   if (users.isSuccess) {
   //     console.log(users.data);
   //   }
   // }, [users.isSuccess]);
 
-  useEffect(() => {
-    if (project.isSuccess) {
-      console.log(project.data);
-    }
-  }, [project.isSuccess]);
+  // useEffect(() => {
+  //   if (project.isSuccess) {
+  //     console.log(project.data);
+  //   }
+  // }, [project.isSuccess]);
 
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
@@ -76,22 +80,51 @@ function NewProjectModal({ onClose }: Props) {
       description: "",
     },
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const payload: Project = {
         title: values.title,
         descr: values.description,
         user_id: leader,
+        num: assigned.size,
       };
 
-      createProject(payload)
-        .unwrap()
-        .then((res: ResponseBody<unknown>) => {
-          enqueueSnackbar(res.message);
-          onClose();
-        })
-        .catch((err) => {
-          snackbarError(err);
-        });
+      let createdProjectId: number | undefined;
+
+      try {
+        const response: ResponseBody<ProjectAssign[]> = await createProject(
+          payload
+        ).unwrap();
+
+        if (response.success) {
+          createdProjectId = response.data[0].id!;
+          enqueueSnackbar(response.message);
+        }
+      } catch (err: unknown) {
+        snackbarError(err as FetchBaseQueryError);
+      }
+
+      for (let i = 0; i < assigned.size; i++) {
+        if (createdProjectId !== undefined) {
+          try {
+            await createProjectAssign({
+              user_id: assigned.values[i].id,
+              project_id: createdProjectId,
+            });
+          } catch (err) {
+            snackbarError(err as FetchBaseQueryError);
+          }
+        }
+      }
+
+      // createProject(payload)
+      //   .unwrap()
+      //   .then((res: ResponseBody<ProjectAssign>) => {
+      //     enqueueSnackbar(res.message);
+
+      //   })
+      //   .catch((err) => {
+      //     snackbarError(err);
+      //   });
     },
   });
 

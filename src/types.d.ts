@@ -26,6 +26,7 @@ export interface Project {
   title: string;
   descr: string;
   user_id: string;
+  num: number;
 }
 
 export interface User {
@@ -44,5 +45,4 @@ export interface ProjectAssign {
   id?: number;
   user_id: number;
   project_id: number;
-  num: number;
 }
