@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
 import { useDebounce, useSet, useSnackError } from "../../hooks";
 import { useGetUsersQuery } from "../../api/userApiSlice";
 import { Project, ProjectAssign, ResponseBody, User } from "../../types";
@@ -26,8 +26,6 @@ import { useCreateProjectMutation } from "../../api/projectApiSlice";
 import { useSnackbar } from "notistack";
 import { useCreateProjectAssignMutation } from "../../api/projectAssignApiSlice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-
-//TODO: Add select leader option
 
 const validationSchema = yup.object({
   title: yup
@@ -55,21 +53,9 @@ function NewProjectModal({ onClose }: Props) {
     name: debouncedSearch,
   });
 
-  const [createProject, project] = useCreateProjectMutation();
+  const [createProject] = useCreateProjectMutation();
 
   const [createProjectAssign] = useCreateProjectAssignMutation();
-
-  // useEffect(() => {
-  //   if (users.isSuccess) {
-  //     console.log(users.data);
-  //   }
-  // }, [users.isSuccess]);
-
-  // useEffect(() => {
-  //   if (project.isSuccess) {
-  //     console.log(project.data);
-  //   }
-  // }, [project.isSuccess]);
 
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
@@ -98,6 +84,7 @@ function NewProjectModal({ onClose }: Props) {
         if (response.success) {
           createdProjectId = response.data[0].id!;
           enqueueSnackbar(response.message);
+          onClose();
         }
       } catch (err: unknown) {
         snackbarError(err as FetchBaseQueryError);
@@ -115,16 +102,6 @@ function NewProjectModal({ onClose }: Props) {
           }
         }
       }
-
-      // createProject(payload)
-      //   .unwrap()
-      //   .then((res: ResponseBody<ProjectAssign>) => {
-      //     enqueueSnackbar(res.message);
-
-      //   })
-      //   .catch((err) => {
-      //     snackbarError(err);
-      //   });
     },
   });
 
