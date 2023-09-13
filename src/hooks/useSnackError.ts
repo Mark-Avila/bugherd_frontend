@@ -2,11 +2,19 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { useSnackbar } from "notistack";
 import { ResponseBody } from "../types";
 
+// Define the shape of an error response body.
 type ErrorBody = ResponseBody<unknown>;
 
+/**
+ * Custom hook for displaying error messages as snackbar notifications.
+ * Uses the `useSnackbar` hook from the `notistack` library.
+ */
 function useSnackError() {
   const { enqueueSnackbar } = useSnackbar();
 
+  /**
+   * Display an error message as a snackbar notification.
+   */
   const snackbarError = (err: FetchBaseQueryError) => {
     if ("error" in err) {
       enqueueSnackbar("Connection failed", { variant: "error" });
