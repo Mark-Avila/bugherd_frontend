@@ -41,6 +41,24 @@ const rows = [
     description: "Engaging tech podcast series with industry experts",
     assigned: 4,
   },
+  {
+    id: 2,
+    project: "TechTalks",
+    description: "Engaging tech podcast series with industry experts",
+    assigned: 4,
+  },
+  {
+    id: 4,
+    project: "TechTalks",
+    description: "Engaging tech podcast series with industry experts",
+    assigned: 4,
+  },
+  {
+    id: 6,
+    project: "TechTalks",
+    description: "Engaging tech podcast series with industry experts",
+    assigned: 4,
+  },
 ];
 
 export default function ProjectList() {

@@ -24,10 +24,6 @@ import LoadingScreen from "./LoadingScreen";
 import { useToggle } from "../hooks";
 import { ModalWrapper } from "../components";
 
-//TODO: Assigned members to be controlled by a state
-//TODO: Search Functionality
-//TODO: Document code before implementing new features lol
-
 const DRAWER_WIDTH = 240;
 
 const ContainerStyle = {
