@@ -93,8 +93,8 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((item) => (
-            <TableRow key={item.id}>
+          {rows.map((item, index) => (
+            <TableRow key={index + 300}>
               <TableCell>
                 <Typography fontSize={12}>{item.project}</Typography>
               </TableCell>

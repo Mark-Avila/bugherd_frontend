@@ -12,6 +12,9 @@ interface Props {
   data: PieData[];
 }
 
+/**
+ * Card used to display Pie chart data
+ */
 function DataCard({ data, title }: Props) {
   const theme = useTheme();
   const smallScreen = useMediaQuery(theme.breakpoints.between("xs", "lg"));

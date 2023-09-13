@@ -26,6 +26,7 @@ import { useCreateProjectMutation } from "../../api/projectApiSlice";
 import { useSnackbar } from "notistack";
 import { useCreateProjectAssignMutation } from "../../api/projectAssignApiSlice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { ModalWrapper } from "..";
 
 const validationSchema = yup.object({
   title: yup
@@ -40,21 +41,33 @@ const validationSchema = yup.object({
 });
 
 interface Props {
+  open: boolean;
   onClose: VoidFunction;
 }
 
-function NewProjectModal({ onClose }: Props) {
+/**
+ * Modal UI component for creating a new project
+ * @prop {VoidFunction} onClose Function to execute when the "close"
+ */
+function NewProjectModal({ onClose, open }: Props) {
+  //Assigned users
   const assigned = useSet<User>([]);
+
+  //User assigned as leader (Project manager)
   const [leader, setLeader] = useState("");
+
+  //Search string used for searching users
   const [search, setSearch] = useState<string>("");
+
+  //Debouce value of search to reduce search queries
   const debouncedSearch = useDebounce(search, 500);
 
+  //RTK query's and mutations
   const users = useGetUsersQuery({
     name: debouncedSearch,
   });
 
   const [createProject] = useCreateProjectMutation();
-
   const [createProjectAssign] = useCreateProjectAssignMutation();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -82,9 +95,9 @@ function NewProjectModal({ onClose }: Props) {
         ).unwrap();
 
         if (response.success) {
+          //Retrieve the newly created project's ID
           createdProjectId = response.data[0].id!;
           enqueueSnackbar(response.message);
-          onClose();
         }
       } catch (err: unknown) {
         snackbarError(err as FetchBaseQueryError);
@@ -102,6 +115,9 @@ function NewProjectModal({ onClose }: Props) {
           }
         }
       }
+
+      //Close modal
+      onClose();
     },
   });
 
@@ -110,181 +126,187 @@ function NewProjectModal({ onClose }: Props) {
   };
 
   return (
-    <Box
-      sx={{
-        width: {
-          xs: "95%",
-          lg: 700,
-        },
-        height: {
-          lg: 500,
-        },
-        mx: {
-          xs: 1,
-        },
-        display: "flex",
-        flexDirection: "column",
-        overflow: "auto",
-        bgcolor: "background.paper",
-        boxShadow: 24,
-        p: 2,
-        borderRadius: 1,
-      }}
-    >
+    <ModalWrapper open={open} onClose={onClose}>
       <Box
         sx={{
+          width: {
+            xs: "95%",
+            lg: 700,
+          },
+          height: {
+            lg: 500,
+          },
+          mx: {
+            xs: 1,
+          },
           display: "flex",
-          width: "100%",
-          justifyContent: "space-between",
-          alignItems: "center",
+          flexDirection: "column",
+          overflow: "auto",
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 2,
+          borderRadius: 1,
         }}
       >
-        <Typography variant="h6" ml={2} fontSize="small">
-          New Project
-        </Typography>
-        <IconButton onClick={onClose}>
-          <Close />
-        </IconButton>
-      </Box>
-      <Divider />
-      <Grid sx={{ flexGrow: 1 }} container spacing={2} mt={1}>
-        <Grid item xs={12} lg={6}>
-          <Stack spacing={2} height="100%">
-            <TextField
-              size="small"
-              label="Title"
-              id="project-title"
-              name="title"
-              value={formik.values.title}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              helperText={formik.touched.title && formik.errors.title}
-              error={formik.touched.title && Boolean(formik.errors.title)}
-              fullWidth
-            />
-            <TextField
-              size="small"
-              label="Description"
-              id="project-desc"
-              name="description"
-              value={formik.values.description}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              helperText={
-                formik.touched.description && formik.errors.description
-              }
-              error={
-                formik.touched.description && Boolean(formik.errors.description)
-              }
-              multiline
-              rows={3}
-            />
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h6" ml={2} fontSize="small">
+            New Project
+          </Typography>
+          <IconButton onClick={onClose}>
+            <Close />
+          </IconButton>
+        </Box>
+        <Divider />
+        <Grid sx={{ flexGrow: 1 }} container spacing={2} mt={1}>
+          <Grid item xs={12} lg={6}>
+            <Stack spacing={2} height="100%">
+              <TextField
+                size="small"
+                label="Title"
+                id="project-title"
+                name="title"
+                value={formik.values.title}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                helperText={formik.touched.title && formik.errors.title}
+                error={formik.touched.title && Boolean(formik.errors.title)}
+                fullWidth
+              />
+              <TextField
+                size="small"
+                label="Description"
+                id="project-desc"
+                name="description"
+                value={formik.values.description}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                helperText={
+                  formik.touched.description && formik.errors.description
+                }
+                error={
+                  formik.touched.description &&
+                  Boolean(formik.errors.description)
+                }
+                multiline
+                rows={3}
+              />
 
-            <Typography fontSize={12}>Assigned</Typography>
-            <Paper
-              variant="outlined"
-              sx={{
-                flexGrow: 1,
-                overflow: "auto",
-                height: "0px",
-              }}
-            >
-              {!users.isLoading && (
-                <List>
-                  {assigned.values.map((item, index) => (
-                    <ListItem key={index + 100} divider>
-                      <ListItemText
-                        primaryTypographyProps={{
-                          fontSize: 12,
-                          color: leader === item.id.toString() ? "primary" : "",
-                        }}
-                        primary={
-                          (leader === item.id.toString() ? "(Leader) " : "") +
-                          item.fname +
-                          " " +
-                          item.lname
-                        }
-                      />
-                      <ListItemSecondaryAction>
-                        <Tooltip title="Project Manager">
-                          <IconButton
-                            onClick={() =>
-                              setLeader(
-                                item.id.toString() === leader
-                                  ? ""
-                                  : item.id.toString()
-                              )
-                            }
-                          >
-                            <AssignmentInd />
-                          </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title="Remove from team">
-                          <IconButton onClick={() => assigned.remove(item)}>
-                            <Close fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  ))}
-                </List>
-              )}
-            </Paper>
-          </Stack>
-        </Grid>
-
-        <Grid item xs={12} lg={6}>
-          <Stack spacing={2} height="100%">
-            <Typography fontSize={12}>Assign members</Typography>
-            <TextField
-              value={search}
-              onChange={handleSearch}
-              variant="filled"
-              size="small"
-              label="Search"
-              id="project-search"
-            />
-            <Paper
-              variant="outlined"
-              sx={{
-                flexGrow: 1,
-                overflow: "auto",
-                height: "0px",
-              }}
-            >
-              {!users.isLoading && users.isSuccess && (
-                <List>
-                  {users.data.data.map((user: User, index) => (
-                    <ListItemButton
-                      onClick={() => assigned.add(user)}
-                      key={index + 100}
-                      divider
-                    >
-                      <ListItemText
-                        primaryTypographyProps={{ fontSize: 12 }}
-                        primary={`${user.fname} ${user.lname}`}
-                      />
-                      {assigned.has(user) && (
+              <Typography fontSize={12}>Assigned</Typography>
+              <Paper
+                variant="outlined"
+                sx={{
+                  flexGrow: 1,
+                  overflow: "auto",
+                  height: "0px",
+                }}
+              >
+                {!users.isLoading && (
+                  <List>
+                    {assigned.values.map((item, index) => (
+                      <ListItem key={index + 100} divider>
+                        <ListItemText
+                          primaryTypographyProps={{
+                            fontSize: 12,
+                            color:
+                              leader === item.id.toString() ? "primary" : "",
+                          }}
+                          primary={
+                            (leader === item.id.toString() ? "(Leader) " : "") +
+                            item.fname +
+                            " " +
+                            item.lname
+                          }
+                        />
                         <ListItemSecondaryAction>
-                          <CheckCircle color="success" />
+                          <Tooltip title="Project Manager">
+                            <IconButton
+                              onClick={() =>
+                                setLeader(
+                                  item.id.toString() === leader
+                                    ? ""
+                                    : item.id.toString()
+                                )
+                              }
+                            >
+                              <AssignmentInd />
+                            </IconButton>
+                          </Tooltip>
+
+                          <Tooltip title="Remove from team">
+                            <IconButton onClick={() => assigned.remove(item)}>
+                              <Close fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
                         </ListItemSecondaryAction>
-                      )}
-                    </ListItemButton>
-                  ))}
-                </List>
-              )}
-            </Paper>
-          </Stack>
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </Paper>
+            </Stack>
+          </Grid>
+
+          <Grid item xs={12} lg={6}>
+            <Stack spacing={2} height="100%">
+              <Typography fontSize={12}>Assign members</Typography>
+              <TextField
+                value={search}
+                onChange={handleSearch}
+                variant="filled"
+                size="small"
+                label="Search"
+                id="project-search"
+              />
+              <Paper
+                variant="outlined"
+                sx={{
+                  flexGrow: 1,
+                  overflow: "auto",
+                  height: "0px",
+                }}
+              >
+                {!users.isLoading && users.isSuccess && (
+                  <List>
+                    {users.data.data.map((user: User, index) => (
+                      <ListItemButton
+                        onClick={() => assigned.add(user)}
+                        key={index + 100}
+                        divider
+                      >
+                        <ListItemText
+                          primaryTypographyProps={{ fontSize: 12 }}
+                          primary={`${user.fname} ${user.lname}`}
+                        />
+                        {assigned.has(user) && (
+                          <ListItemSecondaryAction>
+                            <CheckCircle color="success" />
+                          </ListItemSecondaryAction>
+                        )}
+                      </ListItemButton>
+                    ))}
+                  </List>
+                )}
+              </Paper>
+            </Stack>
+          </Grid>
         </Grid>
-      </Grid>
-      <Divider sx={{ my: 2 }} />
-      <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
-        <Button onClick={() => formik.handleSubmit()} variant="contained">
-          SUBMIT
-        </Button>
+        <Divider sx={{ my: 2 }} />
+        <Box
+          sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+        >
+          <Button onClick={() => formik.handleSubmit()} variant="contained">
+            SUBMIT
+          </Button>
+        </Box>
       </Box>
-    </Box>
+    </ModalWrapper>
   );
 }
 
