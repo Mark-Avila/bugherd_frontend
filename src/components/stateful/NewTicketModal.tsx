@@ -21,6 +21,10 @@ interface Props {
   onClose: VoidFunction;
 }
 
+/**
+ * Modal UI component for creating a new ticket
+ * @prop {VoidFunction} onClose Function to execute when the "close"
+ */
 function NewTicketModal({ onClose }: Props) {
   const [status, setStatus] = useState<Status>("");
   const [priority, setPriority] = useState<Priority>("");

@@ -44,6 +44,9 @@ interface IDrawerBody {
   items: IDrawerItem[];
 }
 
+/**
+ * Drawer body or content component
+ */
 function DrawerBody({ items }: IDrawerBody) {
   const { toggle, mode } = useContext(ColorModeContext);
 
@@ -99,6 +102,9 @@ interface Props {
   width: number;
 }
 
+/**
+ * Drawer or sidebar UI component
+ */
 function PageDrawer({ open, onClose, width }: Props) {
   const navigate = useNavigate();
   const handleOnItemClick = (to: string) => {

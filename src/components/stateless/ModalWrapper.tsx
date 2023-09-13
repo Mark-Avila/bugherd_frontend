@@ -6,6 +6,9 @@ interface Props {
   onClose: VoidFunction;
 }
 
+/**
+ * Wrapper for modal components for cleaner code
+ */
 function ModalWrapper({ onClose, children, open }: Props) {
   return (
     <Modal
