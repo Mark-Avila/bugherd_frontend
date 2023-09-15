@@ -1,20 +1,11 @@
-import { Close, AssignmentInd, CheckCircle } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import {
-  Stack,
   Box,
   Typography,
-  TextField,
   IconButton,
   Divider,
   Grid,
   Button,
-  Paper,
-  List,
-  ListItemText,
-  ListItemSecondaryAction,
-  ListItem,
-  ListItemButton,
-  Tooltip,
 } from "@mui/material";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -145,24 +136,22 @@ function NewProjectModal({ onClose, open }: Props) {
   return (
     <ModalWrapper open={open} onClose={onClose}>
       <Box
-        sx={{
-          width: {
-            xs: "95%",
-            lg: 700,
-          },
-          height: {
-            lg: 500,
-          },
-          mx: {
-            xs: 1,
-          },
-          display: "flex",
-          flexDirection: "column",
-          overflow: "auto",
-          bgcolor: "background.paper",
-          boxShadow: 24,
-          p: 2,
-          borderRadius: 1,
+        display="flex"
+        flexDirection="column"
+        overflow="auto"
+        bgcolor="background.paper"
+        padding={2}
+        boxShadow={24}
+        borderRadius={1}
+        width={{
+          xs: "95%",
+          lg: 700,
+        }}
+        height={{
+          lg: 500,
+        }}
+        mx={{
+          xs: 1,
         }}
       >
         <Box
