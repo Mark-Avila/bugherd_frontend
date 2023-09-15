@@ -13,9 +13,7 @@ const DRAWER_WIDTH = 240;
 
 function Projects() {
   const [ticketModal, setTicketModal] = useState(false);
-
   const toggleTicketModal = () => setTicketModal((prev) => !prev);
-
   const handleOnClose = () => setTicketModal(false);
 
   return (

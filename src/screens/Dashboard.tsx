@@ -11,7 +11,7 @@ import { DataCard, NewProjectModal, ProjectList } from "../components";
 import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
 import { useEffect } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { ResponseBody } from "../types";
+import { ProjectWithUser, ResponseBody } from "../types";
 import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
@@ -108,7 +108,7 @@ export default function Dashboard() {
                     New Project
                   </Button>
                 </Box>
-                {data && <ProjectList rows={data.data} />}
+                {data && <ProjectList rows={data.data as ProjectWithUser[]} />}
                 <Pagination count={2} sx={{ mt: 2 }} color="primary" />
               </Box>
             </Grid>

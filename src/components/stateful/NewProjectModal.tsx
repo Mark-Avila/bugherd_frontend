@@ -27,6 +27,7 @@ import { useSnackbar } from "notistack";
 import { useCreateProjectAssignMutation } from "../../api/projectAssignApiSlice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { ModalWrapper } from "..";
+import ProjectDetailsForms from "../stateless/ProjectDetailsForm";
 
 const validationSchema = yup.object({
   title: yup
@@ -107,7 +108,7 @@ function NewProjectModal({ onClose, open }: Props) {
         if (createdProjectId !== undefined) {
           try {
             await createProjectAssign({
-              user_id: assigned.values[i].id,
+              user_id: assigned.values[i].id!,
               project_id: createdProjectId,
             });
           } catch (err) {
@@ -120,6 +121,22 @@ function NewProjectModal({ onClose, open }: Props) {
       onClose();
     },
   });
+
+  const handleAddToAssigned = (user: User) => {
+    assigned.add(user);
+  };
+
+  const handleRemoveFromAssigned = (user: User) => {
+    assigned.remove(user);
+  };
+
+  const handleToggleLeader = (userId: string) => {
+    setLeader((prevLeader) => (prevLeader === userId ? "" : userId));
+  };
+
+  const handleSubmit = async () => {
+    // Form submission logic...
+  };
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -166,91 +183,13 @@ function NewProjectModal({ onClose, open }: Props) {
         <Divider />
         <Grid sx={{ flexGrow: 1 }} container spacing={2} mt={1}>
           <Grid item xs={12} lg={6}>
-            <Stack spacing={2} height="100%">
-              <TextField
-                size="small"
-                label="Title"
-                id="project-title"
-                name="title"
-                value={formik.values.title}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                helperText={formik.touched.title && formik.errors.title}
-                error={formik.touched.title && Boolean(formik.errors.title)}
-                fullWidth
-              />
-              <TextField
-                size="small"
-                label="Description"
-                id="project-desc"
-                name="description"
-                value={formik.values.description}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                helperText={
-                  formik.touched.description && formik.errors.description
-                }
-                error={
-                  formik.touched.description &&
-                  Boolean(formik.errors.description)
-                }
-                multiline
-                rows={3}
-              />
-
-              <Typography fontSize={12}>Assigned</Typography>
-              <Paper
-                variant="outlined"
-                sx={{
-                  flexGrow: 1,
-                  overflow: "auto",
-                  height: "0px",
-                }}
-              >
-                {!users.isLoading && (
-                  <List>
-                    {assigned.values.map((item, index) => (
-                      <ListItem key={index + 100} divider>
-                        <ListItemText
-                          primaryTypographyProps={{
-                            fontSize: 12,
-                            color:
-                              leader === item.id.toString() ? "primary" : "",
-                          }}
-                          primary={
-                            (leader === item.id.toString() ? "(Leader) " : "") +
-                            item.fname +
-                            " " +
-                            item.lname
-                          }
-                        />
-                        <ListItemSecondaryAction>
-                          <Tooltip title="Project Manager">
-                            <IconButton
-                              onClick={() =>
-                                setLeader(
-                                  item.id.toString() === leader
-                                    ? ""
-                                    : item.id.toString()
-                                )
-                              }
-                            >
-                              <AssignmentInd />
-                            </IconButton>
-                          </Tooltip>
-
-                          <Tooltip title="Remove from team">
-                            <IconButton onClick={() => assigned.remove(item)}>
-                              <Close fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-              </Paper>
-            </Stack>
+            <ProjectDetailsForms
+              formik={formik}
+              assigned={assigned.values}
+              leader={leader}
+              handleRemoveFromAssigned={handleRemoveFromAssigned}
+              handleToggleLeader={handleToggleLeader}
+            />
           </Grid>
 
           <Grid item xs={12} lg={6}>

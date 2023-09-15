@@ -9,7 +9,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { Project } from "../../types";
+import { ProjectWithUser } from "../../types";
 
 // const rows: Project[] = [
 //   {
@@ -29,13 +29,13 @@ import { Project } from "../../types";
 // ];
 
 interface Props {
-  rows: Project[];
+  rows: ProjectWithUser[];
 }
 
 export default function ProjectList({ rows }: Props) {
   const theme = useTheme();
 
-  const rowsWithPlaceholders: Array<Project | null> = [...rows];
+  const rowsWithPlaceholders: Array<ProjectWithUser | null> = [...rows];
   while (rowsWithPlaceholders.length < 5) {
     rowsWithPlaceholders.push(null);
   }
@@ -50,17 +50,14 @@ export default function ProjectList({ rows }: Props) {
       >
         <TableHead>
           <TableRow>
-            <TableCell component="th" size="small" width={300}>
+            <TableCell component="th" size="small">
               Title
             </TableCell>
-            <TableCell component="th" size="small" width={600}>
-              Description
+            <TableCell component="th" size="small">
+              Project Manager
             </TableCell>
             <TableCell component="th" size="small">
               Assigned
-            </TableCell>
-            <TableCell component="th" size="small" width={350}>
-              Leader
             </TableCell>
           </TableRow>
         </TableHead>
@@ -80,22 +77,16 @@ export default function ProjectList({ rows }: Props) {
                   <Typography fontSize={12}>{item.title}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography fontSize={12}>{item.descr}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography fontSize={12}>{item.num}</Typography>
-                </TableCell>
-                <TableCell>
                   <Typography fontSize={12}>
                     {item.fname + " " + item.lname}
                   </Typography>
                 </TableCell>
+                <TableCell>
+                  <Typography fontSize={12}>{item.num}</Typography>
+                </TableCell>
               </TableRow>
             ) : (
               <TableRow key={index + 300} sx={{ height: "3rem" }}>
-                <TableCell>
-                  <Typography fontSize={12}></Typography>
-                </TableCell>
                 <TableCell>
                   <Typography fontSize={12}></Typography>
                 </TableCell>

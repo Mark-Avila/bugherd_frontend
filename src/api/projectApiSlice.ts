@@ -1,7 +1,7 @@
-import { Project, ResponseBody } from "../types";
+import { Project, ProjectWithUser, ResponseBody } from "../types";
 import { apiSlice } from "./apiSlice";
 
-type ProjectListResponse = ResponseBody<Project[]>;
+type ProjectListResponse = ResponseBody<Project[] | ProjectWithUser[]>;
 
 export const projectApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

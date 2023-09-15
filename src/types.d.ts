@@ -21,7 +21,7 @@ export interface ResponseBody<T> {
   data: T;
 }
 
-export interface Project extends User {
+export interface Project {
   id?: number;
   title: string;
   descr: string;
@@ -30,7 +30,7 @@ export interface Project extends User {
 }
 
 export interface User {
-  id: number;
+  id?: number;
   fname: string;
   lname: string;
   email: string;
@@ -40,6 +40,8 @@ export interface User {
   bday: string;
   createdat: string;
 }
+
+export type ProjectWithUser = User & Project;
 
 export interface ProjectAssign {
   id?: number;
