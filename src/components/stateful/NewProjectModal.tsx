@@ -28,6 +28,8 @@ import { useCreateProjectAssignMutation } from "../../api/projectAssignApiSlice"
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { ModalWrapper } from "..";
 import ProjectDetailsForms from "../stateless/ProjectDetailsForm";
+import SelectMembers from "../stateless/SelectMembers";
+import LoadingScreen from "../../screens/LoadingScreen";
 
 const validationSchema = yup.object({
   title: yup
@@ -134,9 +136,7 @@ function NewProjectModal({ onClose, open }: Props) {
     setLeader((prevLeader) => (prevLeader === userId ? "" : userId));
   };
 
-  const handleSubmit = async () => {
-    // Form submission logic...
-  };
+  const handleIsAssigned = (user: User) => assigned.has(user);
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -193,47 +193,17 @@ function NewProjectModal({ onClose, open }: Props) {
           </Grid>
 
           <Grid item xs={12} lg={6}>
-            <Stack spacing={2} height="100%">
-              <Typography fontSize={12}>Assign members</Typography>
-              <TextField
-                value={search}
-                onChange={handleSearch}
-                variant="filled"
-                size="small"
-                label="Search"
-                id="project-search"
+            {users.isSuccess && users.data ? (
+              <SelectMembers
+                search={search}
+                users={users.data.data}
+                handleSearch={handleSearch}
+                handleIsAssigned={handleIsAssigned}
+                handleAddAssigned={handleAddToAssigned}
               />
-              <Paper
-                variant="outlined"
-                sx={{
-                  flexGrow: 1,
-                  overflow: "auto",
-                  height: "0px",
-                }}
-              >
-                {!users.isLoading && users.isSuccess && (
-                  <List>
-                    {users.data.data.map((user: User, index) => (
-                      <ListItemButton
-                        onClick={() => assigned.add(user)}
-                        key={index + 100}
-                        divider
-                      >
-                        <ListItemText
-                          primaryTypographyProps={{ fontSize: 12 }}
-                          primary={`${user.fname} ${user.lname}`}
-                        />
-                        {assigned.has(user) && (
-                          <ListItemSecondaryAction>
-                            <CheckCircle color="success" />
-                          </ListItemSecondaryAction>
-                        )}
-                      </ListItemButton>
-                    ))}
-                  </List>
-                )}
-              </Paper>
-            </Stack>
+            ) : (
+              <LoadingScreen />
+            )}
           </Grid>
         </Grid>
         <Divider sx={{ my: 2 }} />
