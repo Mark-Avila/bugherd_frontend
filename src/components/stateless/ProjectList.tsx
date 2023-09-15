@@ -9,70 +9,38 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { Project } from "../../types";
 
-const rows = [
-  {
-    id: 6,
-    project: "GreenScape",
-    description: "Community-driven gardening and plant care app",
-    assigned: 3,
-  },
-  {
-    id: 10,
-    project: "Wanderlust",
-    description: "Virtual travel companion for exploring new destinations",
-    assigned: 7,
-  },
-  {
-    id: 4,
-    project: "FitConnect",
-    description: "Social platform for fitness enthusiasts and trainers",
-    assigned: 1,
-  },
+const rows: Project[] = [
   {
     id: 8,
-    project: "MindMeld",
-    description: "Mindfulness and meditation app for modern living",
-    assigned: 10,
+    title: "MindMeld",
+    descr: "Mindfulness and meditation app for modern living",
+    num: 10,
+    user_id: "1",
   },
   {
     id: 1,
-    project: "TechTalks",
-    description: "Engaging tech podcast series with industry experts",
-    assigned: 4,
-  },
-  {
-    id: 2,
-    project: "TechTalks",
-    description: "Engaging tech podcast series with industry experts",
-    assigned: 4,
-  },
-  {
-    id: 4,
-    project: "TechTalks",
-    description: "Engaging tech podcast series with industry experts",
-    assigned: 4,
-  },
-  {
-    id: 6,
-    project: "TechTalks",
-    description: "Engaging tech podcast series with industry experts",
-    assigned: 4,
+    title: "TechTalks",
+    descr: "Engaging tech podcast series with industry experts",
+    num: 4,
+    user_id: "1",
   },
 ];
 
 export default function ProjectList() {
   const theme = useTheme();
 
+  const rowsWithPlaceholders: Array<Project | null> = [...rows];
+  while (rowsWithPlaceholders.length < 5) {
+    rowsWithPlaceholders.push(null);
+  }
+
   return (
     <TableContainer variant="outlined" component={Paper}>
       <Table
         sx={{
           width: "100%",
-          "& .MuiTableRow-root:hover": {
-            backgroundColor: theme.palette.action.hover,
-            cursor: "pointer",
-          },
         }}
         aria-label="ticket-table"
       >
@@ -84,31 +52,56 @@ export default function ProjectList() {
             <TableCell component="th" size="small" width={600}>
               Description
             </TableCell>
-            <TableCell component="th" size="small" width={150}>
+            <TableCell component="th" size="small">
               Assigned
             </TableCell>
-            <TableCell component="th" size="small">
+            <TableCell component="th" size="small" width={350}>
               Leader
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((item, index) => (
-            <TableRow key={index + 300}>
-              <TableCell>
-                <Typography fontSize={12}>{item.project}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography fontSize={12}>{item.description}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography fontSize={12}>{item.assigned}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography fontSize={12}>John Thompson</Typography>
-              </TableCell>
-            </TableRow>
-          ))}
+          {rowsWithPlaceholders.map((item, index) =>
+            item !== null ? (
+              <TableRow
+                key={index + 300}
+                sx={{
+                  ":hover": {
+                    backgroundColor: theme.palette.action.hover,
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                <TableCell>
+                  <Typography fontSize={12}>{item.title}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography fontSize={12}>{item.descr}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography fontSize={12}>{item.num}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography fontSize={12}>John Thompson</Typography>
+                </TableCell>
+              </TableRow>
+            ) : (
+              <TableRow key={index + 300} sx={{ height: "3rem" }}>
+                <TableCell>
+                  <Typography fontSize={12}></Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography fontSize={12}></Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography fontSize={12}></Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography fontSize={12}></Typography>
+                </TableCell>
+              </TableRow>
+            )
+          )}
         </TableBody>
       </Table>
     </TableContainer>

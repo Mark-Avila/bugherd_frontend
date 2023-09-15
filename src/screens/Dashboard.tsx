@@ -123,7 +123,7 @@ export default function Dashboard() {
               </Button>
             </Box>
             <ProjectList />
-            <Pagination count={10} sx={{ mt: 2 }} color="primary" />
+            <Pagination count={2} sx={{ mt: 2 }} color="primary" />
           </Box>
         </Grid>
       </Grid>
