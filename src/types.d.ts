@@ -21,7 +21,7 @@ export interface ResponseBody<T> {
   data: T;
 }
 
-export interface Project {
+export interface Project extends User {
   id?: number;
   title: string;
   descr: string;

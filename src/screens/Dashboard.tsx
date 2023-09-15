@@ -1,19 +1,13 @@
 import "chart.js/auto";
 import {
   Box,
-  Modal,
   Button,
   Grid,
   Pagination,
   Typography,
   Toolbar,
 } from "@mui/material";
-import {
-  DataCard,
-  NewProjectModal,
-  ProjectList,
-  UserList,
-} from "../components";
+import { DataCard, NewProjectModal, ProjectList } from "../components";
 import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
 import { useEffect } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -22,7 +16,8 @@ import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
 import { useToggle } from "../hooks";
-import { ModalWrapper } from "../components";
+import { useSnackbar } from "notistack";
+import { SerializedError } from "@reduxjs/toolkit";
 
 const DRAWER_WIDTH = 240;
 
@@ -36,46 +31,33 @@ const ContainerStyle = {
   flexDirection: "column",
 };
 
-// const ModalWrapper = {
-//   width: {
-//     xs: "95%",
-//     lg: 700,
-//   },
-//   height: {
-//     lg: 500,
-//   },
-//   mx: {
-//     xs: 1,
-//   },
-//   display: "flex",
-//   overflow: "auto",
-//   bgcolor: "background.paper",
-//   boxShadow: 24,
-//   p: 2,
-//   borderRadius: 1,
-// };
-
 export default function Dashboard() {
   const [isProjToggled, toggleProj] = useToggle(false);
 
-  // const { data, isLoading, isFetching, isError, error } =
-  //   useGetCurrentProjectQuery();
-  // const dispatch = useDispatch();
+  const { data, isLoading, isError, error } = useGetCurrentProjectQuery();
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
-  // useEffect(() => {
-  //   if (!isError && !isLoading) {
-  //     console.log(data);
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    if (isError && !isLoading) {
+      if ("message" in error) {
+        enqueueSnackbar((error as SerializedError).message);
+      }
+    }
+  }, [isError]);
 
-  // useEffect(() => {
-  //   if (isError && !isLoading && error) {
-  //     const err = error as FetchBaseQueryError;
-  //     if ((err.data as ResponseBody<unknown>).status === 403) {
-  //       dispatch(logout());
-  //     }
-  //   }
-  // }, [error]);
+  useEffect(() => {
+    if (isError && !isLoading && error) {
+      const err = error as FetchBaseQueryError;
+      if ("error" in err) {
+        enqueueSnackbar("Connection failed", { variant: "error" });
+        dispatch(logout());
+      } else if ((err.data as ResponseBody<unknown>).status === 403) {
+        enqueueSnackbar("Session not found", { variant: "error" });
+        dispatch(logout());
+      }
+    }
+  }, [error]);
 
   const templateData = [
     { id: 0, value: 33, label: "series A" },
@@ -87,45 +69,51 @@ export default function Dashboard() {
     <Box component="main" sx={ContainerStyle} aria-label="main-body">
       <NewProjectModal open={isProjToggled} onClose={toggleProj} />
       <Toolbar />
-      <Grid container spacing={1}>
-        <Grid item xs={12} lg={4}>
-          <Grid container spacing={1}>
-            <Grid item xs={12} sm={6} lg={12}>
-              <DataCard data={templateData} title="Tickets by type" />
+      <Grid container spacing={1} sx={{ height: "100%" }}>
+        {isLoading ? (
+          <LoadingScreen />
+        ) : (
+          <>
+            <Grid item xs={12} lg={4}>
+              <Grid container spacing={1}>
+                <Grid item xs={12} sm={6} lg={12}>
+                  <DataCard data={templateData} title="Tickets by type" />
+                </Grid>
+                <Grid item xs={12} sm={6} lg={12}>
+                  <DataCard data={templateData} title="Tickets by priority" />
+                </Grid>
+                <Grid item xs={12} sm={6} lg={12}>
+                  <DataCard data={templateData} title="Tickets by status" />
+                </Grid>
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={6} lg={12}>
-              <DataCard data={templateData} title="Tickets by priority" />
+            <Grid item xs={12} lg={8}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "end",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    marginBottom: 2,
+                  }}
+                >
+                  <Typography variant="h6">Projects</Typography>
+                  <Button onClick={toggleProj} variant="contained" size="small">
+                    New Project
+                  </Button>
+                </Box>
+                {data && <ProjectList rows={data.data} />}
+                <Pagination count={2} sx={{ mt: 2 }} color="primary" />
+              </Box>
             </Grid>
-            <Grid item xs={12} sm={6} lg={12}>
-              <DataCard data={templateData} title="Tickets by status" />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} lg={8}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "end",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
-                marginBottom: 2,
-              }}
-            >
-              <Typography variant="h6">Projects</Typography>
-              <Button onClick={toggleProj} variant="contained" size="small">
-                New Project
-              </Button>
-            </Box>
-            <ProjectList />
-            <Pagination count={2} sx={{ mt: 2 }} color="primary" />
-          </Box>
-        </Grid>
+          </>
+        )}
       </Grid>
     </Box>
   );
