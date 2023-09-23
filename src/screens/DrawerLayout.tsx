@@ -22,7 +22,7 @@ function DrawerLayout({ title, children }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <Box sx={{ display: "flex", width: "100%", minHeight: "100vh" }}>
+    <Box sx={{ display: "flex", width: "100%" }}>
       <CssBaseline />
       <AppBar
         position="fixed"

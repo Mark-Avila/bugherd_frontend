@@ -12,7 +12,6 @@ import DrawerLayout from "./screens/DrawerLayout";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { SnackbarProvider } from "notistack";
-import PrivateRoute from "./components/stateful/PrivateRoute";
 // import PrivateRoute from "./components/stateful/PrivateRoute";
 
 interface IColorModeContext {
@@ -29,7 +28,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<Landing />} />
-      <Route element={<PrivateRoute />} path="">
+      {/* <Route element={<PrivateRoute />} path="">
         <Route
           path="/dashboard"
           element={
@@ -38,15 +37,15 @@ const router = createBrowserRouter(
             </DrawerLayout>
           }
         />
-      </Route>
-      {/* <Route
+      </Route> */}
+      <Route
         path="/dashboard"
         element={
           <DrawerLayout title="Dashboard">
             <Dashboard />
           </DrawerLayout>
         }
-      /> */}
+      />
       <Route
         path="/projects"
         element={

@@ -11,28 +11,24 @@ import {
 } from "@mui/material";
 import { ProjectWithUser } from "../../types";
 
-// const rows: Project[] = [
-//   {
-//     id: 8,
-//     title: "MindMeld",
-//     descr: "Mindfulness and meditation app for modern living",
-//     num: 10,
-//     user_id: "1",
-//   },
-//   {
-//     id: 1,
-//     title: "TechTalks",
-//     descr: "Engaging tech podcast series with industry experts",
-//     num: 4,
-//     user_id: "1",
-//   },
-// ];
+const rows: Project[] = [
+  {
+    id: 8,
+    title: "MindMeld",
+    descr: "Mindfulness and meditation app for modern living",
+    num: 10,
+    user_id: "1",
+  },
+  {
+    id: 1,
+    title: "TechTalks",
+    descr: "Engaging tech podcast series with industry experts",
+    num: 4,
+    user_id: "1",
+  },
+];
 
-interface Props {
-  rows: ProjectWithUser[];
-}
-
-export default function ProjectList({ rows }: Props) {
+export default function ProjectList() {
   const theme = useTheme();
 
   const rowsWithPlaceholders: Array<ProjectWithUser | null> = [...rows];
@@ -50,7 +46,7 @@ export default function ProjectList({ rows }: Props) {
       >
         <TableHead>
           <TableRow>
-            <TableCell component="th" size="small">
+            <TableCell component="th" size="small" width={300}>
               Title
             </TableCell>
             <TableCell component="th" size="small">
@@ -77,9 +73,7 @@ export default function ProjectList({ rows }: Props) {
                   <Typography fontSize={12}>{item.title}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography fontSize={12}>
-                    {item.fname + " " + item.lname}
-                  </Typography>
+                  <Typography fontSize={12}>John Thompson</Typography>
                 </TableCell>
                 <TableCell>
                   <Typography fontSize={12}>{item.num}</Typography>
