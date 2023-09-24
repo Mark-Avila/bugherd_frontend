@@ -12,7 +12,7 @@ import {
 import { useState } from "react";
 import { CustomSelect } from "../components";
 import { Close } from "@mui/icons-material";
-import { SelectItem } from "../types";
+import { ticketSelects } from "../utils";
 
 type Status = "ongoing" | "completed" | "";
 type Priority = "high" | "intermediate" | "low" | "";
@@ -42,55 +42,6 @@ function NewTicketModal({ onClose }: Props) {
   const handleTypeChange = (event: SelectChangeEvent) => {
     setType(event.target.value as Type);
   };
-
-  const statusItems: SelectItem[] = [
-    {
-      value: "ongoing",
-      label: "Ongoing",
-    },
-    {
-      value: "completed",
-      label: "Completed",
-    },
-  ];
-
-  const priorityItems: SelectItem[] = [
-    {
-      value: "high",
-      label: "High",
-    },
-    {
-      value: "intermediate",
-      label: "Intermediate",
-    },
-    {
-      value: "low",
-      label: "Low",
-    },
-  ];
-
-  const typeItems: SelectItem[] = [
-    {
-      value: "issue",
-      label: "Issue",
-    },
-    {
-      value: "bug",
-      label: "Bug",
-    },
-    {
-      value: "feature",
-      label: "Feature",
-    },
-    {
-      value: "error",
-      label: "Error",
-    },
-    {
-      value: "other",
-      label: "Other",
-    },
-  ];
 
   return (
     <>
@@ -127,7 +78,7 @@ function NewTicketModal({ onClose }: Props) {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <CustomSelect
-                  items={typeItems}
+                  items={ticketSelects.types}
                   id="select-type"
                   label="Type"
                   value={type}
@@ -136,7 +87,7 @@ function NewTicketModal({ onClose }: Props) {
               </Grid>
               <Grid item xs={6}>
                 <CustomSelect
-                  items={statusItems}
+                  items={ticketSelects.status}
                   id="select-status"
                   label="Status"
                   value={status}
@@ -145,7 +96,7 @@ function NewTicketModal({ onClose }: Props) {
               </Grid>
               <Grid item xs={6}>
                 <CustomSelect
-                  items={priorityItems}
+                  items={ticketSelects.priority}
                   id="select-priority"
                   label="Priority"
                   value={priority}
