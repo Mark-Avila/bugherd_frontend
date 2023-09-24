@@ -1,6 +1,6 @@
 import { Stack, Avatar, TextField, Box, Button } from "@mui/material";
 
-function TicketCommentInput() {
+function CommentInput() {
   return (
     <Stack direction="column">
       <Stack
@@ -34,4 +34,4 @@ function TicketCommentInput() {
   );
 }
 
-export default TicketCommentInput;
+export default CommentInput;

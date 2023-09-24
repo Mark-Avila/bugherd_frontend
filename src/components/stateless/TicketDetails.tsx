@@ -1,6 +1,6 @@
 import { Grid, Typography, Chip, Box } from "@mui/material";
 
-function ProjectTicketDetails() {
+function TicketDetails() {
   return (
     <Grid
       container
@@ -47,4 +47,4 @@ function ProjectTicketDetails() {
   );
 }
 
-export default ProjectTicketDetails;
+export default TicketDetails;

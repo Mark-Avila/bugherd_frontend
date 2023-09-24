@@ -1,6 +1,6 @@
 import { Box, Chip, Typography } from "@mui/material";
 
-function ProjecTicketAssigned() {
+function TicketAssigned() {
   return (
     <Box marginBottom={1}>
       <Typography color="text.secondary" fontSize="small">
@@ -19,4 +19,4 @@ function ProjecTicketAssigned() {
   );
 }
 
-export default ProjecTicketAssigned;
+export default TicketAssigned;

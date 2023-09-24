@@ -1,10 +1,5 @@
 import { Box, Button, Divider, Grid, Modal, Toolbar } from "@mui/material";
-import {
-  ProjectHeader,
-  UserList,
-  ProjectTicketInfo,
-  ProjectTicketList,
-} from "../components";
+import { ProjectHeader, UserList, TicketInfo, TicketList } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import { useState } from "react";
 import NewTicketModal from "./NewTicketModal";
@@ -49,7 +44,7 @@ function Project() {
               </Button>
             }
           >
-            <ProjectTicketList />
+            <TicketList />
           </PageSection>
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
@@ -77,7 +72,7 @@ function Project() {
 
       <Divider sx={{ marginY: 2 }} />
       <PageSection title="Selected Ticket Information">
-        <ProjectTicketInfo />
+        <TicketInfo />
       </PageSection>
       <Modal
         open={ticketModal}

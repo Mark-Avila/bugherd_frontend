@@ -4,8 +4,8 @@ import DataCard from "./stateful/DataCard";
 import UserListItem from "./stateless/UserListItem";
 import ProjectHeader from "./stateless/ProjectHeader";
 import UserList from "./stateless/UserList";
-import ProjectTicketList from "./stateless/ProjectTicketList";
-import ProjectTicketInfo from "./stateless/ProjectTicketInfo";
+import TicketList from "./stateless/TicketList";
+import TicketInfo from "./stateless/TicketInfo";
 import ModalWrapper from "./stateless/ModalWrapper";
 import ProjectDetailsForms from "./stateless/ProjectDetailsForm";
 import SelectMembers from "./stateless/SelectMembers";
@@ -19,8 +19,8 @@ export {
   ProjectHeader,
   DataCard,
   UserListItem,
-  ProjectTicketList,
-  ProjectTicketInfo,
+  TicketList,
+  TicketInfo,
   ModalWrapper,
   ProjectDetailsForms,
   LoadingScreen,

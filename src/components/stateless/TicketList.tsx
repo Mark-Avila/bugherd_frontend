@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-function ProjectTicketList() {
+function TicketList() {
   const theme = useTheme();
 
   return (
@@ -58,4 +58,4 @@ function ProjectTicketList() {
   );
 }
 
-export default ProjectTicketList;
+export default TicketList;

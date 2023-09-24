@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-function ProjectTicketIdentity() {
+function TicketIdentity() {
   return (
     <>
       <Box>
@@ -34,4 +34,4 @@ function ProjectTicketIdentity() {
   );
 }
 
-export default ProjectTicketIdentity;
+export default TicketIdentity;

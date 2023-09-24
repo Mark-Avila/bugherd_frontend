@@ -8,7 +8,7 @@ import {
   ListItemText,
 } from "@mui/material";
 
-function TicketCommentItem() {
+function CommentItem() {
   return (
     <ListItem
       secondaryAction={
@@ -58,4 +58,4 @@ function TicketCommentItem() {
   );
 }
 
-export default TicketCommentItem;
+export default CommentItem;
