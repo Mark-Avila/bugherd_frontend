@@ -4,7 +4,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import { Dashboard, Landing, Projects } from "./screens";
+import { Dashboard, Landing, Project } from "./screens";
 import { createTheme } from "@mui/material";
 import { useState, useMemo, createContext } from "react";
 import { ThemeProvider } from "@emotion/react";
@@ -47,10 +47,10 @@ const router = createBrowserRouter(
         }
       />
       <Route
-        path="/projects"
+        path="/project"
         element={
           <DrawerLayout title="Kikoo weather services">
-            <Projects />
+            <Project />
           </DrawerLayout>
         }
       />

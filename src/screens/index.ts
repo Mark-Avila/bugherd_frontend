@@ -2,6 +2,6 @@ import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import Landing from "./Landing";
 import Dashboard from "./Dashboard";
-import Projects from "./Projects";
+import Project from "./Project";
 
-export { SignIn, SignUp, Landing, Dashboard, Projects };
+export { SignIn, SignUp, Landing, Dashboard, Project };

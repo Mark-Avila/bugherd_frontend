@@ -1,4 +1,4 @@
-import { Divider, List, Paper } from "@mui/material";
+import { List } from "@mui/material";
 import UserListItem from "./UserListItem";
 
 interface Props {
@@ -8,10 +8,6 @@ interface Props {
 function UserList({ isButton }: Props) {
   return (
     <List sx={{ overflow: "auto" }}>
-      <UserListItem isButton={isButton} name="Mark Avila" isLead />
-      <UserListItem isButton={isButton} name="Harvey Alonday" />
-      <UserListItem isButton={isButton} name="John Remmon Castor" />
-      <UserListItem isButton={isButton} name="Neilmathew Lacsamana" />
       <UserListItem isButton={isButton} name="Mark Avila" isLead />
       <UserListItem isButton={isButton} name="Harvey Alonday" />
       <UserListItem isButton={isButton} name="John Remmon Castor" />
