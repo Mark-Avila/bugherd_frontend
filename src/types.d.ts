@@ -49,7 +49,20 @@ export interface ProjectAssign {
   project_id: number;
 }
 
-export interface SelectItem {
+export interface SelectItemBody {
   value: string;
   label: string;
 }
+
+export interface FormikNewTicket {
+  title: string;
+  description: string;
+  type: string;
+  status: string;
+  priority: string;
+  hours: number;
+}
+
+export type Status = "ongoing" | "completed" | "";
+export type Priority = "high" | "intermediate" | "low" | "";
+export type Type = "issue" | "bug" | "feature" | "error" | "other" | "";

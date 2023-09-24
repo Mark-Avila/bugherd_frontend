@@ -10,7 +10,9 @@ import ModalWrapper from "./stateless/ModalWrapper";
 import ProjectDetailsForms from "./stateless/ProjectDetailsForm";
 import SelectMembers from "./stateless/SelectMembers";
 import LoadingScreen from "../screens/LoadingScreen";
-import CustomSelect from "./stateless/SelectItems";
+import SelectItems from "./stateless/SelectItems";
+import NewTicketDetails from "./stateless/NewTicketDetails";
+import NewTicketSelects from "./stateless/NewTicketSelects";
 
 export {
   PageDrawer,
@@ -25,5 +27,7 @@ export {
   ProjectDetailsForms,
   LoadingScreen,
   SelectMembers,
-  CustomSelect,
+  SelectItems,
+  NewTicketDetails,
+  NewTicketSelects,
 };

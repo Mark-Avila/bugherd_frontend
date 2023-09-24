@@ -9,7 +9,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { ProjectWithUser } from "../../types";
+import { Project, ProjectWithUser } from "../../types";
 
 const rows: Project[] = [
   {

@@ -5,24 +5,36 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { SelectItem } from "../../types";
+import { SelectItemBody } from "../../types";
 
 interface Props {
   value: string;
-  items: SelectItem[];
+  items: SelectItemBody[];
   label: string;
+  name: string;
   id: string;
+  error: boolean | undefined;
   onChange: (event: SelectChangeEvent) => void;
 }
 
-function CustomSelect({ items, onChange, value, label, id }: Props) {
+function SelectItems({
+  name,
+  items,
+  onChange,
+  value,
+  label,
+  id,
+  error,
+}: Props) {
   return (
     <FormControl fullWidth size="small">
       <InputLabel id={`${id}-label}`}>{label}</InputLabel>
       <Select
         labelId={`${id}-label}`}
         label={label}
+        name={name}
         onChange={onChange}
+        error={error}
         value={value}
       >
         {items.map((item, index) => (
@@ -35,4 +47,4 @@ function CustomSelect({ items, onChange, value, label, id }: Props) {
   );
 }
 
-export default CustomSelect;
+export default SelectItems;

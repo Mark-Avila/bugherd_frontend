@@ -4,21 +4,13 @@ import {
   Divider,
   Grid,
   IconButton,
-  SelectChangeEvent,
-  Stack,
-  TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
-import { CustomSelect } from "../components";
+import { NewTicketDetails, NewTicketSelects } from "../components";
 import { Close } from "@mui/icons-material";
-import { ticketSelects } from "../utils";
 import * as yup from "yup";
 import { useFormik } from "formik";
-
-type Status = "ongoing" | "completed" | "";
-type Priority = "high" | "intermediate" | "low" | "";
-type Type = "issue" | "bug" | "feature" | "error" | "other" | "";
+import { FormikNewTicket } from "../types";
 
 interface Props {
   onClose: VoidFunction;
@@ -30,7 +22,7 @@ const validationSchema = yup.object({
   type: yup.string().required(),
   status: yup.string().required(),
   priority: yup.string().oneOf(["low", "intermediate", "high"]).required(),
-  hours: yup.number().required(),
+  hours: yup.number().min(1).required(),
 });
 
 /**
@@ -38,11 +30,7 @@ const validationSchema = yup.object({
  * @prop {VoidFunction} onClose Function to execute when the "close"
  */
 function NewTicketModal({ onClose }: Props) {
-  const [status, setStatus] = useState<Status>("");
-  const [priority, setPriority] = useState<Priority>("");
-  const [type, setType] = useState<Type>("");
-
-  const formik = useFormik({
+  const formik = useFormik<FormikNewTicket>({
     initialValues: {
       title: "",
       description: "",
@@ -57,17 +45,7 @@ function NewTicketModal({ onClose }: Props) {
     },
   });
 
-  const handleStatusChange = (event: SelectChangeEvent) => {
-    setStatus(event.target.value as Status);
-  };
-
-  const handlePriorityChange = (event: SelectChangeEvent) => {
-    setPriority(event.target.value as Priority);
-  };
-
-  const handleTypeChange = (event: SelectChangeEvent) => {
-    setType(event.target.value as Type);
-  };
+  const handleSubmit = () => formik.handleSubmit();
 
   return (
     <>
@@ -83,75 +61,19 @@ function NewTicketModal({ onClose }: Props) {
       <Divider sx={{ mb: 3, mt: 1 }} />
       <Grid container spacing={2}>
         <Grid item xs={12} md={8}>
-          <Stack spacing={2}>
-            <TextField
-              id="ticket-title"
-              label="Title"
-              size="small"
-              name="title"
-              fullWidth
-            />
-            <TextField
-              id="ticket-title"
-              label="Description"
-              size="small"
-              rows={8}
-              multiline
-              fullWidth
-            />
-          </Stack>
+          <NewTicketDetails formik={formik} />
         </Grid>
         <Grid item xs={12} md={4}>
-          <Stack
-            direction="column"
-            height="100%"
-            justifyContent="space-between"
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <CustomSelect
-                  items={ticketSelects.types}
-                  id="select-type"
-                  label="Type"
-                  value={type}
-                  onChange={handleTypeChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <CustomSelect
-                  items={ticketSelects.status}
-                  id="select-status"
-                  label="Status"
-                  value={status}
-                  onChange={handleStatusChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <CustomSelect
-                  items={ticketSelects.priority}
-                  id="select-priority"
-                  label="Priority"
-                  value={priority}
-                  onChange={handlePriorityChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  id="select-estimate"
-                  label="Time Estimate (Hours)"
-                  type="number"
-                  size="small"
-                  fullWidth
-                />
-              </Grid>
-            </Grid>
-            <Box display="flex" marginTop="auto" justifyContent="flex-end">
-              <Button color="error">Clear</Button>
-              <Button>Create</Button>
-            </Box>
-          </Stack>
+          <NewTicketSelects formik={formik} />
         </Grid>
       </Grid>
+
+      <Box display="flex" gap={2} marginTop={2} justifyContent="flex-end">
+        <Button color="info">Clear</Button>
+        <Button variant="contained" onClick={handleSubmit}>
+          Create
+        </Button>
+      </Box>
     </>
   );
 }
