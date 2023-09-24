@@ -46,6 +46,7 @@ function NewTicketModal({ onClose }: Props) {
   });
 
   const handleSubmit = () => formik.handleSubmit();
+  const handleClear = () => formik.resetForm();
 
   return (
     <>
@@ -69,7 +70,9 @@ function NewTicketModal({ onClose }: Props) {
       </Grid>
 
       <Box display="flex" gap={2} marginTop={2} justifyContent="flex-end">
-        <Button color="info">Clear</Button>
+        <Button color="info" onClick={handleClear}>
+          Clear
+        </Button>
         <Button variant="contained" onClick={handleSubmit}>
           Create
         </Button>

@@ -41,6 +41,22 @@ export interface User {
   createdat: string;
 }
 
+// export type Status = "ongoing" | "completed" | "";
+// export type PriorityString = "high" | "intermediate" | "low" | "";
+export type Priority = 3 | 2 | 1;
+export type Type = "issue" | "bug" | "feature" | "error" | "other";
+
+export interface Ticket {
+  title: string;
+  descr: string;
+  priority: Priority;
+  issue_type: Type;
+  status: boolean; //T = ongoing, F = complete
+  est: number;
+  user_id: number;
+  project_id: number;
+}
+
 export type ProjectWithUser = User & Project;
 
 export interface ProjectAssign {
@@ -62,7 +78,3 @@ export interface FormikNewTicket {
   priority: string;
   hours: number;
 }
-
-export type Status = "ongoing" | "completed" | "";
-export type Priority = "high" | "intermediate" | "low" | "";
-export type Type = "issue" | "bug" | "feature" | "error" | "other" | "";
