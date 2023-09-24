@@ -48,3 +48,8 @@ export interface ProjectAssign {
   user_id: number;
   project_id: number;
 }
+
+export interface SelectItem {
+  value: string;
+  label: string;
+}

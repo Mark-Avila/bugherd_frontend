@@ -17,10 +17,12 @@ import { useCreateProjectMutation } from "../api/projectApiSlice";
 import { useSnackbar } from "notistack";
 import { useCreateProjectAssignMutation } from "../api/projectAssignApiSlice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { ModalWrapper } from "../components";
-import ProjectDetailsForms from "../components/stateless/ProjectDetailsForm";
-import SelectMembers from "../components/stateless/SelectMembers";
-import LoadingScreen from "./LoadingScreen";
+import {
+  SelectMembers,
+  LoadingScreen,
+  ProjectDetailsForms,
+  ModalWrapper,
+} from "../components";
 
 const validationSchema = yup.object({
   title: yup

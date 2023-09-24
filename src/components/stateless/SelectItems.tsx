@@ -5,11 +5,7 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-
-export interface SelectItem {
-  value: string;
-  label: string;
-}
+import { SelectItem } from "../../types";
 
 interface Props {
   value: string;

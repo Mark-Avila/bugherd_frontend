@@ -10,8 +10,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import CustomSelect, { SelectItem } from "../stateless/SelectItems";
+import { CustomSelect } from "../components";
 import { Close } from "@mui/icons-material";
+import { SelectItem } from "../types";
 
 type Status = "ongoing" | "completed" | "";
 type Priority = "high" | "intermediate" | "low" | "";
