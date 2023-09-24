@@ -13,6 +13,8 @@ import { useState } from "react";
 import { CustomSelect } from "../components";
 import { Close } from "@mui/icons-material";
 import { ticketSelects } from "../utils";
+import * as yup from "yup";
+import { useFormik } from "formik";
 
 type Status = "ongoing" | "completed" | "";
 type Priority = "high" | "intermediate" | "low" | "";
@@ -22,6 +24,15 @@ interface Props {
   onClose: VoidFunction;
 }
 
+const validationSchema = yup.object({
+  title: yup.string().min(2).max(30).required(),
+  description: yup.string().min(2).required(),
+  type: yup.string().required(),
+  status: yup.string().required(),
+  priority: yup.string().oneOf(["low", "intermediate", "high"]).required(),
+  hours: yup.number().required(),
+});
+
 /**
  * Modal UI component for creating a new ticket
  * @prop {VoidFunction} onClose Function to execute when the "close"
@@ -30,6 +41,21 @@ function NewTicketModal({ onClose }: Props) {
   const [status, setStatus] = useState<Status>("");
   const [priority, setPriority] = useState<Priority>("");
   const [type, setType] = useState<Type>("");
+
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+      description: "",
+      type: "",
+      status: "",
+      priority: "",
+      hours: 0,
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      console.log(values);
+    },
+  });
 
   const handleStatusChange = (event: SelectChangeEvent) => {
     setStatus(event.target.value as Status);
@@ -56,9 +82,15 @@ function NewTicketModal({ onClose }: Props) {
 
       <Divider sx={{ mb: 3, mt: 1 }} />
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={8}>
           <Stack spacing={2}>
-            <TextField id="ticket-title" label="Title" size="small" fullWidth />
+            <TextField
+              id="ticket-title"
+              label="Title"
+              size="small"
+              name="title"
+              fullWidth
+            />
             <TextField
               id="ticket-title"
               label="Description"
@@ -69,7 +101,7 @@ function NewTicketModal({ onClose }: Props) {
             />
           </Stack>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <Stack
             direction="column"
             height="100%"
