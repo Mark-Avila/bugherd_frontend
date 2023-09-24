@@ -8,12 +8,7 @@ import {
   Typography,
   Toolbar,
 } from "@mui/material";
-import {
-  DataCard,
-  NewProjectModal,
-  ProjectList,
-  UserList,
-} from "../components";
+import { DataCard, ProjectList, UserList } from "../components";
 import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
 import { useEffect } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -23,6 +18,7 @@ import { logout } from "../slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
 import { useToggle } from "../hooks";
 import { ModalWrapper } from "../components";
+import NewProjectModal from "./NewProjectModal";
 
 const DRAWER_WIDTH = 240;
 

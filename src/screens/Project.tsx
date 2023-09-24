@@ -1,6 +1,5 @@
 import { Box, Button, Divider, Grid, Modal, Toolbar } from "@mui/material";
 import {
-  NewTicketModal,
   ProjectHeader,
   UserList,
   ProjectTicketInfo,
@@ -8,6 +7,7 @@ import {
 } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import { useState } from "react";
+import NewTicketModal from "./NewTicketModal";
 
 const DRAWER_WIDTH = 240;
 

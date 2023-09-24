@@ -10,17 +10,17 @@ import {
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useState, ChangeEvent } from "react";
-import { useDebounce, useSet, useSnackError } from "../../hooks";
-import { useGetUsersQuery } from "../../api/userApiSlice";
-import { Project, ProjectAssign, ResponseBody, User } from "../../types";
-import { useCreateProjectMutation } from "../../api/projectApiSlice";
+import { useDebounce, useSet, useSnackError } from "../hooks";
+import { useGetUsersQuery } from "../api/userApiSlice";
+import { Project, ProjectAssign, ResponseBody, User } from "../types";
+import { useCreateProjectMutation } from "../api/projectApiSlice";
 import { useSnackbar } from "notistack";
-import { useCreateProjectAssignMutation } from "../../api/projectAssignApiSlice";
+import { useCreateProjectAssignMutation } from "../api/projectAssignApiSlice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { ModalWrapper } from "..";
-import ProjectDetailsForms from "../stateless/ProjectDetailsForm";
-import SelectMembers from "../stateless/SelectMembers";
-import LoadingScreen from "../../screens/LoadingScreen";
+import { ModalWrapper } from "../components";
+import ProjectDetailsForms from "../components/stateless/ProjectDetailsForm";
+import SelectMembers from "../components/stateless/SelectMembers";
+import LoadingScreen from "./LoadingScreen";
 
 const validationSchema = yup.object({
   title: yup
