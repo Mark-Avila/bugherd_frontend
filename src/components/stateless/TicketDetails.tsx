@@ -1,49 +1,40 @@
-import { Grid, Typography, Chip, Box } from "@mui/material";
+import { Adjust } from "@mui/icons-material";
+import { Typography, Box, Stack } from "@mui/material";
 
 function TicketDetails() {
   return (
-    <Grid
-      container
-      sx={{
-        rowGap: {
-          xs: 2,
-          lg: 0,
-        },
-      }}
-    >
-      <Grid item xs={6} md={3}>
+    <Box>
+      <Box>
         <Typography fontSize="small" color="text.secondary">
           Status
         </Typography>
-        <Box marginTop={1}>
-          <Chip label="Resolved" color="success" />
-        </Box>
-      </Grid>
-      <Grid item xs={6} md={3}>
+        <Stack direction="row" spacing={1}>
+          <Adjust color="success" />
+          <Typography color="text.secondary">Open</Typography>
+        </Stack>
+      </Box>
+      <Box mt={2}>
         <Typography fontSize="small" color="text.secondary">
           Priority
         </Typography>
-        <Box marginTop={1}>
-          <Chip label="Intermediate" color="warning" />
-        </Box>
-      </Grid>
-      <Grid item xs={6} md={3}>
+        <Stack direction="row" spacing={1}>
+          <Adjust color="error" />
+          <Typography color="text.secondary">High</Typography>
+        </Stack>
+      </Box>
+      <Box mt={2}>
         <Typography fontSize="small" color="text.secondary">
           Type
         </Typography>
-        <Box marginTop={1}>
-          <Chip label="Issue" color="primary" />
-        </Box>
-      </Grid>
-      <Grid item xs={6} md={3}>
+        <Typography variant="body1">Bug</Typography>
+      </Box>
+      <Box mt={2}>
         <Typography fontSize="small" color="text.secondary">
           Time estimated
         </Typography>
-        <Typography marginTop={1} variant="body2">
-          8 hours
-        </Typography>
-      </Grid>
-    </Grid>
+        <Typography variant="body1">8 hours</Typography>
+      </Box>
+    </Box>
   );
 }
 

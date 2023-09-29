@@ -80,9 +80,8 @@ export default function Dashboard() {
   ];
 
   return (
-    <Box component="main" sx={ContainerStyle} aria-label="main-body">
+    <>
       <NewProjectModal open={isProjToggled} onClose={toggleProj} />
-      <Toolbar />
       <Grid container spacing={1}>
         <Grid item xs={12} lg={4}>
           <Grid container spacing={1}>
@@ -123,6 +122,6 @@ export default function Dashboard() {
           </Box>
         </Grid>
       </Grid>
-    </Box>
+    </>
   );
 }

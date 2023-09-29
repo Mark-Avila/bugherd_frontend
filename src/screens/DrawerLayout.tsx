@@ -57,7 +57,22 @@ function DrawerLayout({ title, children }: Props) {
           width={DRAWER_WIDTH}
         />
       </Box>
-      {children}
+      <Box
+        component="main"
+        sx={{
+          width: { xs: "100%", lg: `calc(100% - ${DRAWER_WIDTH}px)` },
+          padding: {
+            xs: 1,
+            md: 3,
+          },
+          display: "flex",
+          flexDirection: "column",
+        }}
+        aria-label="main-body"
+      >
+        <Toolbar />
+        {children}
+      </Box>
     </Box>
   );
 }

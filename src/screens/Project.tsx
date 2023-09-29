@@ -12,20 +12,7 @@ function Project() {
   const handleOnClose = () => setTicketModal(false);
 
   return (
-    <Box
-      component="main"
-      sx={{
-        width: { xs: "100%", lg: `calc(100% - ${DRAWER_WIDTH}px)` },
-        padding: {
-          xs: 1,
-          md: 3,
-        },
-        display: "flex",
-        flexDirection: "column",
-      }}
-      aria-label="main-body"
-    >
-      <Toolbar />
+    <>
       <PageSection title="Kikoo weather services">
         <ProjectHeader />
       </PageSection>
@@ -90,7 +77,7 @@ function Project() {
           <NewTicketModal onClose={toggleTicketModal} />
         </Box>
       </Modal>
-    </Box>
+    </>
   );
 }
 

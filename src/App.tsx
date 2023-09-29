@@ -4,7 +4,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import { Dashboard, Landing, Project } from "./screens";
+import { Dashboard, Landing, Project, Ticket } from "./screens";
 import { createTheme } from "@mui/material";
 import { useState, useMemo, createContext } from "react";
 import { ThemeProvider } from "@emotion/react";
@@ -51,6 +51,14 @@ const router = createBrowserRouter(
         element={
           <DrawerLayout title="Kikoo weather services">
             <Project />
+          </DrawerLayout>
+        }
+      />
+      <Route
+        path="/ticket/"
+        element={
+          <DrawerLayout title="Ticket information">
+            <Ticket />
           </DrawerLayout>
         }
       />

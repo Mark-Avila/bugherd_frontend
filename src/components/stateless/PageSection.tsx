@@ -1,15 +1,21 @@
-import { Box, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import { ReactNode } from "react";
 
-interface Props {
+type Props = BoxProps & {
   title: string;
   children: ReactNode;
   action?: JSX.Element;
-}
+};
 
-function PageSection({ title, children, action }: Props) {
+// interface Props extends BoxProps {
+//   title: string;
+//   children: ReactNode;
+//   action?: JSX.Element;
+// }
+
+function PageSection({ title, children, action, ...props }: Props) {
   return (
-    <>
+    <Box {...props}>
       <Box
         display="flex"
         alignItems="center"
@@ -20,7 +26,7 @@ function PageSection({ title, children, action }: Props) {
         {action || null}
       </Box>
       {children}
-    </>
+    </Box>
   );
 }
 
