@@ -26,7 +26,9 @@ function Project() {
       aria-label="main-body"
     >
       <Toolbar />
-      <ProjectHeader />
+      <PageSection title="Kikoo weather services">
+        <ProjectHeader />
+      </PageSection>
 
       <Divider sx={{ marginY: 4 }} />
 
@@ -51,16 +53,7 @@ function Project() {
           <PageSection
             title="Team"
             action={
-              <Button
-                sx={{
-                  marginRight: {
-                    xs: 0,
-                    lg: 2,
-                  },
-                }}
-                variant="contained"
-                size="small"
-              >
+              <Button variant="contained" size="small">
                 Add member
               </Button>
             }

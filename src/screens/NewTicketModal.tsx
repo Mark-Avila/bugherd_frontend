@@ -60,6 +60,7 @@ function NewTicketModal({ onClose }: Props) {
       </Box>
 
       <Divider sx={{ mb: 3, mt: 1 }} />
+
       <Grid container spacing={2}>
         <Grid item xs={12} md={8}>
           <NewTicketDetails formik={formik} />
