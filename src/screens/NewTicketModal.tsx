@@ -83,8 +83,6 @@ function NewTicketModal({ onClose, open, project_id }: Props) {
         project_id: project_id,
       };
 
-      console.log(payload);
-
       try {
         const response: ResponseBody<unknown> = await createTicket(
           payload
