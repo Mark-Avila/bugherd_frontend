@@ -57,6 +57,15 @@ export interface Ticket {
   project_id: number;
 }
 
+export interface FormikNewTicket {
+  title: string;
+  description: string;
+  type: Type | "";
+  status: boolean | "";
+  priority: Priority | "";
+  hours: number;
+}
+
 export type ProjectWithUser = User & Project;
 
 export interface ProjectAssign {
@@ -65,16 +74,7 @@ export interface ProjectAssign {
   project_id: number;
 }
 
-export interface SelectItemBody {
-  value: string;
+export interface SelectItemBody<T> {
+  value: T;
   label: string;
-}
-
-export interface FormikNewTicket {
-  title: string;
-  description: string;
-  type: string;
-  status: string;
-  priority: string;
-  hours: number;
 }

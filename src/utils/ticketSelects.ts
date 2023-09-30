@@ -1,32 +1,32 @@
-import { SelectItem } from "../types";
+import { Priority, SelectItemBody, Type } from "../types";
 
-const status: SelectItem[] = [
+const status: SelectItemBody<boolean>[] = [
   {
-    value: "ongoing",
+    value: true,
     label: "Ongoing",
   },
   {
-    value: "completed",
+    value: false,
     label: "Completed",
   },
 ];
 
-const priority: SelectItem[] = [
+const priority: SelectItemBody<Priority>[] = [
   {
-    value: "high",
+    value: 3,
     label: "High",
   },
   {
-    value: "intermediate",
+    value: 2,
     label: "Intermediate",
   },
   {
-    value: "low",
+    value: 1,
     label: "Low",
   },
 ];
 
-const types: SelectItem[] = [
+const types: SelectItemBody<Type>[] = [
   {
     value: "issue",
     label: "Issue",

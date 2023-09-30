@@ -51,7 +51,11 @@ function Project() {
         </Grid>
       </Grid>
 
-      <NewTicketModal open={ticketModal} onClose={handleOnClose} />
+      <NewTicketModal
+        open={ticketModal}
+        project_id={1}
+        onClose={handleOnClose}
+      />
     </>
   );
 }

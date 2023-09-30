@@ -16,19 +16,33 @@ import {
 import { Close } from "@mui/icons-material";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { FormikNewTicket } from "../types";
+import {
+  FormikNewTicket,
+  Priority,
+  ResponseBody,
+  Ticket,
+  Type,
+} from "../types";
+import { useCreateTicketMutation } from "../api/ticketApiSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import { useSnackbar } from "notistack";
+import { logout } from "../slices/authSlice";
+import { useSnackError } from "../hooks";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 
 interface Props {
   onClose: VoidFunction;
   open: boolean;
+  project_id: number;
 }
 
 const validationSchema = yup.object({
   title: yup.string().min(2).max(30).required(),
   description: yup.string().min(2).required(),
   type: yup.string().required(),
-  status: yup.string().required(),
-  priority: yup.string().oneOf(["low", "intermediate", "high"]).required(),
+  status: yup.boolean().required(),
+  priority: yup.number().oneOf([1, 2, 3]).required(),
   hours: yup.number().min(1).required(),
 });
 
@@ -36,7 +50,12 @@ const validationSchema = yup.object({
  * Modal UI component for creating a new ticket
  * @prop {VoidFunction} onClose Function to execute when the "close"
  */
-function NewTicketModal({ onClose, open }: Props) {
+function NewTicketModal({ onClose, open, project_id }: Props) {
+  const [createTicket] = useCreateTicketMutation();
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { enqueueSnackbar } = useSnackbar();
+  const { snackbarError } = useSnackError();
+
   const formik = useFormik<FormikNewTicket>({
     initialValues: {
       title: "",
@@ -48,7 +67,39 @@ function NewTicketModal({ onClose, open }: Props) {
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log(values);
+      if (!user) {
+        enqueueSnackbar("Session expired", { variant: "error" });
+        logout();
+      }
+
+      const payload: Ticket = {
+        title: values.title,
+        descr: values.description,
+        status: values.status as boolean,
+        priority: values.priority as Priority,
+        issue_type: values.type as Type,
+        est: values.hours,
+        user_id: user?.id as number,
+        project_id: project_id,
+      };
+
+      console.log(payload);
+
+      try {
+        const response: ResponseBody<unknown> = await createTicket(
+          payload
+        ).unwrap();
+
+        if (response.success) {
+          enqueueSnackbar("Successfully created new ticket", {
+            variant: "success",
+          });
+
+          return handleOnClose();
+        }
+      } catch (err: unknown) {
+        snackbarError(err as FetchBaseQueryError);
+      }
     },
   });
 

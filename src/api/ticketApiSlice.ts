@@ -7,8 +7,8 @@ const ticketApiSlice = apiSlice.injectEndpoints({
       query: (data: Ticket) => ({
         method: "POST",
         url: "/ticket",
+        body: data,
         credentials: "include",
-        data: data,
       }),
     }),
   }),
