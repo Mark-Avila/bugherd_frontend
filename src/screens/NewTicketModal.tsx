@@ -61,12 +61,15 @@ function NewTicketModal({ onClose, open }: Props) {
         <Stack
           sx={{
             height: {
-              xs: "fit-content",
               lg: 600,
             },
           }}
-          padding={{
+          py={{
             xs: 2,
+            lg: 4,
+          }}
+          px={{
+            xs: 1,
             lg: 4,
           }}
           mx={{

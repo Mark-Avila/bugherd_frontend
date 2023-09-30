@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, Modal, Pagination } from "@mui/material";
+import { Box, Button, Divider, Grid, Pagination } from "@mui/material";
 import { ProjectHeader, UserList, TicketList } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import { useState } from "react";
