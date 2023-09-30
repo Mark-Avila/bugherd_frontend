@@ -55,8 +55,13 @@ function NewTicketModal({ onClose, open }: Props) {
   const handleSubmit = () => formik.handleSubmit();
   const handleClear = () => formik.resetForm();
 
+  const handleOnClose = () => {
+    handleClear();
+    onClose();
+  };
+
   return (
-    <ModalWrapper open={open} onClose={onClose}>
+    <ModalWrapper open={open} onClose={handleOnClose}>
       <Paper variant="outlined">
         <Stack
           sx={{
@@ -87,7 +92,7 @@ function NewTicketModal({ onClose, open }: Props) {
             <Typography component="header" variant="h6">
               Create new Ticket
             </Typography>
-            <IconButton onClick={onClose}>
+            <IconButton onClick={handleOnClose}>
               <Close />
             </IconButton>
           </Box>
