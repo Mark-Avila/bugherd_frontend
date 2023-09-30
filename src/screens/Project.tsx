@@ -1,10 +1,8 @@
-import { Box, Button, Divider, Grid, Modal, Toolbar } from "@mui/material";
-import { ProjectHeader, UserList, TicketInfo, TicketList } from "../components";
+import { Box, Button, Divider, Grid, Modal, Pagination } from "@mui/material";
+import { ProjectHeader, UserList, TicketList } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import { useState } from "react";
 import NewTicketModal from "./NewTicketModal";
-
-const DRAWER_WIDTH = 240;
 
 function Project() {
   const [ticketModal, setTicketModal] = useState(false);
@@ -34,6 +32,9 @@ function Project() {
             }
           >
             <TicketList />
+            <Box mt={2}>
+              <Pagination count={10} />
+            </Box>
           </PageSection>
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
@@ -50,10 +51,6 @@ function Project() {
         </Grid>
       </Grid>
 
-      <Divider sx={{ marginY: 2 }} />
-      <PageSection title="Selected Ticket Information">
-        <TicketInfo />
-      </PageSection>
       <Modal
         open={ticketModal}
         onClose={handleOnClose}
