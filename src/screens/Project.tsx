@@ -51,29 +51,7 @@ function Project() {
         </Grid>
       </Grid>
 
-      <Modal
-        open={ticketModal}
-        onClose={handleOnClose}
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-      >
-        <Box
-          sx={{
-            width: {
-              xs: "95%",
-              lg: 800,
-            },
-            mx: {
-              xs: 1,
-            },
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 1,
-          }}
-        >
-          <NewTicketModal onClose={toggleTicketModal} />
-        </Box>
-      </Modal>
+      <NewTicketModal open={ticketModal} onClose={handleOnClose} />
     </>
   );
 }

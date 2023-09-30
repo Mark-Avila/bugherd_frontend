@@ -16,6 +16,9 @@ function ModalWrapper({ onClose, children, open }: Props) {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        margin: {
+          xs: 1,
+        },
       }}
       onClose={onClose}
       open={open}

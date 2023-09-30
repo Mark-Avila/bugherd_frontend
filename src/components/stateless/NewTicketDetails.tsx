@@ -24,7 +24,7 @@ function NewTicketDetails({ formik }: Props) {
         id="ticket-title"
         label="Description"
         size="small"
-        rows={8}
+        rows={14}
         name="description"
         value={formik.values.description}
         onChange={formik.handleChange}

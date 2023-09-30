@@ -4,9 +4,15 @@ import {
   Divider,
   Grid,
   IconButton,
+  Paper,
+  Stack,
   Typography,
 } from "@mui/material";
-import { NewTicketDetails, NewTicketSelects } from "../components";
+import {
+  ModalWrapper,
+  NewTicketDetails,
+  NewTicketSelects,
+} from "../components";
 import { Close } from "@mui/icons-material";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -14,6 +20,7 @@ import { FormikNewTicket } from "../types";
 
 interface Props {
   onClose: VoidFunction;
+  open: boolean;
 }
 
 const validationSchema = yup.object({
@@ -29,7 +36,7 @@ const validationSchema = yup.object({
  * Modal UI component for creating a new ticket
  * @prop {VoidFunction} onClose Function to execute when the "close"
  */
-function NewTicketModal({ onClose }: Props) {
+function NewTicketModal({ onClose, open }: Props) {
   const formik = useFormik<FormikNewTicket>({
     initialValues: {
       title: "",
@@ -49,36 +56,61 @@ function NewTicketModal({ onClose }: Props) {
   const handleClear = () => formik.resetForm();
 
   return (
-    <>
-      <Box display="flex" width="100%" justifyContent="space-between">
-        <Typography component="header" variant="h6">
-          Create new Ticket
-        </Typography>
-        <IconButton onClick={onClose}>
-          <Close />
-        </IconButton>
-      </Box>
+    <ModalWrapper open={open} onClose={onClose}>
+      <Paper variant="outlined">
+        <Stack
+          sx={{
+            height: {
+              xs: "fit-content",
+              lg: 600,
+            },
+          }}
+          padding={{
+            xs: 2,
+            lg: 4,
+          }}
+          mx={{
+            xs: 1,
+          }}
+          width={{
+            lg: 900,
+          }}
+          height={{
+            xs: "95%",
+            lg: 600,
+          }}
+        >
+          <Box display="flex" width="100%" justifyContent="space-between">
+            <Typography component="header" variant="h6">
+              Create new Ticket
+            </Typography>
+            <IconButton onClick={onClose}>
+              <Close />
+            </IconButton>
+          </Box>
 
-      <Divider sx={{ mb: 3, mt: 1 }} />
+          <Divider sx={{ mb: 3, mt: 1 }} />
 
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={8}>
-          <NewTicketDetails formik={formik} />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <NewTicketSelects formik={formik} />
-        </Grid>
-      </Grid>
+          <Grid container spacing={2} flex={1}>
+            <Grid item xs={12} md={8}>
+              <NewTicketDetails formik={formik} />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <NewTicketSelects formik={formik} />
+            </Grid>
+          </Grid>
 
-      <Box display="flex" gap={2} marginTop={2} justifyContent="flex-end">
-        <Button color="info" onClick={handleClear}>
-          Clear
-        </Button>
-        <Button variant="contained" onClick={handleSubmit}>
-          Create
-        </Button>
-      </Box>
-    </>
+          <Box display="flex" gap={2} marginTop={2} justifyContent="flex-end">
+            <Button color="info" onClick={handleClear}>
+              Clear
+            </Button>
+            <Button variant="contained" onClick={handleSubmit}>
+              Create
+            </Button>
+          </Box>
+        </Stack>
+      </Paper>
+    </ModalWrapper>
   );
 }
 
