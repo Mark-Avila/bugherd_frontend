@@ -4,7 +4,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import { Dashboard, Landing, Project, Ticket } from "./screens";
+import { Dashboard, Landing, Profile, Project, Ticket } from "./screens";
 import { createTheme } from "@mui/material";
 import { useState, useMemo, createContext } from "react";
 import { ThemeProvider } from "@emotion/react";
@@ -59,6 +59,14 @@ const router = createBrowserRouter(
         element={
           <DrawerLayout title="Ticket information">
             <Ticket />
+          </DrawerLayout>
+        }
+      />
+      <Route
+        path="/profile/"
+        element={
+          <DrawerLayout title="Ticket information">
+            <Profile />
           </DrawerLayout>
         }
       />

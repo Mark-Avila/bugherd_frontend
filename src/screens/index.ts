@@ -4,5 +4,6 @@ import Landing from "./Landing";
 import Dashboard from "./Dashboard";
 import Project from "./Project";
 import Ticket from "./Ticket";
+import Profile from "./Profile";
 
-export { SignIn, SignUp, Landing, Dashboard, Project, Ticket };
+export { SignIn, Profile, SignUp, Landing, Dashboard, Project, Ticket };
