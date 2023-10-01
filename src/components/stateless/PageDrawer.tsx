@@ -120,7 +120,7 @@ function PageDrawer({ open, onClose, width }: Props) {
     {
       text: "Projects",
       icon: <FolderShared />,
-      onClick: () => handleOnItemClick("/projects"),
+      onClick: () => handleOnItemClick("/project"),
     },
   ];
 
