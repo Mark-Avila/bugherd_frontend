@@ -12,9 +12,6 @@ function TicketList() {
         <TicketListItem />
         <TicketListItem />
         <TicketListItem />
-        <TicketListItem />
-        <TicketListItem />
-        <TicketListItem />
       </List>
     </Paper>
   );

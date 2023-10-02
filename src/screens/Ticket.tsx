@@ -17,11 +17,11 @@ function Ticket() {
   return (
     <Box>
       <Box component="header">
-        <Typography variant="h4">
+        <Typography variant="body2" color="text.secondary">
+          Kikoo weathering services #213
+        </Typography>
+        <Typography mt={2} variant="h4">
           Can't log in{" "}
-          <Typography component="span" color="text.secondary">
-            #423
-          </Typography>
         </Typography>
         <Stack direction="row" alignItems="center" mt={2}>
           <Avatar sx={{ width: 24, height: 24, mr: 1 }} />

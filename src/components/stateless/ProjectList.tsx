@@ -37,16 +37,17 @@ export default function ProjectList() {
   }
 
   return (
-    <TableContainer variant="outlined" component={Paper}>
-      <Table
-        sx={{
-          width: "100%",
-        }}
-        aria-label="ticket-table"
-      >
+    <TableContainer
+      sx={{
+        width: "100%",
+      }}
+      variant="outlined"
+      component={Paper}
+    >
+      <Table aria-label="ticket-table">
         <TableHead>
           <TableRow>
-            <TableCell component="th" size="small" width={300}>
+            <TableCell component="th" size="small">
               Title
             </TableCell>
             <TableCell component="th" size="small">
