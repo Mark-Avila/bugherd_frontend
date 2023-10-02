@@ -1,15 +1,6 @@
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import { Project, ProjectWithUser } from "../../types";
+import { Box, Card, List, ListItem, Stack, Typography } from "@mui/material";
+import { Project } from "../../types";
+import ProjectListItem from "./ProjectListItem";
 
 const rows: Project[] = [
   {
@@ -29,73 +20,44 @@ const rows: Project[] = [
 ];
 
 export default function ProjectList() {
-  const theme = useTheme();
-
-  const rowsWithPlaceholders: Array<ProjectWithUser | null> = [...rows];
-  while (rowsWithPlaceholders.length < 5) {
-    rowsWithPlaceholders.push(null);
-  }
-
   return (
-    <TableContainer
-      sx={{
-        width: "100%",
-      }}
-      variant="outlined"
-      component={Paper}
-    >
-      <Table aria-label="ticket-table">
-        <TableHead>
-          <TableRow>
-            <TableCell component="th" size="small">
-              Title
-            </TableCell>
-            <TableCell component="th" size="small">
-              Project Manager
-            </TableCell>
-            <TableCell component="th" size="small">
-              Assigned
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rowsWithPlaceholders.map((item, index) =>
-            item !== null ? (
-              <TableRow
-                key={index + 300}
-                sx={{
-                  ":hover": {
-                    backgroundColor: theme.palette.action.hover,
-                    cursor: "pointer",
-                  },
-                }}
-              >
-                <TableCell>
-                  <Typography fontSize={12}>{item.title}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography fontSize={12}>John Thompson</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography fontSize={12}>{item.num}</Typography>
-                </TableCell>
-              </TableRow>
-            ) : (
-              <TableRow key={index + 300} sx={{ height: "3rem" }}>
-                <TableCell>
-                  <Typography fontSize={12}></Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography fontSize={12}></Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography fontSize={12}></Typography>
-                </TableCell>
-              </TableRow>
-            )
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Box>
+      <Card variant="outlined">
+        <List disablePadding>
+          <ListItem divider>
+            <Box width="100%">
+              <Stack direction="row" justifyContent="space-between">
+                <Box flex={1}>
+                  <Typography variant="body2" fontWeight="bold">
+                    Title
+                  </Typography>
+                </Box>
+                <Box flex={1}>
+                  <Typography variant="body2" fontWeight="bold">
+                    Description
+                  </Typography>
+                </Box>
+                <Box flex={1}>
+                  <Typography variant="body2" fontWeight="bold">
+                    Project Manager
+                  </Typography>
+                </Box>
+              </Stack>
+            </Box>
+          </ListItem>
+          {rows.map((item, index, row) => (
+            <ProjectListItem
+              key={index}
+              data={{
+                title: item.title,
+                desc: item.descr,
+                manager: "Joe Bud",
+              }}
+              divider={row.length !== index + 1}
+            />
+          ))}
+        </List>
+      </Card>
+    </Box>
   );
 }
