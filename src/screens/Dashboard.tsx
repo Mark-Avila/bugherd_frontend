@@ -18,6 +18,7 @@ import { logout } from "../slices/authSlice";
 import { useToggle } from "../hooks";
 import NewProjectModal from "./NewProjectModal";
 import PageSection from "../components/stateless/PageSection";
+import { useSnackbar } from "notistack";
 
 export default function Dashboard() {
   const [isProjToggled, toggleProj] = useToggle(false);
@@ -27,6 +28,7 @@ export default function Dashboard() {
   const isSmallScreen = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down("md")
   );
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (!isError && !isLoading) {
@@ -37,8 +39,17 @@ export default function Dashboard() {
   useEffect(() => {
     if (isError && !isLoading && error) {
       const err = error as FetchBaseQueryError;
-      if ((err.data as ResponseBody<unknown>).status === 403) {
+
+      if ("error" in err) {
+        enqueueSnackbar("Connection failed", { variant: "error" });
         dispatch(logout());
+      } else if ((err.data as ResponseBody<unknown>).status === 403) {
+        enqueueSnackbar("Session expired", { variant: "error" });
+        dispatch(logout());
+      } else if ("message" in (err.data as ResponseBody<unknown>)) {
+        enqueueSnackbar((err.data as ResponseBody<unknown>).message, {
+          variant: "error",
+        });
       }
     }
   }, [error]);
