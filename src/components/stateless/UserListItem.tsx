@@ -14,11 +14,13 @@ import { useState } from "react";
 
 interface Props {
   name: string;
+  email: string;
+  contact: string;
   isLead?: boolean;
   isButton?: boolean;
 }
 
-function UserListItem({ name, isLead, isButton }: Props) {
+function UserListItem({ name, email, contact, isLead, isButton }: Props) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleOnOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -67,13 +69,13 @@ function UserListItem({ name, isLead, isButton }: Props) {
             primary={"Email"}
             primaryTypographyProps={{ fontSize: 12 }}
             secondaryTypographyProps={{ fontSize: 12 }}
-            secondary={`avilamark96@gmail.com`}
+            secondary={email}
           />
           <ListItemText
             primary={"Phone"}
             primaryTypographyProps={{ fontSize: 12 }}
             secondaryTypographyProps={{ fontSize: 12 }}
-            secondary={`(+63) 912-3456-789`}
+            secondary={contact}
           />
         </Box>
       </Popover>

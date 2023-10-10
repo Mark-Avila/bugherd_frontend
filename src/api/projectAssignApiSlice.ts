@@ -1,4 +1,4 @@
-import { ProjectAssign } from "../types";
+import { ProjectAssign, ResponseBody, User } from "../types";
 import { apiSlice } from "./apiSlice";
 
 export const projectAssignApiSlice = apiSlice.injectEndpoints({
@@ -11,7 +11,14 @@ export const projectAssignApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getProjectAssign: builder.query<ResponseBody<User[]>, string>({
+      query: (project_id: string) => ({
+        url: `/project_assign/${project_id}`,
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useCreateProjectAssignMutation } = projectAssignApiSlice;
+export const { useCreateProjectAssignMutation, useGetProjectAssignQuery } =
+  projectAssignApiSlice;

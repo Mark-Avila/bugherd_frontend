@@ -1,18 +1,25 @@
 import { List, Paper } from "@mui/material";
 import UserListItem from "./UserListItem";
+import { User } from "../../types";
 
 interface Props {
   isButton?: boolean;
+  users: User[];
 }
 
-function UserList({ isButton }: Props) {
+function UserList({ isButton, users }: Props) {
   return (
     <Paper variant="outlined" elevation={0}>
       <List sx={{ overflow: "auto" }} disablePadding>
-        <UserListItem isButton={isButton} name="Mark Avila" isLead />
-        <UserListItem isButton={isButton} name="Harvey Alonday" />
-        <UserListItem isButton={isButton} name="John Remmon Castor" />
-        <UserListItem isButton={isButton} name="Neilmathew Lacsamana" />
+        {users &&
+          users.map((user) => (
+            <UserListItem
+              isButton={isButton}
+              name={`${user.fname} ${user.lname}`}
+              email={user.email}
+              contact={user.contact}
+            />
+          ))}
       </List>
     </Paper>
   );
