@@ -22,7 +22,6 @@ import { useSnackbar } from "notistack";
 
 export default function Dashboard() {
   const [isProjToggled, toggleProj] = useToggle(false);
-
   const projects = useGetCurrentProjectQuery();
   const dispatch = useDispatch();
   const isSmallScreen = useMediaQuery((theme: Theme) =>

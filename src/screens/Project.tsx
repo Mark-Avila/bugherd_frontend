@@ -1,13 +1,21 @@
 import { Box, Button, Divider, Grid, Pagination } from "@mui/material";
 import { ProjectHeader, UserList, TicketList } from "../components";
 import PageSection from "../components/stateless/PageSection";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NewTicketModal from "./NewTicketModal";
+import {
+  useGetCurrentProjectQuery,
+  useGetProjectByIdQuery,
+} from "../api/projectApiSlice";
+import { useParams } from "react-router-dom";
 
 function Project() {
   const [ticketModal, setTicketModal] = useState(false);
   const toggleTicketModal = () => setTicketModal((prev) => !prev);
   const handleOnClose = () => setTicketModal(false);
+  const { project_id } = useParams();
+
+  const project = useGetProjectByIdQuery(project_id!);
 
   return (
     <>
