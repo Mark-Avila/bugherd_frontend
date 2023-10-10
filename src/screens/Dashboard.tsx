@@ -23,7 +23,7 @@ import { useSnackbar } from "notistack";
 export default function Dashboard() {
   const [isProjToggled, toggleProj] = useToggle(false);
 
-  const { data, isLoading, isError, error } = useGetCurrentProjectQuery();
+  const projects = useGetCurrentProjectQuery();
   const dispatch = useDispatch();
   const isSmallScreen = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down("md")
@@ -31,12 +31,8 @@ export default function Dashboard() {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    if (!isError && !isLoading) {
-      console.log(data);
-    }
-  }, [data]);
+    const { isError, isLoading, error } = projects;
 
-  useEffect(() => {
     if (isError && !isLoading && error) {
       const err = error as FetchBaseQueryError;
 
@@ -52,7 +48,7 @@ export default function Dashboard() {
         });
       }
     }
-  }, [error]);
+  }, [projects.error]);
 
   const templateData = [
     { id: 0, value: 33, label: "series A" },
@@ -81,7 +77,7 @@ export default function Dashboard() {
           }
           title="Projects assigned"
         >
-          <ProjectList />
+          <ProjectList projects={projects.data && projects.data.data} />
         </PageSection>
         <Divider />
         <PageSection width="100%" title="Your tickets">

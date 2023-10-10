@@ -47,7 +47,7 @@ const router = createBrowserRouter(
         }
       />
       <Route
-        path="/project"
+        path="/project/:id"
         element={
           <DrawerLayout title="Kikoo weather services">
             <Project />

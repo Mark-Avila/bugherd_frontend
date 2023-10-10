@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 type Props = ListItemButtonProps & {
   data: {
+    id: string;
     title: string;
     desc: string;
     manager: string;
@@ -18,7 +19,7 @@ type Props = ListItemButtonProps & {
 function ProjectListItem({ data, ...props }: Props) {
   const navigate = useNavigate();
 
-  const handleOnClick = () => navigate("/project");
+  const handleOnClick = () => navigate(`/project/${data.id}`);
 
   return (
     <ListItemButton {...props} onClick={handleOnClick}>
