@@ -12,6 +12,7 @@ import { useGetProjectByIdQuery } from "../api/projectApiSlice";
 import { useParams } from "react-router-dom";
 import { Project } from "../types";
 import { useGetProjectAssignQuery } from "../api/projectAssignApiSlice";
+import { useGetTicketByProjectIdQuery } from "../api/ticketApiSlice";
 
 function Project() {
   const [ticketModal, setTicketModal] = useState(false);
@@ -22,6 +23,7 @@ function Project() {
 
   const project = useGetProjectByIdQuery(project_id!);
   const assigned = useGetProjectAssignQuery(project_id!);
+  const tickets = useGetTicketByProjectIdQuery(project_id!);
 
   useEffect(() => {
     if (project.data) {
@@ -55,7 +57,9 @@ function Project() {
               </Button>
             }
           >
-            <TicketList />
+            {tickets.data && !tickets.isLoading && (
+              <TicketList tickets={tickets.data.data} />
+            )}
             <Box mt={2}>
               <Pagination count={10} />
             </Box>

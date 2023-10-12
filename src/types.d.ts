@@ -27,6 +27,7 @@ export interface Project {
   descr: string;
   user_id: string;
   num: number;
+  createdAt: string;
 }
 
 export interface User {
@@ -47,6 +48,7 @@ export type Priority = 3 | 2 | 1;
 export type Type = "issue" | "bug" | "feature" | "error" | "other";
 
 export interface Ticket {
+  id?: string;
   title: string;
   descr: string;
   priority: Priority;
@@ -55,6 +57,7 @@ export interface Ticket {
   est: number;
   user_id: number;
   project_id: number;
+  created_at: string;
 }
 
 export interface FormikNewTicket {
@@ -67,6 +70,7 @@ export interface FormikNewTicket {
 }
 
 export type ProjectWithUser = User & Project;
+export type TicketWithUser = User & Ticket;
 
 export interface ProjectAssign {
   id?: number;

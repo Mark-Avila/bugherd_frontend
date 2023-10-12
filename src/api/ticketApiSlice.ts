@@ -1,4 +1,4 @@
-import { Ticket } from "../types";
+import { ResponseBody, Ticket, TicketWithUser } from "../types";
 import { apiSlice } from "./apiSlice";
 
 const ticketApiSlice = apiSlice.injectEndpoints({
@@ -11,7 +11,16 @@ const ticketApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    getTicketByProjectId: builder.query<ResponseBody<TicketWithUser[]>, string>(
+      {
+        query: (project_id: string) => ({
+          url: `/ticket/${project_id}/project`,
+          credentials: "include",
+        }),
+      }
+    ),
   }),
 });
 
-export const { useCreateTicketMutation } = ticketApiSlice;
+export const { useCreateTicketMutation, useGetTicketByProjectIdQuery } =
+  ticketApiSlice;
