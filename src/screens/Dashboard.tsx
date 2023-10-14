@@ -80,7 +80,7 @@ export default function Dashboard() {
         </PageSection>
         <Divider />
         <PageSection width="100%" title="Your tickets">
-          <TicketList />
+          {/* <TicketList tickets={}/> */}
           <Box my={2}>
             <Pagination count={10} />
           </Box>

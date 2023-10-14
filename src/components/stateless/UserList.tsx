@@ -14,6 +14,7 @@ function UserList({ isButton, users }: Props) {
         {users &&
           users.map((user) => (
             <UserListItem
+              key={user.id}
               isButton={isButton}
               name={`${user.fname} ${user.lname}`}
               email={user.email}

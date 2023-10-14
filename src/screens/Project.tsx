@@ -81,7 +81,7 @@ function Project() {
 
       <NewTicketModal
         open={ticketModal}
-        project_id={1}
+        project_id={parseInt(project_id!)}
         onClose={handleOnClose}
       />
     </>

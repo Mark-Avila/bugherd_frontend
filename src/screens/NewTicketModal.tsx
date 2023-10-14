@@ -38,7 +38,7 @@ interface Props {
 }
 
 const validationSchema = yup.object({
-  title: yup.string().min(2).max(30).required(),
+  title: yup.string().min(2).max(50).required(),
   description: yup.string().min(2).required(),
   type: yup.string().required(),
   status: yup.boolean().required(),
@@ -71,6 +71,8 @@ function NewTicketModal({ onClose, open, project_id }: Props) {
         enqueueSnackbar("Session expired", { variant: "error" });
         logout();
       }
+
+      console.log("test");
 
       const payload: Ticket = {
         title: values.title,

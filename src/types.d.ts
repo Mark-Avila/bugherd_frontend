@@ -57,7 +57,7 @@ export interface Ticket {
   est: number;
   user_id: number;
   project_id: number;
-  created_at: string;
+  created_at?: string;
 }
 
 export interface FormikNewTicket {
