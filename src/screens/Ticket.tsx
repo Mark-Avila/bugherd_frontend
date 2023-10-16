@@ -7,25 +7,50 @@ import {
 } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import TicketDescription from "../components/stateless/TicketDescription";
+import { useGetTicketByIdQuery } from "../api/ticketApiSlice";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Ticket, User } from "../types";
 function Ticket() {
+  const [ticketData, setTicketData] = useState<(Ticket & User) | null>(null);
+
+  const { ticket_id } = useParams();
+
+  const ticket = useGetTicketByIdQuery(ticket_id!);
+
+  useEffect(() => {
+    if (!ticket.isLoading && ticket.data) {
+      setTicketData(ticket.data.data[0]);
+    }
+  }, [ticket.isLoading]);
+
   return (
     <Box>
       <Box component="header">
-        <TicketHeader
-          issueNumber="213"
-          issueProject="Kikoo Weather Services"
-          title="Can't log in"
-          author="Mark Christian Avila"
-          createdAt="3 days ago"
-        />
+        {ticketData && (
+          <TicketHeader
+            issueNumber={ticketData.num.toString()}
+            issueProject={ticketData.project_title!.toString()}
+            title={ticketData.title}
+            author={`${ticketData.fname} ${ticketData.lname}`}
+            createdAt="3 days ago"
+          />
+        )}
       </Box>
       <Grid container spacing={2} mt={2}>
         <Grid item xs={9}>
-          <TicketDescription />
+          <TicketDescription description={ticketData ? ticketData.descr : ""} />
         </Grid>
         <Grid item xs={3}>
           <Box my={2}>
-            <TicketDetails />
+            {ticketData && (
+              <TicketDetails
+                status={ticketData.status}
+                type={ticketData.issue_type}
+                time={ticketData.est}
+                priority={ticketData.priority}
+              />
+            )}
           </Box>
         </Grid>
       </Grid>

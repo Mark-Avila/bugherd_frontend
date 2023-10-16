@@ -56,6 +56,8 @@ export interface Ticket {
   status: boolean; //T = ongoing, F = complete
   est: number;
   user_id: number;
+  num: number;
+  project_title?: number;
   project_id: number;
   created_at?: string;
 }
