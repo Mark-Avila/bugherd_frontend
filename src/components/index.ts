@@ -13,6 +13,10 @@ import LoadingScreen from "../screens/LoadingScreen";
 import SelectItems from "./stateless/SelectItems";
 import NewTicketDetails from "./stateless/NewTicketDetails";
 import NewTicketSelects from "./stateless/NewTicketSelects";
+import TicketDetails from "./stateless/TicketDetails";
+import CommentItem from "./stateless/CommentItem";
+import CommentInput from "./stateless/CommentInput";
+import TicketHeader from "./stateless/TicketHeader";
 
 export {
   PageDrawer,
@@ -30,4 +34,8 @@ export {
   SelectItems,
   NewTicketDetails,
   NewTicketSelects,
+  TicketDetails,
+  CommentItem,
+  CommentInput,
+  TicketHeader,
 };

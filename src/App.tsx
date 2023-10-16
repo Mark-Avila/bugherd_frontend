@@ -55,7 +55,7 @@ const router = createBrowserRouter(
         }
       />
       <Route
-        path="/ticket/"
+        path="/ticket/:ticket_id"
         element={
           <DrawerLayout title="Ticket information">
             <Ticket />
