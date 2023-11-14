@@ -5,11 +5,11 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { SelectItemBody } from "../../types";
+import { SelectItemBody, Type } from "../../types";
 
 interface Props {
   value: string;
-  items: SelectItemBody[];
+  items: SelectItemBody<unknown>[];
   label: string;
   name: string;
   id: string;
@@ -38,7 +38,7 @@ function SelectItems({
         value={value}
       >
         {items.map((item, index) => (
-          <MenuItem key={index} value={item.value}>
+          <MenuItem key={index} value={item.value as Type}>
             {item.label}
           </MenuItem>
         ))}

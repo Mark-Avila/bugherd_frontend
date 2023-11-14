@@ -16,7 +16,7 @@ function TicketList({ tickets }: Props) {
             <TicketListItem
               key={ticket.id}
               title={ticket.title}
-              number="123"
+              number={(ticket.num as number).toString()}
               created={dayjs(ticket.created_at).format("LL")}
               author={`${ticket.fname} ${ticket.lname}`}
             />

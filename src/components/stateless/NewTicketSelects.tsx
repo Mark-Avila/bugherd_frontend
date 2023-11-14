@@ -29,7 +29,7 @@ function NewTicketSelects({ formik }: Props) {
             id="select-status"
             label="Status"
             name="status"
-            value={formik.values.status}
+            value={formik.values.status as string}
             onChange={formik.handleChange}
             error={formik.touched.status && Boolean(formik.errors.status)}
           />
@@ -40,7 +40,7 @@ function NewTicketSelects({ formik }: Props) {
             id="select-priority"
             label="Priority"
             name="priority"
-            value={formik.values.priority}
+            value={formik.values.priority as string}
             onChange={formik.handleChange}
             error={formik.touched.priority && Boolean(formik.errors.priority)}
           />
