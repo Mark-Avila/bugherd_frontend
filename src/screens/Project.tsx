@@ -9,10 +9,12 @@ import PageSection from "../components/stateless/PageSection";
 import { useEffect, useState } from "react";
 import NewTicketModal from "./NewTicketModal";
 import { useGetProjectByIdQuery } from "../api/projectApiSlice";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Project } from "../types";
 import { useGetProjectAssignQuery } from "../api/projectAssignApiSlice";
 import { useGetTicketByProjectIdQuery } from "../api/ticketApiSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 function Project() {
   const [ticketModal, setTicketModal] = useState(false);
@@ -20,18 +22,31 @@ function Project() {
   const toggleTicketModal = () => setTicketModal((prev) => !prev);
   const handleOnClose = () => setTicketModal(false);
   const { project_id } = useParams();
+  const navigate = useNavigate();
 
+  const auth = useSelector((state: RootState) => state.auth);
   const project = useGetProjectByIdQuery(project_id!);
   const assigned = useGetProjectAssignQuery(project_id!);
   const tickets = useGetTicketByProjectIdQuery(project_id!);
 
   useEffect(() => {
     if (project.data) {
+      console.log(project.data.data.length);
+
+      if (project.data.data.length === 0) {
+        navigate("/dashboard");
+      }
+
       setProjectData(project.data.data[0]);
     }
   }, [project.data]);
 
-  if (project.isLoading || project.isError) {
+  if (
+    project.isLoading ||
+    project.isError ||
+    !project.isSuccess ||
+    !projectData
+  ) {
     return <LoadingScreen />;
   }
 
@@ -69,9 +84,13 @@ function Project() {
           <PageSection
             title="Team"
             action={
-              <Button variant="contained" size="small">
-                Add member
-              </Button>
+              auth.user?.id?.toString() === projectData.user_id?.toString() ? (
+                <Button variant="contained" size="small">
+                  Add member
+                </Button>
+              ) : (
+                <></>
+              )
             }
           >
             {assigned.data && <UserList users={assigned.data.data} />}

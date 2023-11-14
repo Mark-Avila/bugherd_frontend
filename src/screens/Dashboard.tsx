@@ -1,14 +1,6 @@
 import "chart.js/auto";
-import {
-  Box,
-  Button,
-  Divider,
-  Pagination,
-  Stack,
-  Theme,
-  useMediaQuery,
-} from "@mui/material";
-import { DataCard, ProjectList, TicketList } from "../components";
+import { Button, Divider, Stack, Theme, useMediaQuery } from "@mui/material";
+import { DataCard, ProjectList } from "../components";
 import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
 import { useEffect } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -77,13 +69,6 @@ export default function Dashboard() {
           title="Projects assigned"
         >
           <ProjectList projects={projects.data && projects.data.data} />
-        </PageSection>
-        <Divider />
-        <PageSection width="100%" title="Your tickets">
-          {/* <TicketList tickets={}/> */}
-          <Box my={2}>
-            <Pagination count={10} />
-          </Box>
         </PageSection>
       </Stack>
     </>
