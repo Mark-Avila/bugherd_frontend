@@ -46,8 +46,8 @@ export interface Comment {
   id?: number;
   msg: string;
   user_id: string;
-  fname: string;
-  lname: string;
+  fname?: string;
+  lname?: string;
   ticket_id: string;
   created_at?: string;
 }

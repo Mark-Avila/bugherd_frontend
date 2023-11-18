@@ -17,6 +17,7 @@ import TicketDetails from "./stateless/TicketDetails";
 import CommentItem from "./stateless/CommentItem";
 import CommentInput from "./stateless/CommentInput";
 import TicketHeader from "./stateless/TicketHeader";
+import CommentSection from "./stateful/CommentSection";
 
 export {
   PageDrawer,
@@ -38,4 +39,5 @@ export {
   CommentItem,
   CommentInput,
   TicketHeader,
+  CommentSection,
 };

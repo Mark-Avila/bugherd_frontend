@@ -1,10 +1,5 @@
-import { Box, Divider, Grid, List } from "@mui/material";
-import {
-  CommentInput,
-  CommentItem,
-  TicketDetails,
-  TicketHeader,
-} from "../components";
+import { Box, Grid } from "@mui/material";
+import { CommentSection, TicketDetails, TicketHeader } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import TicketDescription from "../components/stateless/TicketDescription";
 import { useGetTicketByIdQuery } from "../api/ticketApiSlice";
@@ -12,12 +7,16 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Comment, Ticket as TicketType, User } from "../types";
 import { useGetCommentsByTicketIdQuery } from "../api/commentApiSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+
 function Ticket() {
   const [ticketData, setTicketData] = useState<(TicketType & User) | null>(
     null
   );
   const [commentsData, setComments] = useState<Comment[]>([]);
 
+  const auth = useSelector((state: RootState) => state.auth);
   const { ticket_id } = useParams();
   const ticket = useGetTicketByIdQuery(ticket_id!);
   const comments = useGetCommentsByTicketIdQuery(ticket_id!);
@@ -65,18 +64,13 @@ function Ticket() {
         </Grid>
       </Grid>
       <PageSection title="Comments" marginTop={3}>
-        <List aria-label="ticket-comments-list" disablePadding>
-          {commentsData.map((comment: Comment) => (
-            <CommentItem
-              key={comment.id}
-              name={comment.fname + " " + comment.lname}
-              message={comment.msg}
-              date={comment.created_at}
-            />
-          ))}
-        </List>
-        <Divider />
-        <CommentInput />
+        {auth.user && auth.user.id && ticketData && (
+          <CommentSection
+            comments={commentsData}
+            user_id={auth.user.id.toString()}
+            ticket_id={(ticketData as TicketType).id as string}
+          />
+        )}
       </PageSection>
     </Box>
   );

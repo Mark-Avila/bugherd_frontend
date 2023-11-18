@@ -1,6 +1,13 @@
 import { Stack, Avatar, TextField, Box, Button } from "@mui/material";
+import { FormikProps } from "formik";
 
-function CommentInput() {
+interface Props {
+  formik: FormikProps<{
+    message: string;
+  }>;
+}
+
+function CommentInput({ formik }: Props) {
   return (
     <Stack direction="column">
       <Stack
@@ -19,6 +26,12 @@ function CommentInput() {
             rows={3}
             placeholder="Enter Comment"
             fullWidth
+            name="message"
+            value={formik.values.message}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            helperText={formik.touched.message && formik.errors.message}
+            error={formik.touched.message && Boolean(formik.errors.message)}
           />
         </Box>
       </Stack>
@@ -28,7 +41,7 @@ function CommentInput() {
         display="flex"
         justifyContent="end"
       >
-        <Button>Comment</Button>
+        <Button onClick={() => formik.handleSubmit()}>Comment</Button>
       </Box>
     </Stack>
   );
