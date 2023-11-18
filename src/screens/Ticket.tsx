@@ -29,7 +29,7 @@ function Ticket() {
 
   useEffect(() => {
     if (comments.isSuccess) {
-      console.log(comments.isSuccess);
+      console.log(comments.data);
     }
   }, [comments.isSuccess]);
 

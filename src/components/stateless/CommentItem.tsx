@@ -6,15 +6,24 @@ import {
   Avatar,
   Typography,
   ListItemText,
+  Skeleton,
 } from "@mui/material";
 
-function CommentItem() {
+interface Props {
+  name?: string;
+  date?: string;
+  message?: string;
+}
+
+function CommentItem({ name, date, message }: Props) {
   return (
     <ListItem
       secondaryAction={
-        <IconButton>
-          <MoreVert />
-        </IconButton>
+        (name || date || message) && (
+          <IconButton>
+            <MoreVert />
+          </IconButton>
+        )
       }
       sx={{
         alignItems: {
@@ -29,21 +38,26 @@ function CommentItem() {
       <ListItemText
         primary={
           <>
-            {"Mark Avila "}
+            {name ? (
+              name
+            ) : (
+              <Skeleton
+                variant="text"
+                sx={{ display: "inline-block" }}
+                width={100}
+              />
+            )}
             <Typography
               display="inline"
               variant="body2"
               fontSize="small"
               color="text.secondary"
             >
-              — commented on Jun 26
+              {date ? `— commented on ${date}` : ""}
             </Typography>
           </>
         }
-        secondary="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab
-                expedita sequi quo totam? Optio nihil deserunt at iure assumenda
-                rem facilis facere! Vitae ab debitis esse, eligendi laudantium
-                quidem minus."
+        secondary={message ? message : <Skeleton variant="text" />}
         sx={{
           paddingRight: {
             xs: 0,
