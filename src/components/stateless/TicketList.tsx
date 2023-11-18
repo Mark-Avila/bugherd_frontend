@@ -15,6 +15,7 @@ function TicketList({ tickets }: Props) {
           {tickets.map((ticket) => (
             <TicketListItem
               key={ticket.id}
+              id={ticket.id}
               title={ticket.title}
               number={(ticket.num as number).toString()}
               created={dayjs(ticket.created_at).format("LL")}

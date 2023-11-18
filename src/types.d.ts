@@ -72,7 +72,11 @@ export interface FormikNewTicket {
 }
 
 export type ProjectWithUser = User & Project;
-export type TicketWithUser = User & Ticket;
+export type TicketWithUser = User &
+  Ticket & {
+    user_id: number;
+    id: number;
+  };
 
 export interface ProjectAssign {
   id?: number;

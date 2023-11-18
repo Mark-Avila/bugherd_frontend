@@ -3,6 +3,7 @@ import TicketItemChips from "./TicketItemChips";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
+  id: string;
   title: string;
   number: string;
   author: string;
@@ -13,7 +14,7 @@ function TicketListItem(props: Props) {
   const navigate = useNavigate();
 
   const handleOnClick = () => {
-    navigate("/ticket");
+    navigate(`/ticket/${props.id}`);
   };
 
   return (

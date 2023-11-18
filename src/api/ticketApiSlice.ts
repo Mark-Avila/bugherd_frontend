@@ -32,4 +32,5 @@ export const {
   useCreateTicketMutation,
   useGetTicketByProjectIdQuery,
   useGetTicketByIdQuery,
+  useLazyGetTicketByProjectIdQuery,
 } = ticketApiSlice;

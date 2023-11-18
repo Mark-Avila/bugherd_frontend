@@ -71,7 +71,7 @@ function NewProjectModal({ onClose, open }: Props) {
 
   const [createProject] = useCreateProjectMutation();
   const [createProjectAssign] = useCreateProjectAssignMutation();
-  const [trigger] = useLazyGetCurrentProjectQuery();
+  const [updateProjectData] = useLazyGetCurrentProjectQuery();
 
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
@@ -98,7 +98,6 @@ function NewProjectModal({ onClose, open }: Props) {
         ).unwrap();
 
         if (response.success) {
-          //Retrieve the newly created project's ID
           createdProjectId = response.data[0].id!;
           enqueueSnackbar(response.message);
         }
@@ -130,7 +129,7 @@ function NewProjectModal({ onClose, open }: Props) {
         }
       }
 
-      trigger();
+      updateProjectData();
 
       //Close modal
       onClose();

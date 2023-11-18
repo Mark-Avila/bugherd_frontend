@@ -23,7 +23,10 @@ import {
   Ticket,
   Type,
 } from "../types";
-import { useCreateTicketMutation } from "../api/ticketApiSlice";
+import {
+  useCreateTicketMutation,
+  useLazyGetTicketByProjectIdQuery,
+} from "../api/ticketApiSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useSnackbar } from "notistack";
@@ -55,6 +58,7 @@ function NewTicketModal({ onClose, open, project_id }: Props) {
   const { user } = useSelector((state: RootState) => state.auth);
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
+  const [updateTickets] = useLazyGetTicketByProjectIdQuery();
 
   const formik = useFormik<FormikNewTicket>({
     initialValues: {
@@ -71,8 +75,6 @@ function NewTicketModal({ onClose, open, project_id }: Props) {
         enqueueSnackbar("Session expired", { variant: "error" });
         logout();
       }
-
-      console.log("test");
 
       const payload: Ticket = {
         title: values.title,
@@ -95,6 +97,7 @@ function NewTicketModal({ onClose, open, project_id }: Props) {
             variant: "success",
           });
 
+          updateTickets(project_id.toString());
           return handleOnClose();
         }
       } catch (err: unknown) {
