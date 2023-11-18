@@ -13,7 +13,10 @@ import { useState, ChangeEvent } from "react";
 import { useDebounce, useSet, useSnackError } from "../hooks";
 import { useGetUsersQuery } from "../api/userApiSlice";
 import { Project, ProjectAssign, ResponseBody, User } from "../types";
-import { useCreateProjectMutation } from "../api/projectApiSlice";
+import {
+  useCreateProjectMutation,
+  useLazyGetCurrentProjectQuery,
+} from "../api/projectApiSlice";
 import { useSnackbar } from "notistack";
 import { useCreateProjectAssignMutation } from "../api/projectAssignApiSlice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -65,6 +68,7 @@ function NewProjectModal({ onClose, open }: Props) {
 
   const [createProject] = useCreateProjectMutation();
   const [createProjectAssign] = useCreateProjectAssignMutation();
+  const [trigger] = useLazyGetCurrentProjectQuery();
 
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
@@ -94,6 +98,7 @@ function NewProjectModal({ onClose, open }: Props) {
           //Retrieve the newly created project's ID
           createdProjectId = response.data[0].id!;
           enqueueSnackbar(response.message);
+          trigger();
         }
       } catch (err: unknown) {
         snackbarError(err as FetchBaseQueryError);

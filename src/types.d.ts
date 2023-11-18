@@ -27,7 +27,7 @@ export interface Project {
   descr: string;
   user_id: string;
   num: number;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface User {
