@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import NewTicketModal from "./NewTicketModal";
 import { useGetProjectByIdQuery } from "../api/projectApiSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import { Project } from "../types";
+import { Project as ProjectType } from "../types";
 import { useGetProjectAssignQuery } from "../api/projectAssignApiSlice";
 import { useGetTicketByProjectIdQuery } from "../api/ticketApiSlice";
 import { useSelector } from "react-redux";
@@ -18,7 +18,7 @@ import { RootState } from "../store";
 
 function Project() {
   const [ticketModal, setTicketModal] = useState(false);
-  const [projectData, setProjectData] = useState<Project | null>(null);
+  const [projectData, setProjectData] = useState<ProjectType | null>(null);
   const toggleTicketModal = () => setTicketModal((prev) => !prev);
   const handleOnClose = () => setTicketModal(false);
   const { project_id } = useParams();
