@@ -10,13 +10,16 @@ import TicketDescription from "../components/stateless/TicketDescription";
 import { useGetTicketByIdQuery } from "../api/ticketApiSlice";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Ticket, User } from "../types";
+import { Ticket as TicketType, User } from "../types";
+import { useGetCommentsByTicketIdQuery } from "../api/commentApiSlice";
 function Ticket() {
-  const [ticketData, setTicketData] = useState<(Ticket & User) | null>(null);
+  const [ticketData, setTicketData] = useState<(TicketType & User) | null>(
+    null
+  );
 
   const { ticket_id } = useParams();
-
   const ticket = useGetTicketByIdQuery(ticket_id!);
+  const comments = useGetCommentsByTicketIdQuery(ticket_id!);
 
   useEffect(() => {
     if (!ticket.isLoading && ticket.data) {
@@ -24,10 +27,16 @@ function Ticket() {
     }
   }, [ticket.isLoading]);
 
+  useEffect(() => {
+    if (comments.isSuccess) {
+      console.log(comments.isSuccess);
+    }
+  }, [comments.isSuccess]);
+
   return (
     <Box>
       <Box component="header">
-        {ticketData && (
+        {ticketData && ticketData.num && (
           <TicketHeader
             issueNumber={ticketData.num.toString()}
             issueProject={ticketData.project_title!.toString()}
