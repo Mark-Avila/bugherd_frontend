@@ -10,12 +10,13 @@ import TicketDescription from "../components/stateless/TicketDescription";
 import { useGetTicketByIdQuery } from "../api/ticketApiSlice";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Ticket as TicketType, User } from "../types";
+import { Comment, Ticket as TicketType, User } from "../types";
 import { useGetCommentsByTicketIdQuery } from "../api/commentApiSlice";
 function Ticket() {
   const [ticketData, setTicketData] = useState<(TicketType & User) | null>(
     null
   );
+  const [commentsData, setComments] = useState<Comment[]>([]);
 
   const { ticket_id } = useParams();
   const ticket = useGetTicketByIdQuery(ticket_id!);
@@ -28,8 +29,8 @@ function Ticket() {
   }, [ticket.isLoading]);
 
   useEffect(() => {
-    if (comments.isSuccess) {
-      console.log(comments.data);
+    if (comments.isSuccess && !comments.isError && !comments.isLoading) {
+      setComments(comments.data.data);
     }
   }, [comments.isSuccess]);
 
@@ -65,11 +66,14 @@ function Ticket() {
       </Grid>
       <PageSection title="Comments" marginTop={3}>
         <List aria-label="ticket-comments-list" disablePadding>
-          <CommentItem />
-          <CommentItem />
-          <CommentItem />
-          <CommentItem />
-          <CommentItem />
+          {commentsData.map((comment: Comment) => (
+            <CommentItem
+              key={comment.id}
+              name={comment.fname + " " + comment.lname}
+              message={comment.msg}
+              date={comment.created_at}
+            />
+          ))}
         </List>
         <Divider />
         <CommentInput />

@@ -42,6 +42,16 @@ export interface User {
   createdat: string;
 }
 
+export interface Comment {
+  id?: number;
+  msg: string;
+  user_id: string;
+  fname: string;
+  lname: string;
+  ticket_id: string;
+  created_at?: string;
+}
+
 // export type Status = "ongoing" | "completed" | "";
 // export type PriorityString = "high" | "intermediate" | "low" | "";
 export type Priority = 3 | 2 | 1;
