@@ -26,6 +26,8 @@ import {
   ProjectDetailsForms,
   ModalWrapper,
 } from "../components";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const validationSchema = yup.object({
   title: yup
@@ -51,6 +53,7 @@ interface Props {
 function NewProjectModal({ onClose, open }: Props) {
   //Assigned users
   const assigned = useSet<User>([]);
+  const auth = useSelector((state: RootState) => state.auth);
 
   //User assigned as leader (Project manager)
   const [leader, setLeader] = useState("");
@@ -98,7 +101,6 @@ function NewProjectModal({ onClose, open }: Props) {
           //Retrieve the newly created project's ID
           createdProjectId = response.data[0].id!;
           enqueueSnackbar(response.message);
-          trigger();
         }
       } catch (err: unknown) {
         snackbarError(err as FetchBaseQueryError);
@@ -116,6 +118,19 @@ function NewProjectModal({ onClose, open }: Props) {
           }
         }
       }
+
+      if (auth.user && auth.user.id && createdProjectId !== undefined) {
+        try {
+          await createProjectAssign({
+            user_id: auth.user?.id,
+            project_id: createdProjectId,
+          });
+        } catch (err) {
+          snackbarError(err as FetchBaseQueryError);
+        }
+      }
+
+      trigger();
 
       //Close modal
       onClose();
