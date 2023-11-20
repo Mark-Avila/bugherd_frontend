@@ -4,7 +4,6 @@ import {
   AccountCircle,
   DarkMode,
   Dashboard,
-  FolderShared,
   LightMode,
   Logout,
 } from "@mui/icons-material";
@@ -121,11 +120,6 @@ function PageDrawer({ open, onClose, width }: Props) {
       text: "Profile",
       icon: <AccountCircle />,
       onClick: () => handleOnItemClick("/profile"),
-    },
-    {
-      text: "Projects",
-      icon: <FolderShared />,
-      onClick: () => handleOnItemClick("/project"),
     },
   ];
 
