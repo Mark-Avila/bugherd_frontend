@@ -13,6 +13,8 @@ import {
 import { FormikProps } from "formik";
 import { User } from "../../types";
 import { AssignmentInd, Close } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 interface Props {
   formik: FormikProps<{
@@ -32,6 +34,8 @@ function ProjectDetailsForms({
   handleToggleLeader,
   handleRemoveFromAssigned,
 }: Props) {
+  const auth = useSelector((state: RootState) => state.auth);
+
   return (
     <Stack spacing={2} height="100%">
       <TextField
@@ -95,13 +99,19 @@ function ProjectDetailsForms({
                       </IconButton>
                     </Tooltip>
 
-                    <Tooltip title="Remove from team">
-                      <IconButton
-                        onClick={() => handleRemoveFromAssigned(item)}
-                      >
-                        <Close fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                    {auth.user ? (
+                      auth.user.id !== item.id && (
+                        <Tooltip title="Remove from team">
+                          <IconButton
+                            onClick={() => handleRemoveFromAssigned(item)}
+                          >
+                            <Close fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )
+                    ) : (
+                      <></>
+                    )}
                   </ListItemSecondaryAction>
                 </ListItem>
               )

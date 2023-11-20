@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { useDebounce, useSet, useSnackError } from "../hooks";
 import { useGetUsersQuery } from "../api/userApiSlice";
 import { Project, ProjectAssign, ResponseBody, User } from "../types";
@@ -76,6 +76,13 @@ function NewProjectModal({ onClose, open }: Props) {
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
 
+  useEffect(() => {
+    if (auth && auth.user) {
+      assigned.add(auth.user);
+      setLeader(auth.user.id?.toString() as string);
+    }
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -118,16 +125,16 @@ function NewProjectModal({ onClose, open }: Props) {
         }
       }
 
-      if (auth.user && auth.user.id && createdProjectId !== undefined) {
-        try {
-          await createProjectAssign({
-            user_id: auth.user?.id,
-            project_id: createdProjectId,
-          });
-        } catch (err) {
-          snackbarError(err as FetchBaseQueryError);
-        }
-      }
+      // if (auth.user && auth.user.id && createdProjectId !== undefined) {
+      //   try {
+      //     await createProjectAssign({
+      //       user_id: auth.user?.id,
+      //       project_id: createdProjectId,
+      //     });
+      //   } catch (err) {
+      //     snackbarError(err as FetchBaseQueryError);
+      //   }
+      // }
 
       updateProjectData();
 
