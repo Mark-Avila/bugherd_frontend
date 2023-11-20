@@ -17,7 +17,7 @@ interface Props {
   handleSearch: (e: ChangeEvent<HTMLInputElement>) => void;
   users: User[];
   handleAddAssigned: (user: User) => void;
-  handleIsAssigned: (user: User) => boolean;
+  handleIsAssigned: (userId: number) => boolean;
 }
 
 function SelectMembers({
@@ -58,7 +58,7 @@ function SelectMembers({
                   primaryTypographyProps={{ fontSize: 12 }}
                   primary={`${user.fname} ${user.lname}`}
                 />
-                {handleIsAssigned(user) && (
+                {handleIsAssigned(user.id as number) && (
                   <ListItemSecondaryAction>
                     <CheckCircle color="success" />
                   </ListItemSecondaryAction>

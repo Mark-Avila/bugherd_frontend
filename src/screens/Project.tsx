@@ -31,8 +31,6 @@ function Project() {
 
   useEffect(() => {
     if (project.data) {
-      console.log(project.data.data.length);
-
       if (project.data.data.length === 0) {
         navigate("/dashboard");
       }

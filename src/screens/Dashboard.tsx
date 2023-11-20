@@ -39,7 +39,7 @@ export default function Dashboard() {
         });
       }
     }
-  }, [projects.error]);
+  }, []);
 
   const templateData = [
     { id: 0, value: 33, label: "series A" },

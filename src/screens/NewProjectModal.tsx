@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { useState, ChangeEvent, useEffect } from "react";
-import { useDebounce, useSet, useSnackError } from "../hooks";
+import { useState, ChangeEvent, useEffect, useRef } from "react";
+import { useDebounce, useSnackError } from "../hooks";
 import { useGetUsersQuery } from "../api/userApiSlice";
 import { Project, ProjectAssign, ResponseBody, User } from "../types";
 import {
@@ -52,11 +52,12 @@ interface Props {
  */
 function NewProjectModal({ onClose, open }: Props) {
   //Assigned users
-  const assigned = useSet<User>([]);
+  const [assigned, setAssigned] = useState<User[]>([] as User[]);
+
   const auth = useSelector((state: RootState) => state.auth);
 
   //User assigned as leader (Project manager)
-  const [leader, setLeader] = useState("");
+  const [leader, setLeader] = useState<number>(0);
 
   //Search string used for searching users
   const [search, setSearch] = useState<string>("");
@@ -69,6 +70,8 @@ function NewProjectModal({ onClose, open }: Props) {
     name: debouncedSearch,
   });
 
+  const isMountedRef = useRef(true);
+
   const [createProject] = useCreateProjectMutation();
   const [createProjectAssign] = useCreateProjectAssignMutation();
   const [updateProjectData] = useLazyGetCurrentProjectQuery();
@@ -77,10 +80,29 @@ function NewProjectModal({ onClose, open }: Props) {
   const { snackbarError } = useSnackError();
 
   useEffect(() => {
-    if (auth && auth.user) {
-      assigned.add(auth.user);
-      setLeader(auth.user.id?.toString() as string);
+    /**
+     * Prevents the useEffect from running twice
+     * onmount with strictmode on during development
+     */
+    if (
+      import.meta.env.VITE_ENV === "dev" &&
+      isMountedRef.current &&
+      auth &&
+      auth.user
+    ) {
+      handleAddToAssigned(auth.user);
+      setLeader(auth.user.id as number);
+    } else if (!import.meta.env.VITE_ENV && auth && auth.user) {
+      handleAddToAssigned(auth.user);
+      setLeader(auth.user.id as number);
     }
+  }, []);
+
+  useEffect(() => {
+    // Set the flag to false when the component is unmounted
+    return () => {
+      isMountedRef.current = false;
+    };
   }, []);
 
   const formik = useFormik({
@@ -94,7 +116,7 @@ function NewProjectModal({ onClose, open }: Props) {
         title: values.title,
         descr: values.description,
         user_id: leader,
-        num: assigned.size,
+        num: assigned.length,
       };
 
       let createdProjectId: number | undefined;
@@ -112,11 +134,11 @@ function NewProjectModal({ onClose, open }: Props) {
         snackbarError(err as FetchBaseQueryError);
       }
 
-      for (let i = 0; i < assigned.size; i++) {
+      for (let i = 0; i < assigned.length; i++) {
         if (createdProjectId !== undefined) {
           try {
             await createProjectAssign({
-              user_id: assigned.values[i].id!,
+              user_id: assigned[i].id as number,
               project_id: createdProjectId,
             });
           } catch (err) {
@@ -144,18 +166,23 @@ function NewProjectModal({ onClose, open }: Props) {
   });
 
   const handleAddToAssigned = (user: User) => {
-    assigned.add(user);
+    if (!handleIsAssigned(user.id as number)) {
+      setAssigned((prev) => [...prev, user]);
+    } else {
+      handleRemoveFromAssigned(user.id as number);
+    }
   };
 
-  const handleRemoveFromAssigned = (user: User) => {
-    assigned.remove(user);
+  const handleRemoveFromAssigned = (user_id: number) => {
+    setAssigned((prev) => prev.filter((user) => user.id !== user_id));
   };
 
-  const handleToggleLeader = (userId: string) => {
-    setLeader((prevLeader) => (prevLeader === userId ? "" : userId));
+  const handleToggleLeader = (userId: number) => {
+    setLeader((prevLeader) => (prevLeader === userId ? 0 : userId));
   };
 
-  const handleIsAssigned = (user: User) => assigned.has(user);
+  const handleIsAssigned = (targetId: number) =>
+    assigned.some((user) => user.id === targetId);
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -200,13 +227,15 @@ function NewProjectModal({ onClose, open }: Props) {
         <Divider />
         <Grid sx={{ flexGrow: 1 }} container spacing={2} mt={1}>
           <Grid item xs={12} lg={6}>
-            <ProjectDetailsForms
-              formik={formik}
-              assigned={assigned.values}
-              leader={leader}
-              handleRemoveFromAssigned={handleRemoveFromAssigned}
-              handleToggleLeader={handleToggleLeader}
-            />
+            {users.data && (
+              <ProjectDetailsForms
+                formik={formik}
+                assigned={assigned}
+                leader={leader}
+                handleRemoveFromAssigned={handleRemoveFromAssigned}
+                handleToggleLeader={handleToggleLeader}
+              />
+            )}
           </Grid>
 
           <Grid item xs={12} lg={6}>

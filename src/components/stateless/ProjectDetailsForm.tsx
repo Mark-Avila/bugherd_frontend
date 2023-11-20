@@ -22,9 +22,9 @@ interface Props {
     description: string;
   }>;
   assigned: User[];
-  leader: string;
-  handleToggleLeader: (userId: string) => void;
-  handleRemoveFromAssigned: (user: User) => void;
+  leader: number;
+  handleToggleLeader: (user_id: number) => void;
+  handleRemoveFromAssigned: (user_id: number) => void;
 }
 
 function ProjectDetailsForms({
@@ -74,9 +74,50 @@ function ProjectDetailsForms({
         }}
       >
         <List>
-          {assigned.map(
+          {assigned.map((user, index) => (
+            <ListItem key={index + 100} divider>
+              <ListItemText
+                primaryTypographyProps={{
+                  fontSize: 12,
+                  color: leader === user.id ? "primary" : "",
+                }}
+                primary={
+                  (leader === user.id ? "(Leader) " : "") +
+                  user.fname +
+                  " " +
+                  user.lname
+                }
+              />
+              <ListItemSecondaryAction>
+                <Tooltip title="Project Manager">
+                  <IconButton
+                    onClick={() => handleToggleLeader(user.id as number)}
+                  >
+                    <AssignmentInd />
+                  </IconButton>
+                </Tooltip>
+
+                {auth.user ? (
+                  auth.user.id !== user.id && (
+                    <Tooltip title="Remove from team">
+                      <IconButton
+                        onClick={() =>
+                          handleRemoveFromAssigned(user.id as number)
+                        }
+                      >
+                        <Close fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )
+                ) : (
+                  <></>
+                )}
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+          {/* {assigned.map(
             (item, index) =>
-              item.id && (
+              item && (
                 <ListItem key={index + 100} divider>
                   <ListItemText
                     primaryTypographyProps={{
@@ -115,7 +156,7 @@ function ProjectDetailsForms({
                   </ListItemSecondaryAction>
                 </ListItem>
               )
-          )}
+          )} */}
         </List>
       </Paper>
     </Stack>

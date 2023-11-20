@@ -25,7 +25,7 @@ export interface Project {
   id?: number;
   title: string;
   descr: string;
-  user_id: string;
+  user_id: number;
   num: number;
   createdAt?: string;
 }
