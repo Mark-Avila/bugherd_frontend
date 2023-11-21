@@ -147,20 +147,7 @@ function NewProjectModal({ onClose, open }: Props) {
         }
       }
 
-      // if (auth.user && auth.user.id && createdProjectId !== undefined) {
-      //   try {
-      //     await createProjectAssign({
-      //       user_id: auth.user?.id,
-      //       project_id: createdProjectId,
-      //     });
-      //   } catch (err) {
-      //     snackbarError(err as FetchBaseQueryError);
-      //   }
-      // }
-
       updateProjectData();
-
-      //Close modal
       onClose();
     },
   });

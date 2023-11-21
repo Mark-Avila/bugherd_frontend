@@ -20,6 +20,8 @@ function TicketList({ tickets }: Props) {
               number={(ticket.num as number).toString()}
               created={dayjs(ticket.created_at).format("LL")}
               author={`${ticket.fname} ${ticket.lname}`}
+              priority={ticket.priority}
+              status={ticket.status}
             />
           ))}
         </List>

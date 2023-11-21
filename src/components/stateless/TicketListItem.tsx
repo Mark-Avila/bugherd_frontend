@@ -1,6 +1,7 @@
 import { ListItem, ListItemButton, ListItemText } from "@mui/material";
 import TicketItemChips from "./TicketItemChips";
 import { useNavigate } from "react-router-dom";
+import { Priority } from "../../types";
 
 interface Props {
   id: string;
@@ -8,6 +9,8 @@ interface Props {
   number: string;
   author: string;
   created: string;
+  priority: Priority;
+  status: boolean;
 }
 
 function TicketListItem(props: Props) {
@@ -18,7 +21,13 @@ function TicketListItem(props: Props) {
   };
 
   return (
-    <ListItem disablePadding divider secondaryAction={<TicketItemChips />}>
+    <ListItem
+      disablePadding
+      divider
+      secondaryAction={
+        <TicketItemChips status={props.status} priority={props.priority} />
+      }
+    >
       <ListItemButton onClick={handleOnClick}>
         <ListItemText
           primary={props.title}
