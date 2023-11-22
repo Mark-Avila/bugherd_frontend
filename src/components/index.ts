@@ -18,6 +18,7 @@ import CommentItem from "./stateless/CommentItem";
 import CommentInput from "./stateless/CommentInput";
 import TicketHeader from "./stateless/TicketHeader";
 import CommentSection from "./stateful/CommentSection";
+import RoleUserItem from "./stateless/RoleUserItem";
 
 export {
   PageDrawer,
@@ -40,4 +41,5 @@ export {
   CommentInput,
   TicketHeader,
   CommentSection,
+  RoleUserItem,
 };

@@ -76,11 +76,6 @@ function DrawerBody({ items }: IDrawerBody) {
       </Box>
       <Divider />
       <List>
-        {/* <DrawerItem
-          text="Profile"
-          icon={<AccountCircle />}
-          onClick={() => {}}
-        /> */}
         {items.map((item, index) => (
           <DrawerItem
             key={index}
@@ -137,7 +132,7 @@ function PageDrawer({ open, onClose, width }: Props) {
     {
       text: "Role assignments",
       icon: <AssignmentInd />,
-      onClick: () => handleOnItemClick("/dashboard"),
+      onClick: () => handleOnItemClick("/roles"),
     },
     {
       text: "Project Users",

@@ -4,7 +4,14 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import { Dashboard, Landing, Profile, Project, Ticket } from "./screens";
+import {
+  Dashboard,
+  Landing,
+  Profile,
+  Project,
+  RoleAssignment,
+  Ticket,
+} from "./screens";
 import { createTheme } from "@mui/material";
 import { useState, useMemo, createContext, useEffect } from "react";
 import { ThemeProvider } from "@emotion/react";
@@ -65,6 +72,16 @@ const router = createBrowserRouter(
           element={
             <DrawerLayout title="Profile">
               <Profile />
+            </DrawerLayout>
+          }
+        />
+      </Route>
+      <Route element={<PrivateRoute />} path="">
+        <Route
+          path="/roles"
+          element={
+            <DrawerLayout title="Manage User Roles">
+              <RoleAssignment />
             </DrawerLayout>
           }
         />

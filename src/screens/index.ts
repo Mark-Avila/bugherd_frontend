@@ -5,5 +5,15 @@ import Dashboard from "./Dashboard";
 import Project from "./Project";
 import Ticket from "./Ticket";
 import Profile from "./Profile";
+import RoleAssignment from "./RoleAssignment";
 
-export { SignIn, Profile, SignUp, Landing, Dashboard, Project, Ticket };
+export {
+  SignIn,
+  Profile,
+  RoleAssignment,
+  SignUp,
+  Landing,
+  Dashboard,
+  Project,
+  Ticket,
+};

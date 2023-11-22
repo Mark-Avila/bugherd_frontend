@@ -1,10 +1,11 @@
-import { Box, BoxProps, Typography } from "@mui/material";
+import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 import { ReactNode } from "react";
 
 type Props = BoxProps & {
   title: string;
   children: ReactNode;
   action?: JSX.Element;
+  primaryTypographyProps?: TypographyProps;
 };
 
 // interface Props extends BoxProps {
@@ -13,7 +14,13 @@ type Props = BoxProps & {
 //   action?: JSX.Element;
 // }
 
-function PageSection({ title, children, action, ...props }: Props) {
+function PageSection({
+  title,
+  children,
+  action,
+  primaryTypographyProps,
+  ...props
+}: Props) {
   return (
     <Box {...props}>
       <Box
@@ -22,7 +29,9 @@ function PageSection({ title, children, action, ...props }: Props) {
         justifyContent="space-between"
         marginBottom={2}
       >
-        <Typography variant="h6">{title}</Typography>
+        <Typography variant="h6" {...primaryTypographyProps}>
+          {title}
+        </Typography>
         {action || null}
       </Box>
       {children}
