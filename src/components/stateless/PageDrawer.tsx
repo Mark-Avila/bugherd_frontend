@@ -2,10 +2,14 @@ import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import {
   AccountCircle,
+  AssignmentInd,
+  ConfirmationNumber,
   DarkMode,
   Dashboard,
+  GroupAdd,
   LightMode,
   Logout,
+  Menu,
 } from "@mui/icons-material";
 import {
   Box,
@@ -33,7 +37,12 @@ function DrawerItem({ text, icon, onClick }: IDrawerItem) {
     <ListItem key={text} disablePadding>
       <ListItemButton onClick={onClick}>
         <ListItemIcon>{icon}</ListItemIcon>
-        <ListItemText primary={text} />
+        <ListItemText
+          primary={text}
+          primaryTypographyProps={{
+            fontSize: 14,
+          }}
+        />
       </ListItemButton>
     </ListItem>
   );
@@ -87,7 +96,11 @@ function DrawerBody({ items }: IDrawerBody) {
           <ListItemIcon>
             {mode === "light" ? <LightMode /> : <DarkMode />}
           </ListItemIcon>
-          <Switch sx={{ margin: 0 }} onChange={toggle.toggleColorMode} />
+          <Switch
+            sx={{ margin: 0 }}
+            onChange={toggle.toggleColorMode}
+            checked={mode === "dark"}
+          />
         </ListItem>
         <DrawerItem text="Sign out" icon={<Logout />} onClick={() => {}} />
       </List>
@@ -120,6 +133,26 @@ function PageDrawer({ open, onClose, width }: Props) {
       text: "Profile",
       icon: <AccountCircle />,
       onClick: () => handleOnItemClick("/profile"),
+    },
+    {
+      text: "Role assignments",
+      icon: <AssignmentInd />,
+      onClick: () => handleOnItemClick("/dashboard"),
+    },
+    {
+      text: "Project Users",
+      icon: <GroupAdd />,
+      onClick: () => handleOnItemClick("/dashboard"),
+    },
+    {
+      text: "My Projects",
+      icon: <Menu />,
+      onClick: () => handleOnItemClick("/dashboard"),
+    },
+    {
+      text: "My Tickets",
+      icon: <ConfirmationNumber />,
+      onClick: () => handleOnItemClick("/dashboard"),
     },
   ];
 

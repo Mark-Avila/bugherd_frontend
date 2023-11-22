@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { Dashboard, Landing, Profile, Project, Ticket } from "./screens";
 import { createTheme } from "@mui/material";
-import { useState, useMemo, createContext } from "react";
+import { useState, useMemo, createContext, useEffect } from "react";
 import { ThemeProvider } from "@emotion/react";
 import DrawerLayout from "./screens/DrawerLayout";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -78,7 +78,15 @@ function App() {
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prev) => (prev === "light" ? "dark" : "light"));
+        setMode((prev) => {
+          if (prev === "light") {
+            localStorage.setItem("theme", "dark");
+            return "dark";
+          }
+
+          localStorage.setItem("theme", "light");
+          return "light";
+        });
       },
     }),
     []
@@ -93,6 +101,11 @@ function App() {
       }),
     [mode]
   );
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    setMode(storedTheme === "dark" ? "dark" : "light");
+  }, []);
 
   const ColorMode: IColorModeContext = {
     mode: mode,
