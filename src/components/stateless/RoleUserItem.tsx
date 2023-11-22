@@ -22,8 +22,12 @@ function RoleUserItem({ name, email }: Props) {
       >
         <Avatar />
         <Box sx={{ mx: 2 }}>
-          <Typography variant="body1">{name}</Typography>
-          <Typography variant="body2">{email}</Typography>
+          <Typography variant="body1" fontSize={14}>
+            {name}
+          </Typography>
+          <Typography variant="body2" fontSize={12}>
+            {email}
+          </Typography>
         </Box>
         <IconButton size="small">
           <Edit />
