@@ -25,6 +25,8 @@ import {
 import { useContext } from "react";
 import { ColorModeContext } from "../../App";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../../slices/authSlice";
+import { useDispatch } from "react-redux";
 
 interface IDrawerItem {
   text: string;
@@ -57,6 +59,10 @@ interface IDrawerBody {
  */
 function DrawerBody({ items }: IDrawerBody) {
   const { toggle, mode } = useContext(ColorModeContext);
+
+  const dispatch = useDispatch();
+
+  const handleLogOut = () => dispatch(logout());
 
   return (
     <>
@@ -97,7 +103,7 @@ function DrawerBody({ items }: IDrawerBody) {
             checked={mode === "dark"}
           />
         </ListItem>
-        <DrawerItem text="Sign out" icon={<Logout />} onClick={() => {}} />
+        <DrawerItem text="Sign out" icon={<Logout />} onClick={handleLogOut} />
       </List>
     </>
   );
