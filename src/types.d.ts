@@ -98,3 +98,10 @@ export interface SelectItemBody<T> {
   value: T;
   label: string;
 }
+
+export interface InputData<T> {
+  value: T;
+  label: string;
+  isError: boolean;
+  helper: string;
+}

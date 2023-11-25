@@ -18,7 +18,7 @@ import { useSnackbar } from "notistack";
 import { MuiTelInput } from "mui-tel-input";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { ResponseBody, SignUpData } from "../types";
+import { InputData, ResponseBody, SignUpData } from "../types";
 import { useSignupMutation } from "../api/userApiSlice";
 import { useSnackError } from "../hooks";
 
@@ -39,13 +39,6 @@ const defaultTheme = createTheme();
 
 interface Props {
   handleScreen: VoidFunction;
-}
-
-interface InputData<T> {
-  value: T;
-  label: string;
-  isError: boolean;
-  helper: string;
 }
 
 const validationSchema = yup.object({

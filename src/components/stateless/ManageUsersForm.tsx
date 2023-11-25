@@ -13,21 +13,33 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
+import { Dayjs } from "dayjs";
 import { FormikProps } from "formik";
+import { InputData } from "../../types";
+import { DatePicker } from "@mui/x-date-pickers";
+import { MuiTelInput } from "mui-tel-input";
 
 interface Props {
   formik: FormikProps<{
     fname: string;
     lname: string;
     email: string;
-    contact: string;
-    bday: string;
-    role: 0 | 1 | 2;
+    role: number;
   }>;
+  bday: InputData<Dayjs | null>;
+  setBday: (new_bday: Dayjs | null) => void;
+  contact: InputData<string>;
+  setContact: (new_contact: string) => void;
   onSubmit: VoidFunction;
 }
 
-function ManageUsersForm({ formik }: Props) {
+function ManageUsersForm({
+  formik,
+  setBday,
+  setContact,
+  bday,
+  contact,
+}: Props) {
   const handleRoleChange = (event: SelectChangeEvent) => {
     formik.setFieldValue("role", event.target.value);
   };
@@ -110,7 +122,25 @@ function ManageUsersForm({ formik }: Props) {
         helperText={formik.touched.email && formik.errors.email}
         error={formik.touched.email && Boolean(formik.errors.email)}
       />
-      <TextField
+      <MuiTelInput
+        id="contact"
+        name="contact"
+        value={contact.value}
+        onChange={setContact}
+        helperText={contact.helper}
+        error={contact.isError}
+        fullWidth
+        size="small"
+        defaultCountry="PH"
+      />
+      <DatePicker
+        sx={{ width: "100%" }}
+        slotProps={{ textField: { size: "small" } }}
+        label="Birthday"
+        value={bday.value}
+        onChange={setBday}
+      />
+      {/* <TextField
         variant="outlined"
         label="Contact"
         fullWidth
@@ -121,8 +151,8 @@ function ManageUsersForm({ formik }: Props) {
         onBlur={formik.handleBlur}
         helperText={formik.touched.contact && formik.errors.contact}
         error={formik.touched.contact && Boolean(formik.errors.contact)}
-      />
-      <TextField
+      /> */}
+      {/* <TextField
         variant="outlined"
         label="Birthday"
         fullWidth
@@ -133,7 +163,8 @@ function ManageUsersForm({ formik }: Props) {
         onBlur={formik.handleBlur}
         helperText={formik.touched.bday && formik.errors.bday}
         error={formik.touched.bday && Boolean(formik.errors.bday)}
-      />
+      /> */}
+
       <Stack direction="row" justifyContent="flex-end">
         <Button variant="contained" onClick={() => formik.handleSubmit()}>
           Update

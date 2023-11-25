@@ -2,27 +2,24 @@ import { Divider, Grid, List, Paper, Stack, Typography } from "@mui/material";
 import PageSection from "../components/stateless/PageSection";
 import { ManageUsersForm, ManageUsersItem, SearchField } from "../components";
 import { useGetUsersQuery } from "../api/userApiSlice";
-import { User } from "../types";
+import { InputData, User } from "../types";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import dayjs, { Dayjs } from "dayjs";
 // import { useGetUsersQuery } from "../api/userApiSlice";
 
 const validationSchema = yup.object({
   fname: yup.string().min(2).max(50).required("Please enter a new first name"),
   lname: yup.string().min(2).max(50).required("Please enter a new last name"),
   email: yup.string().email().min(5).required("Please enter a new first name"),
-  contact: yup.string().min(11).required("Please enter contact"),
-  bday: yup.date().required("Please enter a birthday"),
   role: yup.number().oneOf([0, 1, 2]).required("Please select a role"),
 });
 
-const initialValues: User = {
+const initialValues = {
   fname: "",
   lname: "",
   email: "",
-  contact: "",
-  bday: "",
   role: 0,
 };
 
@@ -39,18 +36,21 @@ function ManageUsers() {
     }
   }, [users.isLoading]);
 
-  const handleSelectUser = (user: User) => {
-    formik.setValues({
-      fname: user.fname,
-      lname: user.lname,
-      email: user.email,
-      contact: user.contact,
-      bday: user.bday,
-      role: user.role,
-    });
-  };
+  const [contact, setContact] = useState<InputData<string>>({
+    value: "",
+    helper: "",
+    isError: false,
+    label: "Contact",
+  });
 
-  const formik = useFormik<User>({
+  const [bday, setBday] = useState<InputData<Dayjs | null>>({
+    value: dayjs("2023-01-01"),
+    helper: "",
+    isError: false,
+    label: "Contact",
+  });
+
+  const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: async (values) => {
@@ -58,7 +58,34 @@ function ManageUsers() {
     },
   });
 
+  const handleSelectUser = (user: User) => {
+    formik.setValues({
+      fname: user.fname,
+      lname: user.lname,
+      email: user.email,
+      role: user.role,
+    });
+
+    const birthDate = new Date(user.bday);
+    const daysJsBday = dayjs(birthDate);
+    handleBdayOnChange(daysJsBday);
+
+    handleContactOnChange(user.contact);
+  };
+
   const handleOnSubmit = () => formik.handleSubmit();
+
+  const handleBdayOnChange = (new_bday: Dayjs | null) => {
+    setBday((prev) => ({ ...prev, value: new_bday }));
+  };
+
+  const handleContactOnChange = (val: string) => {
+    setContact((prev) => ({
+      ...prev,
+      value: val,
+      isError: false,
+    }));
+  };
 
   return (
     <>
@@ -91,7 +118,14 @@ function ManageUsers() {
         <Grid item xs={6}>
           <PageSection title="User Information">
             {formik.values.fname !== "" ? (
-              <ManageUsersForm formik={formik} onSubmit={handleOnSubmit} />
+              <ManageUsersForm
+                formik={formik}
+                contact={contact}
+                bday={bday}
+                setBday={handleBdayOnChange}
+                setContact={handleContactOnChange}
+                onSubmit={handleOnSubmit}
+              />
             ) : (
               <Stack>
                 <Typography variant="h3" color="text.disabled">
