@@ -21,6 +21,7 @@ import CommentSection from "./stateful/CommentSection";
 import RoleUserItem from "./stateless/RoleUserItem";
 import ManageUsersItem from "./stateless/ManageUsersItem";
 import ManageUsersForm from "./stateless/ManageUsersForm";
+import SearchField from "./stateless/SearchField";
 
 export {
   PageDrawer,
@@ -46,4 +47,5 @@ export {
   RoleUserItem,
   ManageUsersItem,
   ManageUsersForm,
+  SearchField,
 };

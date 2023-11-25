@@ -1,28 +1,7 @@
-import {
-  Divider,
-  Grid,
-  IconButton,
-  List,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Divider, Grid, List, Paper, Typography } from "@mui/material";
 import PageSection from "../components/stateless/PageSection";
-import { ManageUsersForm, ManageUsersItem } from "../components";
-import { Search } from "@mui/icons-material";
+import { ManageUsersForm, ManageUsersItem, SearchField } from "../components";
 // import { useGetUsersQuery } from "../api/userApiSlice";
-
-function SearchField() {
-  return (
-    <Stack direction="row" spacing={2} useFlexGap>
-      <TextField placeholder="Search User" size="small" />
-      <IconButton>
-        <Search />
-      </IconButton>
-    </Stack>
-  );
-}
 
 function ManageUsers() {
   return (
