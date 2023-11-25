@@ -9,6 +9,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Stack,
   TextField,
 } from "@mui/material";
@@ -26,7 +27,11 @@ interface Props {
   onSubmit: VoidFunction;
 }
 
-function ManageUsersForm({ formik, onSubmit }: Props) {
+function ManageUsersForm({ formik }: Props) {
+  const handleRoleChange = (event: SelectChangeEvent) => {
+    formik.setFieldValue("role", event.target.value);
+  };
+
   return (
     <Stack sx={{ paddingRight: 16 }} useFlexGap spacing={2}>
       <FormControl fullWidth>
@@ -37,9 +42,8 @@ function ManageUsersForm({ formik, onSubmit }: Props) {
           variant="outlined"
           label="Role"
           name="title"
-          value={formik.values.role}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
+          value={formik.values.role.toString()}
+          onChange={handleRoleChange}
           error={formik.touched.role && Boolean(formik.errors.role)}
           fullWidth
         >
@@ -131,7 +135,7 @@ function ManageUsersForm({ formik, onSubmit }: Props) {
         error={formik.touched.bday && Boolean(formik.errors.bday)}
       />
       <Stack direction="row" justifyContent="flex-end">
-        <Button variant="contained" onClick={onSubmit}>
+        <Button variant="contained" onClick={() => formik.handleSubmit()}>
           Update
         </Button>
       </Stack>

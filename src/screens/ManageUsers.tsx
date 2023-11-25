@@ -12,7 +12,7 @@ const validationSchema = yup.object({
   fname: yup.string().min(2).max(50).required("Please enter a new first name"),
   lname: yup.string().min(2).max(50).required("Please enter a new last name"),
   email: yup.string().email().min(5).required("Please enter a new first name"),
-  contact: yup.string().email().min(11).required("Please enter contact"),
+  contact: yup.string().min(11).required("Please enter contact"),
   bday: yup.date().required("Please enter a birthday"),
   role: yup.number().oneOf([0, 1, 2]).required("Please select a role"),
 });
@@ -37,7 +37,7 @@ function ManageUsers() {
     if (!users.isLoading && users.isSuccess && users.data) {
       setUserData(users.data.data);
     }
-  }, [users.isSuccess]);
+  }, [users.isLoading]);
 
   const handleSelectUser = (user: User) => {
     formik.setValues({
