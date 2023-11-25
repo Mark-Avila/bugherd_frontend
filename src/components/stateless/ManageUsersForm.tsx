@@ -1,6 +1,7 @@
 import { Close, Edit } from "@mui/icons-material";
 import {
   Avatar,
+  Button,
   Divider,
   FormControl,
   Grid,
@@ -66,6 +67,9 @@ function ManageUsersForm() {
       <TextField variant="outlined" label="Email" fullWidth size="small" />
       <TextField variant="outlined" label="Contact" fullWidth size="small" />
       <TextField variant="outlined" label="Birthday" fullWidth size="small" />
+      <Stack direction="row" justifyContent="flex-end">
+        <Button variant="contained">Update</Button>
+      </Stack>
     </Stack>
   );
 }
