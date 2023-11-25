@@ -35,11 +35,11 @@ export interface User {
   fname: string;
   lname: string;
   email: string;
-  password: string;
+  password?: string;
   contact: string;
   role: 0 | 1 | 2;
   bday: string;
-  createdat: string;
+  createdat?: string;
 }
 
 export interface Comment {
