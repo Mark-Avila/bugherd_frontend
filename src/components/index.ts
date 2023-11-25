@@ -19,6 +19,8 @@ import CommentInput from "./stateless/CommentInput";
 import TicketHeader from "./stateless/TicketHeader";
 import CommentSection from "./stateful/CommentSection";
 import RoleUserItem from "./stateless/RoleUserItem";
+import ManageUsersItem from "./stateless/ManageUsersItem";
+import ManageUsersForm from "./stateless/ManageUsersForm";
 
 export {
   PageDrawer,
@@ -42,4 +44,6 @@ export {
   TicketHeader,
   CommentSection,
   RoleUserItem,
+  ManageUsersItem,
+  ManageUsersForm,
 };

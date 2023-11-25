@@ -9,8 +9,8 @@ import {
   Landing,
   Profile,
   Project,
-  RoleAssignment,
   Ticket,
+  ManageUsers,
 } from "./screens";
 import { createTheme } from "@mui/material";
 import { useState, useMemo, createContext, useEffect } from "react";
@@ -81,7 +81,7 @@ const router = createBrowserRouter(
           path="/roles"
           element={
             <DrawerLayout title="Manage User Roles">
-              <RoleAssignment />
+              <ManageUsers />
             </DrawerLayout>
           }
         />
