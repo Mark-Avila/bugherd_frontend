@@ -23,6 +23,7 @@ function ManageUsersForm() {
           id="user-role-select"
           variant="outlined"
           label="Role"
+          defaultValue={0}
           fullWidth
         >
           <MenuItem value={0}>Developer</MenuItem>

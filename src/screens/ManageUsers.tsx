@@ -1,9 +1,25 @@
-import { Divider, Grid, List, Paper, Typography } from "@mui/material";
+import { Divider, Grid, List, Paper, Stack, Typography } from "@mui/material";
 import PageSection from "../components/stateless/PageSection";
 import { ManageUsersForm, ManageUsersItem, SearchField } from "../components";
+import { useGetUsersQuery } from "../api/userApiSlice";
+import { User } from "../types";
+import { useEffect, useState } from "react";
 // import { useGetUsersQuery } from "../api/userApiSlice";
 
 function ManageUsers() {
+  const [userData, setUserData] = useState<User[]>([] as User[]);
+  const [userSelected, selectUser] = useState<User | null>(null);
+
+  const users = useGetUsersQuery({
+    name: "",
+  });
+
+  useEffect(() => {
+    if (!users.isLoading && users.isSuccess && users.data) {
+      setUserData(users.data.data);
+    }
+  }, [users.isSuccess]);
+
   return (
     <>
       <PageSection
@@ -16,40 +32,33 @@ function ManageUsers() {
       <Grid container spacing={4}>
         <Grid item xs={6}>
           <PageSection title="Users" action={<SearchField />}>
-            <Paper variant="outlined">
+            <Paper
+              variant="outlined"
+              sx={{ maxHeight: 500, overflowY: "auto" }}
+            >
               <List disablePadding>
-                <ManageUsersItem
-                  name="Mark Avila"
-                  email="markavila@gmail.com"
-                />
-                <ManageUsersItem
-                  name="Mark Avila"
-                  email="markavila@gmail.com"
-                />
-                <ManageUsersItem
-                  name="Mark Avila"
-                  email="markavila@gmail.com"
-                />
-                <ManageUsersItem
-                  name="Mark Avila"
-                  email="markavila@gmail.com"
-                />
-                <ManageUsersItem
-                  name="Mark Avila"
-                  email="markavila@gmail.com"
-                />
+                {userData.map((user) => (
+                  <ManageUsersItem
+                    key={user.id}
+                    name={`${user.fname} ${user.lname}`}
+                    email={user.email}
+                  />
+                ))}
               </List>
             </Paper>
           </PageSection>
         </Grid>
         <Grid item xs={6}>
           <PageSection title="User Information">
-            <ManageUsersForm />
-            {/* <Stack>
-              <Typography variant="h3" color="text.disabled">
-                No user selected
-              </Typography>
-            </Stack> */}
+            {userSelected ? (
+              <ManageUsersForm />
+            ) : (
+              <Stack>
+                <Typography variant="h3" color="text.disabled">
+                  No user selected
+                </Typography>
+              </Stack>
+            )}
           </PageSection>
         </Grid>
       </Grid>
