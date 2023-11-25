@@ -3,6 +3,9 @@ import PageSection from "../components/stateless/PageSection";
 import { RoleUserItem } from "../components";
 import { useGetUsersQuery } from "../api/userApiSlice";
 
+const SKELETON_WIDTH = 250;
+const SKELETON_HEIGHT = 110;
+
 function RoleAssignment() {
   const user = useGetUsersQuery({
     name: "",
@@ -33,9 +36,9 @@ function RoleAssignment() {
             </>
           ) : (
             <>
-              <Skeleton width={150} />
-              <Skeleton width={150} />
-              <Skeleton width={150} />
+              <Skeleton width={SKELETON_WIDTH} height={SKELETON_HEIGHT} />
+              <Skeleton width={SKELETON_WIDTH} height={SKELETON_HEIGHT} />
+              <Skeleton width={SKELETON_WIDTH} height={SKELETON_HEIGHT} />
             </>
           )}
         </Stack>
@@ -56,9 +59,9 @@ function RoleAssignment() {
             </>
           ) : (
             <>
-              <Skeleton width={150} />
-              <Skeleton width={150} />
-              <Skeleton width={150} />
+              <Skeleton width={SKELETON_WIDTH} height={SKELETON_HEIGHT} />
+              <Skeleton width={SKELETON_WIDTH} height={SKELETON_HEIGHT} />
+              <Skeleton width={SKELETON_WIDTH} height={SKELETON_HEIGHT} />
             </>
           )}
         </Stack>
@@ -79,9 +82,9 @@ function RoleAssignment() {
             </>
           ) : (
             <>
-              <Skeleton width={150} />
-              <Skeleton width={150} />
-              <Skeleton width={150} />
+              <Skeleton width={SKELETON_WIDTH} height={SKELETON_HEIGHT} />
+              <Skeleton width={SKELETON_WIDTH} height={SKELETON_HEIGHT} />
+              <Skeleton width={SKELETON_WIDTH} height={SKELETON_HEIGHT} />
             </>
           )}
         </Stack>
