@@ -20,6 +20,10 @@ function ManageUsers() {
     }
   }, [users.isSuccess]);
 
+  const handleSelectUser = (user: User) => {
+    selectUser(user);
+  };
+
   return (
     <>
       <PageSection
@@ -40,8 +44,8 @@ function ManageUsers() {
                 {userData.map((user) => (
                   <ManageUsersItem
                     key={user.id}
-                    name={`${user.fname} ${user.lname}`}
-                    email={user.email}
+                    user={user}
+                    onClick={handleSelectUser}
                   />
                 ))}
               </List>

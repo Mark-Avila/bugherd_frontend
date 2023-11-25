@@ -4,21 +4,22 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
+import { User } from "../../types";
 
 interface Props {
-  name: string;
-  email: string;
+  user: User;
+  onClick?: (arg: User) => void;
 }
 
-function ManageUsersItem({ name, email }: Props) {
+function ManageUsersItem({ user, onClick }: Props) {
   return (
-    <ListItemButton divider>
+    <ListItemButton divider onClick={onClick ? () => onClick(user) : () => {}}>
       <ListItemAvatar>
         <Avatar />
       </ListItemAvatar>
       <ListItemText
-        primary={name}
-        secondary={email}
+        primary={`${user.fname} ${user.lname}`}
+        secondary={user.email}
         primaryTypographyProps={{ fontSize: "small" }}
         secondaryTypographyProps={{ fontSize: "small" }}
       />
