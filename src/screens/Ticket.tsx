@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, IconButton, Tooltip } from "@mui/material";
 import { CommentSection, TicketDetails, TicketHeader } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import TicketDescription from "../components/stateless/TicketDescription";
@@ -12,6 +12,7 @@ import {
 } from "../api/commentApiSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import { Refresh } from "@mui/icons-material";
 
 function Ticket() {
   const [ticketData, setTicketData] = useState<(TicketType & User) | null>(
@@ -71,7 +72,17 @@ function Ticket() {
           </Box>
         </Grid>
       </Grid>
-      <PageSection title="Comments" marginTop={3}>
+      <PageSection
+        title="Comments"
+        marginTop={3}
+        action={
+          <Tooltip title="Refresh comments">
+            <IconButton onClick={handleUpdateComments}>
+              <Refresh />
+            </IconButton>
+          </Tooltip>
+        }
+      >
         {auth.user && auth.user.id && ticketData && (
           <CommentSection
             comments={commentsData}
