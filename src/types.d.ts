@@ -13,6 +13,8 @@ export interface SignUpData {
   bday: string;
 }
 
+export type UpdateUserData = Omit<SignInData, "password">;
+
 export interface ResponseBody<T> {
   message: string;
   stack: string | null;

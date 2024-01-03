@@ -29,8 +29,20 @@ export const userApiSlice = apiSlice.injectEndpoints({
         params: arg,
       }),
     }),
+    updateUser: builder.mutation({
+      query: ({ userId, payload }) => ({
+        url: `/user/${userId}`,
+        method: "PUT",
+        body: payload,
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useSigninMutation, useSignupMutation, useGetUsersQuery } =
-  userApiSlice;
+export const {
+  useSigninMutation,
+  useSignupMutation,
+  useGetUsersQuery,
+  useUpdateUserMutation,
+} = userApiSlice;

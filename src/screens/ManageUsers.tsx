@@ -1,12 +1,14 @@
 import { Divider, Grid, List, Paper, Stack, Typography } from "@mui/material";
 import PageSection from "../components/stateless/PageSection";
 import { ManageUsersForm, ManageUsersItem, SearchField } from "../components";
-import { useGetUsersQuery } from "../api/userApiSlice";
-import { InputData, User } from "../types";
+import { useGetUsersQuery, useUpdateUserMutation } from "../api/userApiSlice";
+import { InputData, ResponseBody, User } from "../types";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import dayjs, { Dayjs } from "dayjs";
+import { useSnackError } from "../hooks";
+import { useSnackbar } from "notistack";
 // import { useGetUsersQuery } from "../api/userApiSlice";
 
 const validationSchema = yup.object({
@@ -25,10 +27,15 @@ const initialValues = {
 
 function ManageUsers() {
   const [userData, setUserData] = useState<User[]>([] as User[]);
+  const { snackbarError } = useSnackError();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [userId, setUserId] = useState(0);
 
   const users = useGetUsersQuery({
     name: "",
   });
+  const [updateUser] = useUpdateUserMutation();
 
   useEffect(() => {
     if (!users.isLoading && users.isSuccess && users.data) {
@@ -54,11 +61,32 @@ function ManageUsers() {
     initialValues,
     validationSchema,
     onSubmit: async (values) => {
-      console.log(values);
+      const payload = {
+        ...values,
+        bday: bday.value?.toISOString(),
+        contact: contact.value.replace(/\s+/g, ""),
+      };
+
+      updateUser({ userId, payload })
+        .unwrap()
+        .then((res: ResponseBody<unknown>) => {
+          if (res.success) {
+            enqueueSnackbar("Successfully updated user", {
+              variant: "success",
+            });
+          }
+        })
+        .catch((err) => {
+          snackbarError(err);
+        });
+
+      formik.resetForm();
     },
   });
 
   const handleSelectUser = (user: User) => {
+    setUserId(user.id as number);
+
     formik.setValues({
       fname: user.fname,
       lname: user.lname,
