@@ -20,5 +20,8 @@ export const commentApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetCommentsByTicketIdQuery, useCreateCommentMutation } =
-  commentApiSlice;
+export const {
+  useGetCommentsByTicketIdQuery,
+  useCreateCommentMutation,
+  useLazyGetCommentsByTicketIdQuery,
+} = commentApiSlice;

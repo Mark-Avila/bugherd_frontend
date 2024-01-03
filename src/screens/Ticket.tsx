@@ -6,7 +6,10 @@ import { useGetTicketByIdQuery } from "../api/ticketApiSlice";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Comment, Ticket as TicketType, User } from "../types";
-import { useGetCommentsByTicketIdQuery } from "../api/commentApiSlice";
+import {
+  useGetCommentsByTicketIdQuery,
+  useLazyGetCommentsByTicketIdQuery,
+} from "../api/commentApiSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
@@ -20,6 +23,7 @@ function Ticket() {
   const { ticket_id } = useParams();
   const ticket = useGetTicketByIdQuery(ticket_id!);
   const comments = useGetCommentsByTicketIdQuery(ticket_id!);
+  const [updateComments] = useLazyGetCommentsByTicketIdQuery();
 
   useEffect(() => {
     if (!ticket.isLoading && ticket.data) {
@@ -31,7 +35,11 @@ function Ticket() {
     if (comments.isSuccess && !comments.isError && !comments.isLoading) {
       setComments(comments.data.data);
     }
-  }, [comments.isSuccess]);
+  }, [comments.isFetching]);
+
+  const handleUpdateComments = () => {
+    updateComments(ticket_id!);
+  };
 
   return (
     <Box>
@@ -69,6 +77,7 @@ function Ticket() {
             comments={commentsData}
             user_id={auth.user.id.toString()}
             ticket_id={(ticketData as TicketType).id as string}
+            onSubmit={handleUpdateComments}
           />
         )}
       </PageSection>

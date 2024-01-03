@@ -21,9 +21,10 @@ interface Props {
   comments: Comment[];
   user_id: string;
   ticket_id: string;
+  onSubmit: VoidFunction;
 }
 
-function CommentSection({ comments, user_id, ticket_id }: Props) {
+function CommentSection({ comments, user_id, ticket_id, onSubmit }: Props) {
   const auth = useSelector((state: RootState) => state.auth);
   const [createComment] = useCreateCommentMutation();
 
@@ -54,6 +55,8 @@ function CommentSection({ comments, user_id, ticket_id }: Props) {
             });
             formik.resetForm();
           }
+
+          onSubmit();
         } catch (err: unknown) {
           snackbarError(err as FetchBaseQueryError);
         }
