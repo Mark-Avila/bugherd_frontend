@@ -6,7 +6,6 @@ import {
   ConfirmationNumber,
   DarkMode,
   Dashboard,
-  GroupAdd,
   LightMode,
   Logout,
   Menu,
@@ -140,15 +139,15 @@ function PageDrawer({ open, onClose, width }: Props) {
       icon: <AssignmentInd />,
       onClick: () => handleOnItemClick("/roles"),
     },
-    {
-      text: "Project Users",
-      icon: <GroupAdd />,
-      onClick: () => handleOnItemClick("/dashboard"),
-    },
+    // {
+    //   text: "Project Users",
+    //   icon: <GroupAdd />,
+    //   onClick: () => handleOnItemClick("/dashboard"),
+    // },
     {
       text: "My Projects",
       icon: <Menu />,
-      onClick: () => handleOnItemClick("/dashboard"),
+      onClick: () => handleOnItemClick("/projects"),
     },
     {
       text: "My Tickets",

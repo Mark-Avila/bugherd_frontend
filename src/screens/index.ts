@@ -6,11 +6,13 @@ import Project from "./Project";
 import Ticket from "./Ticket";
 import Profile from "./Profile";
 import ManageUsers from "./ManageUsers";
+import UserProjects from "./UserProjects";
 
 export {
   SignIn,
   Profile,
   ManageUsers,
+  UserProjects,
   SignUp,
   Landing,
   Dashboard,

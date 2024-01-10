@@ -20,6 +20,7 @@ export interface ResponseBody<T> {
   stack: string | null;
   status: number;
   success: boolean;
+  count?: number;
   data: T;
 }
 
@@ -53,6 +54,10 @@ export interface Comment {
   ticket_id: string;
   created_at?: string;
 }
+
+export type ResponseCount = {
+  count: string;
+};
 
 // export type Status = "ongoing" | "completed" | "";
 // export type PriorityString = "high" | "intermediate" | "low" | "";

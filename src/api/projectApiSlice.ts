@@ -3,15 +3,43 @@ import { apiSlice } from "./apiSlice";
 
 type ProjectListResponse = ResponseBody<Project[] | ProjectWithUser[]>;
 
+type Args = { offset: number; limit: number };
+
 export const projectApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Gets the projects related to the current user
-    getCurrentProject: builder.query<ProjectListResponse, void>({
-      query: () => ({ url: "/project/current", credentials: "include" }),
+    getCurrentProject: builder.query<ProjectListResponse, Args | void>({
+      query: (args) => {
+        let limit = 10;
+        let offset = 0;
+
+        if (args) {
+          limit = args.limit;
+          offset = args.offset;
+        }
+
+        return {
+          url: `/project/current?offset=${offset}&limit=${limit}`,
+          credentials: "include",
+        };
+      },
     }),
     // Gets the all projects
-    getAllProjects: builder.query<ProjectListResponse, void>({
-      query: () => ({ url: "/project", credentials: "include" }),
+    getProjects: builder.query<ProjectListResponse, Args | void>({
+      query: (args) => {
+        let limit = 10;
+        let offset = 10;
+
+        if (args) {
+          limit = args.limit;
+          offset = args.offset;
+        }
+
+        return {
+          url: `/project?offset=${offset}&limit=${limit}`,
+          credentials: "include",
+        };
+      },
     }),
     //Get project by ID
     getProjectById: builder.query<ProjectListResponse, string>({
@@ -35,7 +63,8 @@ export const projectApiSlice = apiSlice.injectEndpoints({
 export const {
   useCreateProjectMutation,
   useGetCurrentProjectQuery,
-  useGetAllProjectsQuery,
+  useGetProjectsQuery,
   useGetProjectByIdQuery,
   useLazyGetCurrentProjectQuery,
+  useLazyGetProjectsQuery,
 } = projectApiSlice;

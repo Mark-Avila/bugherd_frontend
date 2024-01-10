@@ -1,8 +1,16 @@
 import "chart.js/auto";
-import { Button, Divider, Stack, Theme, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Pagination,
+  Stack,
+  Theme,
+  useMediaQuery,
+} from "@mui/material";
 import { DataCard, ProjectList } from "../components";
-import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
-import { useEffect } from "react";
+import { useLazyGetCurrentProjectQuery } from "../api/projectApiSlice";
+import React, { useEffect, useState } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { ResponseBody } from "../types";
 import { useDispatch } from "react-redux";
@@ -14,7 +22,12 @@ import { useSnackbar } from "notistack";
 
 export default function Dashboard() {
   const [isProjToggled, toggleProj] = useToggle(false);
-  const projects = useGetCurrentProjectQuery();
+  const [getProjects, projects] = useLazyGetCurrentProjectQuery();
+
+  const [maxPage, setMaxPage] = useState(0);
+  const [currPage, setCurrPage] = useState(1);
+  const PAGE_LIMIT = 5;
+
   const dispatch = useDispatch();
   const isSmallScreen = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down("md")
@@ -22,7 +35,11 @@ export default function Dashboard() {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    const { isError, isLoading, error } = projects;
+    getProjects({ offset: 0, limit: PAGE_LIMIT });
+  }, []);
+
+  useEffect(() => {
+    const { isError, isLoading, error, isSuccess } = projects;
 
     if (isError && !isLoading && error) {
       const err = error as FetchBaseQueryError;
@@ -38,14 +55,27 @@ export default function Dashboard() {
           variant: "error",
         });
       }
+    } else if (!isError && !isLoading && isSuccess) {
+      const pages: number = (projects.data.count as number) / PAGE_LIMIT;
+      setMaxPage(Math.floor(pages));
     }
-  }, []);
+  }, [projects]);
 
   const templateData = [
     { id: 0, value: 33, label: "series A" },
     { id: 1, value: 33, label: "series B" },
     { id: 2, value: 33, label: "series C" },
   ];
+
+  const handlePagination = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    if (value <= maxPage && value >= 0) {
+      setCurrPage(value);
+      getProjects({ offset: (value - 1) * PAGE_LIMIT, limit: PAGE_LIMIT });
+    }
+  };
 
   return (
     <>
@@ -68,7 +98,16 @@ export default function Dashboard() {
           }
           title="Projects assigned"
         >
-          <ProjectList projects={projects.data && projects.data.data} />
+          {!projects.isLoading && projects.isSuccess && (
+            <ProjectList projects={projects.data && projects.data.data} />
+          )}
+          <Box marginTop={2}>
+            <Pagination
+              count={maxPage}
+              onChange={handlePagination}
+              page={currPage}
+            />
+          </Box>
         </PageSection>
       </Stack>
     </>
