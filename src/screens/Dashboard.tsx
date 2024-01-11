@@ -23,9 +23,9 @@ import { useSnackbar } from "notistack";
 export default function Dashboard() {
   const [isProjToggled, toggleProj] = useToggle(false);
   const [getProjects, projects] = useLazyGetCurrentProjectQuery();
-
   const [maxPage, setMaxPage] = useState(0);
   const [currPage, setCurrPage] = useState(1);
+
   const PAGE_LIMIT = 5;
 
   const dispatch = useDispatch();
