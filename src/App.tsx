@@ -12,6 +12,7 @@ import {
   Ticket,
   ManageUsers,
   UserProjects,
+  UserTickets,
 } from "./screens";
 import { createTheme } from "@mui/material";
 import { useState, useMemo, createContext, useEffect } from "react";
@@ -93,6 +94,16 @@ const router = createBrowserRouter(
           element={
             <DrawerLayout title="View Projects">
               <UserProjects />
+            </DrawerLayout>
+          }
+        />
+      </Route>
+      <Route element={<PrivateRoute />} path="">
+        <Route
+          path="/tickets"
+          element={
+            <DrawerLayout title="View Tickets">
+              <UserTickets />
             </DrawerLayout>
           }
         />

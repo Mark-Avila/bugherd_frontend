@@ -2,7 +2,7 @@ import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 import { ReactNode } from "react";
 
 type Props = BoxProps & {
-  title: string;
+  title?: string;
   children: ReactNode;
   action?: JSX.Element;
   primaryTypographyProps?: TypographyProps;
@@ -29,9 +29,11 @@ function PageSection({
         justifyContent="space-between"
         marginBottom={2}
       >
-        <Typography variant="h6" {...primaryTypographyProps}>
-          {title}
-        </Typography>
+        {title && (
+          <Typography variant="h6" {...primaryTypographyProps}>
+            {title}
+          </Typography>
+        )}
         {action || null}
       </Box>
       {children}

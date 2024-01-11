@@ -12,7 +12,7 @@ import { useGetProjectByIdQuery } from "../api/projectApiSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { Project as ProjectType } from "../types";
 import { useGetProjectAssignQuery } from "../api/projectAssignApiSlice";
-import { useGetTicketByProjectIdQuery } from "../api/ticketApiSlice";
+import { useLazyGetTicketByProjectIdQuery } from "../api/ticketApiSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
@@ -23,11 +23,14 @@ function Project() {
   const handleOnClose = () => setTicketModal(false);
   const { project_id } = useParams();
   const navigate = useNavigate();
+  const [maxPage, setMaxPage] = useState(0);
+  const [currPage, setCurrPage] = useState(1);
 
   const auth = useSelector((state: RootState) => state.auth);
   const project = useGetProjectByIdQuery(project_id!);
   const assigned = useGetProjectAssignQuery(project_id!);
-  const tickets = useGetTicketByProjectIdQuery(project_id!);
+  const [getTickets, tickets] = useLazyGetTicketByProjectIdQuery();
+  const TICKET_LIMIT = 5;
 
   useEffect(() => {
     if (project.data) {
@@ -39,6 +42,19 @@ function Project() {
     }
   }, [project.data]);
 
+  useEffect(() => {
+    getTickets({ offset: 0, limit: 10, project_id: project_id as string });
+  }, []);
+
+  useEffect(() => {
+    const { isError, isLoading, isSuccess } = tickets;
+
+    if (!isError && !isLoading && isSuccess) {
+      const pages: number = (tickets.data.count as number) / TICKET_LIMIT;
+      setMaxPage(Math.floor(pages));
+    }
+  }, [tickets]);
+
   if (
     project.isLoading ||
     project.isError ||
@@ -47,6 +63,20 @@ function Project() {
   ) {
     return <LoadingScreen />;
   }
+
+  const handlePagination = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    if (value <= maxPage && value >= 0 && value !== currPage) {
+      setCurrPage(value);
+      getTickets({
+        offset: (value - 1) * TICKET_LIMIT,
+        limit: TICKET_LIMIT,
+        project_id: project_id as string,
+      });
+    }
+  };
 
   return (
     <>
@@ -73,9 +103,15 @@ function Project() {
             {tickets.data && !tickets.isLoading && (
               <TicketList tickets={tickets.data.data} />
             )}
-            <Box mt={2}>
-              <Pagination count={10} />
-            </Box>
+            {maxPage > 1 && (
+              <Box mt={2}>
+                <Pagination
+                  count={maxPage}
+                  page={currPage}
+                  onChange={handlePagination}
+                />
+              </Box>
+            )}
           </PageSection>
         </Grid>
         <Grid item xs={12} md={6} lg={3}>

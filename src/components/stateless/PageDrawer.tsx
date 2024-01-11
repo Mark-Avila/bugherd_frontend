@@ -152,7 +152,7 @@ function PageDrawer({ open, onClose, width }: Props) {
     {
       text: "My Tickets",
       icon: <ConfirmationNumber />,
-      onClick: () => handleOnItemClick("/dashboard"),
+      onClick: () => handleOnItemClick("/tickets"),
     },
   ];
 

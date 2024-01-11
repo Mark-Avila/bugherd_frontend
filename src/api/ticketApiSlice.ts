@@ -1,6 +1,8 @@
 import { ResponseBody, Ticket, TicketWithUser, User } from "../types";
 import { apiSlice } from "./apiSlice";
 
+type Args = { offset: number; limit: number };
+
 const ticketApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     createTicket: builder.mutation({
@@ -11,14 +13,39 @@ const ticketApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
-    getTicketByProjectId: builder.query<ResponseBody<TicketWithUser[]>, string>(
-      {
-        query: (project_id: string) => ({
-          url: `/ticket/${project_id}/project`,
+    getTicketByProjectId: builder.query<
+      ResponseBody<TicketWithUser[]>,
+      { project_id: string } & Args
+    >({
+      query: (args) => {
+        const limit = args.limit;
+        const offset = args.offset;
+
+        return {
+          url: `/ticket/${args.project_id}/project?offset=${offset}&limit=${limit}`,
           credentials: "include",
-        }),
-      }
-    ),
+        };
+      },
+    }),
+    getTicketsOfCurrentUser: builder.query<
+      ResponseBody<TicketWithUser[]>,
+      Args | undefined
+    >({
+      query: (args) => {
+        let limit = 10;
+        let offset = 0;
+
+        if (args) {
+          limit = args.limit;
+          offset = args.offset;
+        }
+
+        return {
+          url: `/ticket/current?offset=${offset}&limit=${limit}`,
+          credentials: "include",
+        };
+      },
+    }),
     getTicketById: builder.query<ResponseBody<Array<Ticket & User>>, string>({
       query: (ticket_id: string) => ({
         url: `/ticket/${ticket_id}`,
@@ -32,5 +59,7 @@ export const {
   useCreateTicketMutation,
   useGetTicketByProjectIdQuery,
   useGetTicketByIdQuery,
+  useLazyGetTicketByIdQuery,
   useLazyGetTicketByProjectIdQuery,
+  useLazyGetTicketsOfCurrentUserQuery,
 } = ticketApiSlice;

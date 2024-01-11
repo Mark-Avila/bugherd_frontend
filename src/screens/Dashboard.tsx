@@ -28,10 +28,10 @@ export default function Dashboard() {
 
   const PAGE_LIMIT = 5;
 
-  const dispatch = useDispatch();
   const isSmallScreen = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down("md")
   );
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {

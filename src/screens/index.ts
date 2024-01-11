@@ -7,12 +7,14 @@ import Ticket from "./Ticket";
 import Profile from "./Profile";
 import ManageUsers from "./ManageUsers";
 import UserProjects from "./UserProjects";
+import UserTickets from "./UserTickets";
 
 export {
   SignIn,
   Profile,
   ManageUsers,
   UserProjects,
+  UserTickets,
   SignUp,
   Landing,
   Dashboard,
