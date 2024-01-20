@@ -57,6 +57,20 @@ export const projectApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    updateProject: builder.mutation<
+      ResponseBody<unknown>,
+      { project_id: string; title: string; descr: string }
+    >({
+      query: ({ project_id, title, descr }) => ({
+        url: `/project/${project_id}`,
+        method: "PUT",
+        body: {
+          title: title,
+          descr: descr,
+        },
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -67,4 +81,5 @@ export const {
   useGetProjectByIdQuery,
   useLazyGetCurrentProjectQuery,
   useLazyGetProjectsQuery,
+  useUpdateProjectMutation,
 } = projectApiSlice;

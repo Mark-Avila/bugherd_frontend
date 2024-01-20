@@ -15,9 +15,13 @@ import { useGetProjectAssignQuery } from "../api/projectAssignApiSlice";
 import { useLazyGetTicketByProjectIdQuery } from "../api/ticketApiSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import EditProjectModal from "./EditProjectModal";
+
+//TODO: Auth check on all submits
 
 function Project() {
   const [ticketModal, setTicketModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
   const [projectData, setProjectData] = useState<ProjectType | null>(null);
   const toggleTicketModal = () => setTicketModal((prev) => !prev);
   const handleOnClose = () => setTicketModal(false);
@@ -78,9 +82,33 @@ function Project() {
     }
   };
 
+  const handleModalClose = () => {
+    setEditModal(false);
+  };
+
+  const handleModalOpen = () => {
+    setEditModal(true);
+  };
+
   return (
     <>
-      <PageSection title={projectData?.title || ""}>
+      {projectData.id && (
+        <EditProjectModal
+          title={projectData?.title || "..."}
+          description={projectData?.descr || "..."}
+          project_id={projectData.id?.toString()}
+          open={editModal}
+          onClose={handleModalClose}
+        />
+      )}
+      <PageSection
+        title={projectData?.title || ""}
+        action={
+          <Button variant="contained" onClick={handleModalOpen}>
+            Edit
+          </Button>
+        }
+      >
         <ProjectHeader desc={projectData?.descr || ""} />
       </PageSection>
 
