@@ -19,10 +19,12 @@ import { useToggle } from "../hooks";
 import NewProjectModal from "./NewProjectModal";
 import PageSection from "../components/stateless/PageSection";
 import { useSnackbar } from "notistack";
+import { useGetCurrentTicketStatsQuery } from "../api/userApiSlice";
 
 export default function Dashboard() {
-  const [isProjToggled, toggleProj] = useToggle(false);
   const [getProjects, projects] = useLazyGetCurrentProjectQuery();
+  const ticketStats = useGetCurrentTicketStatsQuery();
+  const [isProjToggled, toggleProj] = useToggle(false);
   const [maxPage, setMaxPage] = useState(0);
   const [currPage, setCurrPage] = useState(1);
 
@@ -37,6 +39,28 @@ export default function Dashboard() {
   useEffect(() => {
     getProjects({ offset: 0, limit: PAGE_LIMIT });
   }, []);
+
+  useEffect(() => {
+    const { isError, isLoading, error, isSuccess } = ticketStats;
+
+    if (isError && !isLoading && error) {
+      const err = error as FetchBaseQueryError;
+
+      if ("error" in err) {
+        enqueueSnackbar("Connection failed", { variant: "error" });
+        dispatch(logout());
+      } else if ((err.data as ResponseBody<unknown>).status === 403) {
+        enqueueSnackbar("Session expired", { variant: "error" });
+        dispatch(logout());
+      } else if ("message" in (err.data as ResponseBody<unknown>)) {
+        enqueueSnackbar((err.data as ResponseBody<unknown>).message, {
+          variant: "error",
+        });
+      }
+    } else if (!isError && !isLoading && isSuccess) {
+      console.log(ticketStats.data.data[0]);
+    }
+  }, [ticketStats]);
 
   useEffect(() => {
     const { isError, isLoading, error, isSuccess } = projects;
@@ -61,12 +85,6 @@ export default function Dashboard() {
     }
   }, [projects]);
 
-  const templateData = [
-    { id: 0, value: 33, label: "series A" },
-    { id: 1, value: 33, label: "series B" },
-    { id: 2, value: 33, label: "series C" },
-  ];
-
   const handlePagination = (
     event: React.ChangeEvent<unknown>,
     value: number
@@ -83,9 +101,22 @@ export default function Dashboard() {
       <Stack spacing={2}>
         <PageSection title="Personal statistics">
           <Stack direction={isSmallScreen ? "column" : "row"} spacing={2}>
-            <DataCard data={templateData} title="Tickets by type" />
-            <DataCard data={templateData} title="Tickets by priority" />
-            <DataCard data={templateData} title="Tickets by status" />
+            {ticketStats.data && (
+              <>
+                <DataCard
+                  data={ticketStats.data?.data[0].type}
+                  title="Tickets by type"
+                />
+                <DataCard
+                  data={ticketStats.data?.data[0].priority}
+                  title="Tickets by priority"
+                />
+                <DataCard
+                  data={ticketStats.data?.data[0].status}
+                  title="Tickets by status"
+                />
+              </>
+            )}
           </Stack>
         </PageSection>
         <Divider />

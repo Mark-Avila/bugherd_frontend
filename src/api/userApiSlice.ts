@@ -1,4 +1,10 @@
-import type { ResponseBody, SignInData, SignUpData, User } from "../types";
+import type {
+  ResponseBody,
+  SignInData,
+  SignUpData,
+  User,
+  UserTicketStats,
+} from "../types";
 import { apiSlice } from "./apiSlice";
 
 interface GetUsersQueries {
@@ -29,6 +35,14 @@ export const userApiSlice = apiSlice.injectEndpoints({
         params: arg,
       }),
     }),
+    getCurrentTicketStats: builder.query<ResponseBody<UserTicketStats[]>, void>(
+      {
+        query: () => ({
+          url: "/user/stats",
+          credentials: "include",
+        }),
+      }
+    ),
     updateUser: builder.mutation({
       query: ({ userId, payload }) => ({
         url: `/user/${userId}`,
@@ -45,4 +59,5 @@ export const {
   useSignupMutation,
   useGetUsersQuery,
   useUpdateUserMutation,
+  useGetCurrentTicketStatsQuery,
 } = userApiSlice;

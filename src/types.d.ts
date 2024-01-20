@@ -59,6 +59,12 @@ export type ResponseCount = {
   count: string;
 };
 
+export interface PieData {
+  id: number;
+  value: number;
+  label: string;
+}
+
 // export type Status = "ongoing" | "completed" | "";
 // export type PriorityString = "high" | "intermediate" | "low" | "";
 export type Priority = 3 | 2 | 1;
@@ -77,6 +83,12 @@ export interface Ticket {
   project_title?: number;
   project_id: number;
   created_at?: string;
+}
+
+export interface UserTicketStats {
+  status: PieData[];
+  type: PieData[];
+  priority: PieData[];
 }
 
 export interface FormikNewTicket {

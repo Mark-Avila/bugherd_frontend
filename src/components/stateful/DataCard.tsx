@@ -1,20 +1,12 @@
 import { Box, Card, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
-
-interface PieData {
-  id: number;
-  value: number;
-  label: string;
-}
+import { PieData } from "../../types";
 
 interface Props {
   title: string;
   data: PieData[];
 }
 
-/**
- * Card used to display Pie chart data
- */
 function DataCard({ data, title }: Props) {
   const theme = useTheme();
   const smallScreen = useMediaQuery(theme.breakpoints.between("xs", "lg"));
