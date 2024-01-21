@@ -8,6 +8,7 @@ import Profile from "./Profile";
 import ManageUsers from "./ManageUsers";
 import UserProjects from "./UserProjects";
 import UserTickets from "./UserTickets";
+import ManageProjects from "./ManageProjects";
 
 export {
   SignIn,
@@ -20,4 +21,5 @@ export {
   Dashboard,
   Project,
   Ticket,
+  ManageProjects,
 };

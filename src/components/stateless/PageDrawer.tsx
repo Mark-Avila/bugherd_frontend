@@ -7,6 +7,7 @@ import {
   DarkMode,
   Dashboard,
   LightMode,
+  ListAlt,
   Logout,
   Menu,
 } from "@mui/icons-material";
@@ -134,11 +135,6 @@ function PageDrawer({ open, onClose, width }: Props) {
       icon: <AccountCircle />,
       onClick: () => handleOnItemClick("/profile"),
     },
-    {
-      text: "Role assignments",
-      icon: <AssignmentInd />,
-      onClick: () => handleOnItemClick("/roles"),
-    },
     // {
     //   text: "Project Users",
     //   icon: <GroupAdd />,
@@ -153,6 +149,16 @@ function PageDrawer({ open, onClose, width }: Props) {
       text: "My Tickets",
       icon: <ConfirmationNumber />,
       onClick: () => handleOnItemClick("/tickets"),
+    },
+    {
+      text: "Manage Users",
+      icon: <AssignmentInd />,
+      onClick: () => handleOnItemClick("/manage/users"),
+    },
+    {
+      text: "Manage Projects",
+      icon: <ListAlt />,
+      onClick: () => handleOnItemClick("/manage/projects"),
     },
   ];
 

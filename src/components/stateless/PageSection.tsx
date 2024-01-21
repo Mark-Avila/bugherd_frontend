@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 type Props = BoxProps & {
   title?: string;
-  children: ReactNode;
+  children?: ReactNode;
   action?: JSX.Element;
   primaryTypographyProps?: TypographyProps;
 };
@@ -36,7 +36,7 @@ function PageSection({
         )}
         {action || null}
       </Box>
-      {children}
+      {children && children}
     </Box>
   );
 }

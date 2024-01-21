@@ -22,6 +22,9 @@ import RoleUserItem from "./stateless/RoleUserItem";
 import ManageUsersItem from "./stateless/ManageUsersItem";
 import ManageUsersForm from "./stateless/ManageUsersForm";
 import SearchField from "./stateless/SearchField";
+import ManageProjectsItem from "./stateless/ManageProjectsItem";
+import ManageProjectUserItem from "./stateless/ManageProjectUserItem";
+import ManageProjectsForm from "./stateless/ManageProjectsForm";
 
 export {
   PageDrawer,
@@ -48,4 +51,7 @@ export {
   ManageUsersItem,
   ManageUsersForm,
   SearchField,
+  ManageProjectsItem,
+  ManageProjectUserItem,
+  ManageProjectsForm,
 };

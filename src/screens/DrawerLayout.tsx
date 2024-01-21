@@ -13,7 +13,7 @@ import { ReactNode, useState } from "react";
 const DRAWER_WIDTH = 240;
 
 interface Props {
-  title: string;
+  title?: string;
   children: ReactNode;
 }
 
@@ -41,9 +41,11 @@ function DrawerLayout({ title, children }: Props) {
           >
             <Menu />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            {title}
-          </Typography>
+          {title && (
+            <Typography variant="h6" noWrap component="div">
+              {title}
+            </Typography>
+          )}
         </Toolbar>
       </AppBar>
       <Box

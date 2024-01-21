@@ -126,7 +126,10 @@ function ManageUsers() {
       <Divider sx={{ marginY: 4 }} />
       <Grid container spacing={4}>
         <Grid item xs={6}>
-          <PageSection title="Users" action={<SearchField />}>
+          <PageSection
+            title="Users"
+            action={<SearchField label="Search User" />}
+          >
             <Paper
               variant="outlined"
               sx={{ maxHeight: 500, overflowY: "auto" }}
