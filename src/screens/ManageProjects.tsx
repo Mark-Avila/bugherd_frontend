@@ -17,6 +17,10 @@ import {
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Add } from "@mui/icons-material";
+import { ChangeEvent, useState } from "react";
+import { useDebounce } from "../hooks";
+import { useGetUsersQuery } from "../api/userApiSlice";
+import { User } from "../types";
 
 const validationSchema = yup.object({
   title: yup
@@ -34,6 +38,17 @@ function ManageProjects() {
   // const [projectId, setProjectId] = useState<number | null>(null);
   // const [selectedUser, setSelectedUser] = useState<number | null>(123);
 
+  //Search string used for searching users
+  const [userSearch, setUserSearch] = useState<string>("");
+
+  //Debouce value of search to reduce search queries
+  const debouncedSearch = useDebounce(userSearch, 500);
+
+  //RTK query's and mutations
+  const searchedUsers = useGetUsersQuery({
+    name: debouncedSearch,
+  });
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -42,6 +57,14 @@ function ManageProjects() {
     validationSchema,
     onSubmit: () => {},
   });
+
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setUserSearch(e.target.value);
+  };
+
+  const handleSearchBlur = () => {
+    setUserSearch("");
+  };
 
   return (
     <PageSection
@@ -54,7 +77,7 @@ function ManageProjects() {
         <Grid item xs={6}>
           <PageSection
             title="Projects"
-            action={<SearchField label="Search Project" />}
+            action={<SearchField value="" label="Search Project" />}
           >
             <Paper
               variant="outlined"
@@ -77,7 +100,21 @@ function ManageProjects() {
             </PageSection>
             <PageSection
               title="Project Members"
-              action={<SearchField label="Add new User" icon={<Add />} />}
+              action={
+                <SearchField
+                  value={userSearch}
+                  options={searchedUsers.data?.data}
+                  getOptionLabel={(item: unknown) =>
+                    `#${(item as User).id} - ${(item as User).fname} ${
+                      (item as User).lname
+                    }`
+                  }
+                  onChange={handleSearch}
+                  label="Add new User"
+                  icon={<Add />}
+                  onBlur={handleSearchBlur}
+                />
+              }
             >
               <Stack spacing={2}>
                 <Paper
