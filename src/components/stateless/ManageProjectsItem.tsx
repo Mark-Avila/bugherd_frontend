@@ -1,12 +1,14 @@
 import { ListItemButton, ListItemText } from "@mui/material";
 
-function ManageProjectsItem() {
+interface Props {
+  title: string;
+  descr: string;
+}
+
+function ManageProjectsItem({ title, descr }: Props) {
   return (
     <ListItemButton divider>
-      <ListItemText
-        primary="Project title"
-        secondary="Description Description Description Description"
-      />
+      <ListItemText primary={title} secondary={descr} />
     </ListItemButton>
   );
 }

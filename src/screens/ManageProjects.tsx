@@ -20,7 +20,8 @@ import { Add } from "@mui/icons-material";
 import { ChangeEvent, useState } from "react";
 import { useDebounce } from "../hooks";
 import { useGetUsersQuery } from "../api/userApiSlice";
-import { User } from "../types";
+import { Project, User } from "../types";
+import { useGetProjectsQuery } from "../api/projectApiSlice";
 
 const validationSchema = yup.object({
   title: yup
@@ -38,16 +39,13 @@ function ManageProjects() {
   // const [projectId, setProjectId] = useState<number | null>(null);
   // const [selectedUser, setSelectedUser] = useState<number | null>(123);
 
-  //Search string used for searching users
   const [userSearch, setUserSearch] = useState<string>("");
-
-  //Debouce value of search to reduce search queries
   const debouncedSearch = useDebounce(userSearch, 500);
-
-  //RTK query's and mutations
   const searchedUsers = useGetUsersQuery({
     name: debouncedSearch,
   });
+
+  const projects = useGetProjectsQuery({ limit: 10, offset: 0 });
 
   const formik = useFormik({
     initialValues: {
@@ -77,18 +75,28 @@ function ManageProjects() {
         <Grid item xs={6}>
           <PageSection
             title="Projects"
-            action={<SearchField value="" label="Search Project" />}
+            action={
+              <SearchField value="" label="Search Project" size="small" />
+            }
           >
             <Paper
               variant="outlined"
               sx={{ maxHeight: 500, overflowY: "auto" }}
             >
               <List disablePadding>
-                <ManageProjectsItem />
-                <ManageProjectsItem />
-                <ManageProjectsItem />
-                <ManageProjectsItem />
-                <ManageProjectsItem />
+                {projects.isSuccess &&
+                  !projects.isLoading &&
+                  projects.data &&
+                  projects.data.data.map((item: Project) => (
+                    <ManageProjectsItem
+                      title={item.title}
+                      descr={
+                        item.descr.length >= 60
+                          ? item.descr.substring(0, 60) + "..."
+                          : item.descr
+                      }
+                    />
+                  ))}
               </List>
             </Paper>
           </PageSection>
@@ -104,11 +112,13 @@ function ManageProjects() {
                 <SearchField
                   value={userSearch}
                   options={searchedUsers.data?.data}
+                  withAutoComplete
                   getOptionLabel={(item: unknown) =>
                     `#${(item as User).id} - ${(item as User).fname} ${
                       (item as User).lname
                     }`
                   }
+                  size="small"
                   onChange={handleSearch}
                   label="Add new User"
                   icon={<Add />}
