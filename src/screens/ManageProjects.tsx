@@ -4,6 +4,7 @@ import {
   Grid,
   List,
   Paper,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -22,6 +23,7 @@ import { useDebounce } from "../hooks";
 import { useGetUsersQuery } from "../api/userApiSlice";
 import { Project, User } from "../types";
 import { useGetProjectsQuery } from "../api/projectApiSlice";
+import { useLazyGetProjectAssignQuery } from "../api/projectAssignApiSlice";
 
 const validationSchema = yup.object({
   title: yup
@@ -38,14 +40,14 @@ const validationSchema = yup.object({
 function ManageProjects() {
   // const [projectId, setProjectId] = useState<number | null>(null);
   // const [selectedUser, setSelectedUser] = useState<number | null>(123);
-
+  const [currProjId, setCurrProjId] = useState<string>("");
   const [userSearch, setUserSearch] = useState<string>("");
   const debouncedSearch = useDebounce(userSearch, 500);
   const searchedUsers = useGetUsersQuery({
     name: debouncedSearch,
   });
-
-  const projects = useGetProjectsQuery({ limit: 10, offset: 0 });
+  const [getProjectUsers, projectUsers] = useLazyGetProjectAssignQuery();
+  const projects = useGetProjectsQuery({ limit: 20, offset: 0 });
 
   const formik = useFormik({
     initialValues: {
@@ -64,6 +66,17 @@ function ManageProjects() {
     setUserSearch("");
   };
 
+  const handleProjectSelect = (project: Project) => {
+    if (project.id) {
+      setCurrProjId(project.id.toString());
+      formik.setValues({
+        title: project.title,
+        description: project.descr,
+      });
+      getProjectUsers(project.id.toString());
+    }
+  };
+
   return (
     <PageSection
       title="Manage Projects"
@@ -79,76 +92,113 @@ function ManageProjects() {
               <SearchField value="" label="Search Project" size="small" />
             }
           >
-            <Paper
-              variant="outlined"
-              sx={{ maxHeight: 500, overflowY: "auto" }}
-            >
-              <List disablePadding>
-                {projects.isSuccess &&
-                  !projects.isLoading &&
-                  projects.data &&
-                  projects.data.data.map((item: Project) => (
+            {projects.isSuccess && !projects.isLoading && projects.data && (
+              <Paper
+                variant="outlined"
+                sx={{ maxHeight: 500, overflowY: "auto" }}
+              >
+                <List disablePadding>
+                  {projects.data.data.map((item: Project) => (
                     <ManageProjectsItem
+                      key={item.id}
                       title={item.title}
                       descr={
                         item.descr.length >= 60
                           ? item.descr.substring(0, 60) + "..."
                           : item.descr
                       }
+                      onClick={() => handleProjectSelect(item)}
                     />
                   ))}
-              </List>
-            </Paper>
+                </List>
+              </Paper>
+            )}
+            {projects.isLoading && (
+              <Stack spacing={1}>
+                <Skeleton variant="rounded" height={72} />
+                <Skeleton variant="rounded" height={72} />
+                <Skeleton variant="rounded" height={72} />
+                <Skeleton variant="rounded" height={72} />
+                <Skeleton variant="rounded" height={72} />
+                <Skeleton variant="rounded" height={72} />
+              </Stack>
+            )}
           </PageSection>
         </Grid>
         <Grid item xs={6}>
-          <Stack spacing={2}>
-            <PageSection title="Project Information">
-              <ManageProjectsForm formik={formik} />
-            </PageSection>
-            <PageSection
-              title="Project Members"
-              action={
-                <SearchField
-                  value={userSearch}
-                  options={searchedUsers.data?.data}
-                  withAutoComplete
-                  getOptionLabel={(item: unknown) =>
-                    `#${(item as User).id} - ${(item as User).fname} ${
-                      (item as User).lname
-                    }`
-                  }
-                  size="small"
-                  onChange={handleSearch}
-                  label="Add new User"
-                  icon={<Add />}
-                  onBlur={handleSearchBlur}
-                />
-              }
-            >
-              <Stack spacing={2}>
-                <Paper
-                  variant="outlined"
-                  sx={{ maxHeight: 500, overflowY: "auto" }}
-                >
-                  <List disablePadding>
-                    <ManageProjectUserItem />
-                    <ManageProjectUserItem />
-                    <ManageProjectUserItem />
-                    <ManageProjectUserItem />
-                    <ManageProjectUserItem />
-                    <ManageProjectUserItem />
-                  </List>
-                </Paper>
-                <Stack direction="row" justifyContent="space-between">
-                  <Button variant="outlined" color="error">
-                    Delete Project
-                  </Button>
-                  <Button variant="contained">Edit</Button>
+          {currProjId && currProjId !== "" && (
+            <Stack spacing={2}>
+              <PageSection title="Project Information">
+                <ManageProjectsForm formik={formik} />
+              </PageSection>
+              <PageSection
+                title="Project Members"
+                action={
+                  <SearchField
+                    value={userSearch}
+                    options={searchedUsers.data?.data}
+                    withAutoComplete
+                    getOptionLabel={(item: unknown) =>
+                      `#${(item as User).id} - ${(item as User).fname} ${
+                        (item as User).lname
+                      }`
+                    }
+                    size="small"
+                    onChange={handleSearch}
+                    label="Add new User"
+                    icon={<Add />}
+                    onBlur={handleSearchBlur}
+                  />
+                }
+              >
+                <Stack spacing={2}>
+                  {!projectUsers.isFetching && projectUsers.data && (
+                    <Paper
+                      variant="outlined"
+                      sx={{ maxHeight: 500, overflowY: "auto" }}
+                    >
+                      <List disablePadding>
+                        {projectUsers.data.data.length >= 1 ? (
+                          projectUsers.data.data.map((assignedMember) => (
+                            <ManageProjectUserItem
+                              key={assignedMember.id}
+                              name={`${assignedMember.fname} ${assignedMember.lname}`}
+                              role={assignedMember.role}
+                            />
+                          ))
+                        ) : (
+                          <Stack spacing={1} padding={3}>
+                            <Typography color="text.disabled">
+                              No assigned Members
+                            </Typography>
+                          </Stack>
+                        )}
+                      </List>
+                    </Paper>
+                  )}
+                  {projectUsers.isFetching && (
+                    <Stack spacing={1}>
+                      <Skeleton variant="rounded" height={84} />
+                    </Stack>
+                  )}
+                  <Stack direction="row" justifyContent="space-between">
+                    <Button variant="outlined" color="error">
+                      Delete Project
+                    </Button>
+                    <Button variant="contained">Edit</Button>
+                  </Stack>
                 </Stack>
-              </Stack>
-            </PageSection>
-          </Stack>
+              </PageSection>
+            </Stack>
+          )}
+
+          {!currProjId && (
+            <Stack>
+              <Typography variant="h3" color="text.disabled">
+                No Project selected
+              </Typography>
+            </Stack>
+          )}
         </Grid>
       </Grid>
     </PageSection>

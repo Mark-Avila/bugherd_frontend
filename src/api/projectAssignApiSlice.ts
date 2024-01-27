@@ -20,5 +20,8 @@ export const projectAssignApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useCreateProjectAssignMutation, useGetProjectAssignQuery } =
-  projectAssignApiSlice;
+export const {
+  useCreateProjectAssignMutation,
+  useLazyGetProjectAssignQuery,
+  useGetProjectAssignQuery,
+} = projectAssignApiSlice;
