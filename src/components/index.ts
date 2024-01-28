@@ -25,6 +25,7 @@ import SearchField from "./stateless/SearchField";
 import ManageProjectsItem from "./stateless/ManageProjectsItem";
 import ManageProjectUserItem from "./stateless/ManageProjectUserItem";
 import ManageProjectsForm from "./stateless/ManageProjectsForm";
+import ManageProjectUserList from "./stateless/ManageProjectUserList";
 
 export {
   PageDrawer,
@@ -54,4 +55,5 @@ export {
   ManageProjectsItem,
   ManageProjectUserItem,
   ManageProjectsForm,
+  ManageProjectUserList,
 };

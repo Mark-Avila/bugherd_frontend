@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import PageSection from "../components/stateless/PageSection";
 import {
-  ManageProjectUserItem,
+  ManageProjectUserList,
   ManageProjectsForm,
   ManageProjectsItem,
   SearchField,
@@ -153,28 +153,7 @@ function ManageProjects() {
               >
                 <Stack spacing={2}>
                   {!projectUsers.isFetching && projectUsers.data && (
-                    <Paper
-                      variant="outlined"
-                      sx={{ maxHeight: 500, overflowY: "auto" }}
-                    >
-                      <List disablePadding>
-                        {projectUsers.data.data.length >= 1 ? (
-                          projectUsers.data.data.map((assignedMember) => (
-                            <ManageProjectUserItem
-                              key={assignedMember.id}
-                              name={`${assignedMember.fname} ${assignedMember.lname}`}
-                              role={assignedMember.role}
-                            />
-                          ))
-                        ) : (
-                          <Stack spacing={1} padding={3}>
-                            <Typography color="text.disabled">
-                              No assigned Members
-                            </Typography>
-                          </Stack>
-                        )}
-                      </List>
-                    </Paper>
+                    <ManageProjectUserList users={projectUsers.data.data} />
                   )}
                   {projectUsers.isFetching && (
                     <Stack spacing={1}>

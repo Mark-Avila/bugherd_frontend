@@ -41,7 +41,7 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    const { isError, isLoading, error, isSuccess } = ticketStats;
+    const { isError, isLoading, error } = ticketStats;
 
     if (isError && !isLoading && error) {
       const err = error as FetchBaseQueryError;
@@ -57,8 +57,6 @@ export default function Dashboard() {
           variant: "error",
         });
       }
-    } else if (!isError && !isLoading && isSuccess) {
-      console.log(ticketStats.data.data[0]);
     }
   }, [ticketStats]);
 
