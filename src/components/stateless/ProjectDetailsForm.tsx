@@ -115,48 +115,6 @@ function ProjectDetailsForms({
               </ListItemSecondaryAction>
             </ListItem>
           ))}
-          {/* {assigned.map(
-            (item, index) =>
-              item && (
-                <ListItem key={index + 100} divider>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      fontSize: 12,
-                      color: leader === item.id.toString() ? "primary" : "",
-                    }}
-                    primary={
-                      (leader === item.id.toString() ? "(Leader) " : "") +
-                      item.fname +
-                      " " +
-                      item.lname
-                    }
-                  />
-                  <ListItemSecondaryAction>
-                    <Tooltip title="Project Manager">
-                      <IconButton
-                        onClick={() => handleToggleLeader(item.id!.toString())}
-                      >
-                        <AssignmentInd />
-                      </IconButton>
-                    </Tooltip>
-
-                    {auth.user ? (
-                      auth.user.id !== item.id && (
-                        <Tooltip title="Remove from team">
-                          <IconButton
-                            onClick={() => handleRemoveFromAssigned(item)}
-                          >
-                            <Close fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      )
-                    ) : (
-                      <></>
-                    )}
-                  </ListItemSecondaryAction>
-                </ListItem>
-              )
-          )} */}
         </List>
       </Paper>
     </Stack>
