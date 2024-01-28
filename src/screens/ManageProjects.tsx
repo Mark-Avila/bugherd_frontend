@@ -17,11 +17,14 @@ import {
 } from "../components";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useState } from "react";
-import { Project } from "../types";
+import { useEffect, useState } from "react";
+import { Project, User } from "../types";
 import { useGetProjectsQuery } from "../api/projectApiSlice";
 import { useLazyGetProjectAssignQuery } from "../api/projectAssignApiSlice";
 import NewMemberModal from "./NewMemberModal";
+import { useSnackError } from "../hooks";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { useSnackbar } from "notistack";
 
 const validationSchema = yup.object({
   title: yup
@@ -36,12 +39,31 @@ const validationSchema = yup.object({
 });
 
 function ManageProjects() {
-  // const [projectId, setProjectId] = useState<number | null>(null);
-  // const [selectedUser, setSelectedUser] = useState<number | null>(123);
   const [currProjId, setCurrProjId] = useState<string>("");
   const [addMemberModal, setAddMemberModal] = useState(false);
+  const { snackbarError } = useSnackError();
+  const { enqueueSnackbar } = useSnackbar();
   const [getProjectUsers, projectUsers] = useLazyGetProjectAssignQuery();
   const projects = useGetProjectsQuery({ limit: 20, offset: 0 });
+
+  const [idsToRemove, setIdsToRemove] = useState<number[]>([]);
+  const [idsToAdd, setIdsToAdd] = useState<number[]>([]);
+  const [currMembers, setCurrMembers] = useState<User[]>([] as User[]);
+
+  useEffect(() => {
+    const { data, isLoading, error, isFetching, isSuccess, isError } =
+      projectUsers;
+
+    const isDone = !isFetching && !isLoading;
+
+    if (data && isDone && isSuccess && !isError) {
+      setCurrMembers(data.data);
+    }
+
+    if (isError && isDone) {
+      snackbarError(error as FetchBaseQueryError);
+    }
+  }, [projectUsers.data]);
 
   const formik = useFormik({
     initialValues: {
@@ -60,20 +82,62 @@ function ManageProjects() {
         description: project.descr,
       });
       getProjectUsers(project.id.toString());
+      setIdsToRemove([]);
+      setIdsToAdd([]);
     }
   };
 
-  const closeMemberModal = () => {
+  const handleModalClose = () => {
     setAddMemberModal(false);
   };
 
-  const openMemberModal = () => {
+  const handleModalOpen = () => {
     setAddMemberModal(true);
+  };
+
+  const removeMember = (user: User) => {
+    if (user.id) {
+      const newArray = currMembers.filter((obj) => obj.id !== user.id);
+      setCurrMembers(newArray);
+
+      if (idsToAdd.indexOf(user.id) !== -1) {
+        const newIds = idsToAdd.filter((obj) => obj !== user.id);
+        setIdsToAdd(newIds);
+      }
+
+      // Add to id's to be removed if it is part of the original members before the edit
+      if (projectUsers.data?.data.some((obj) => obj["id"] === user.id)) {
+        setIdsToRemove((prev) => [...prev, user.id!]);
+      }
+    }
+  };
+
+  const addMember = (user: User) => {
+    if (currMembers.some((obj) => obj["id"] === user.id)) {
+      enqueueSnackbar("User is already a team member", { variant: "warning" });
+      return;
+    }
+
+    if (user.id) {
+      setCurrMembers((prev) => [...prev, user]);
+
+      if (idsToRemove.indexOf(user.id) !== -1) {
+        const newIds = idsToRemove.filter((obj) => obj !== user.id);
+        setIdsToRemove(newIds);
+      }
+
+      setIdsToAdd((prev) => [...prev, user.id!]);
+      handleModalClose();
+    }
   };
 
   return (
     <>
-      <NewMemberModal open={addMemberModal} onClose={closeMemberModal} />
+      <NewMemberModal
+        open={addMemberModal}
+        onClose={handleModalClose}
+        onClick={addMember}
+      />
       <PageSection
         title="Manage Projects"
         primaryTypographyProps={{ fontSize: 32 }}
@@ -91,7 +155,7 @@ function ManageProjects() {
               {projects.isSuccess && !projects.isLoading && projects.data && (
                 <Paper
                   variant="outlined"
-                  sx={{ maxHeight: 500, overflowY: "auto" }}
+                  sx={{ maxHeight: 550, overflowY: "auto" }}
                 >
                   <List disablePadding>
                     {projects.data.data.map((item: Project) => (
@@ -130,12 +194,15 @@ function ManageProjects() {
                 <PageSection
                   title="Project Members"
                   action={
-                    <Button onClick={openMemberModal}>Add new Member</Button>
+                    <Button onClick={handleModalOpen}>Add new Member</Button>
                   }
                 >
                   <Stack spacing={2}>
                     {!projectUsers.isFetching && projectUsers.data && (
-                      <ManageProjectUserList users={projectUsers.data.data} />
+                      <ManageProjectUserList
+                        users={currMembers}
+                        onItemClick={removeMember}
+                      />
                     )}
                     {projectUsers.isFetching && (
                       <Stack spacing={1}>

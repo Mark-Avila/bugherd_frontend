@@ -4,9 +4,10 @@ import { IconButton, ListItem, ListItemText, Tooltip } from "@mui/material";
 interface Props {
   name: string;
   role: number;
+  onClick: VoidFunction;
 }
 
-function ManageProjectUserItem({ name, role }: Props) {
+function ManageProjectUserItem({ name, role, onClick }: Props) {
   let role_str = "Developer";
 
   if (role === 1) {
@@ -20,7 +21,7 @@ function ManageProjectUserItem({ name, role }: Props) {
       divider
       secondaryAction={
         <Tooltip title="Remove user from Project">
-          <IconButton>
+          <IconButton onClick={onClick}>
             <Delete />
           </IconButton>
         </Tooltip>

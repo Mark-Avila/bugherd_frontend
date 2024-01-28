@@ -4,11 +4,12 @@ import { ManageProjectUserItem } from "..";
 
 interface Props {
   users: User[];
+  onItemClick: (user: User) => void;
 }
 
-function ManageProjectUserList({ users }: Props) {
+function ManageProjectUserList({ users, onItemClick }: Props) {
   return (
-    <Paper variant="outlined" sx={{ maxHeight: 500, overflowY: "auto" }}>
+    <Paper variant="outlined" sx={{ maxHeight: 300, overflowY: "auto" }}>
       <List disablePadding>
         {users.length >= 1 ? (
           users.map((assignedMember) => (
@@ -16,6 +17,7 @@ function ManageProjectUserList({ users }: Props) {
               key={assignedMember.id}
               name={`${assignedMember.fname} ${assignedMember.lname}`}
               role={assignedMember.role}
+              onClick={() => onItemClick(assignedMember)}
             />
           ))
         ) : (

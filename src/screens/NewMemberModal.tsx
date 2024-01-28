@@ -15,13 +15,15 @@ import { Add, Close } from "@mui/icons-material";
 import { ChangeEvent, useState } from "react";
 import { useDebounce } from "../hooks";
 import { useGetUsersQuery } from "../api/userApiSlice";
+import { User } from "../types";
 
 interface Props {
   open: boolean;
   onClose: VoidFunction;
+  onClick?: (user: User) => void;
 }
 
-function NewMemberModal({ open, onClose }: Props) {
+function NewMemberModal({ open, onClose, onClick }: Props) {
   //Search string used for searching users
   const [search, setSearch] = useState<string>("");
 
@@ -113,7 +115,9 @@ function NewMemberModal({ open, onClose }: Props) {
                   divider
                   secondaryAction={
                     <Tooltip title="Add member">
-                      <IconButton>
+                      <IconButton
+                        onClick={() => (onClick ? onClick(user) : {})}
+                      >
                         <Add />
                       </IconButton>
                     </Tooltip>
