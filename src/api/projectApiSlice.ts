@@ -3,11 +3,10 @@ import { apiSlice } from "./apiSlice";
 
 type ProjectListResponse = ResponseBody<Project[] | ProjectWithUser[]>;
 
-type Args = { offset: number; limit: number };
+type Args = { title: string; offset: number; limit: number };
 
 export const projectApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // Gets the projects related to the current user
     getCurrentProject: builder.query<ProjectListResponse, Args | void>({
       query: (args) => {
         let limit = 10;
@@ -24,31 +23,32 @@ export const projectApiSlice = apiSlice.injectEndpoints({
         };
       },
     }),
-    // Gets the all projects
     getProjects: builder.query<ProjectListResponse, Args | void>({
       query: (args) => {
         let limit = 10;
         let offset = 10;
+        let title = "";
 
         if (args) {
           limit = args.limit;
           offset = args.offset;
+          title = args.title;
         }
 
         return {
-          url: `/project?offset=${offset}&limit=${limit}`,
+          url: `/project?title=${
+            title ? title : ""
+          }&offset=${offset}&limit=${limit}`,
           credentials: "include",
         };
       },
     }),
-    //Get project by ID
     getProjectById: builder.query<ProjectListResponse, string>({
       query: (project_id: string) => ({
         url: "/project/" + project_id,
         credentials: "include",
       }),
     }),
-    //Create new project
     createProject: builder.mutation({
       query: (data: Project) => ({
         method: "POST",

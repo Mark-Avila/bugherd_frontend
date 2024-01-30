@@ -107,11 +107,13 @@ export type TicketWithUser = User &
     id: number;
   };
 
-export interface ProjectAssign {
+export interface Assign {
   id?: number;
   user_id: number;
   project_id: number;
 }
+
+export type ProjectAssign = Assign & User;
 
 export interface SelectItemBody<T> {
   value: T;

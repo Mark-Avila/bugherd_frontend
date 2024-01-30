@@ -17,12 +17,19 @@ import {
 } from "../components";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Project, User } from "../types";
-import { useGetProjectsQuery } from "../api/projectApiSlice";
-import { useLazyGetProjectAssignQuery } from "../api/projectAssignApiSlice";
+import {
+  useGetProjectsQuery,
+  useUpdateProjectMutation,
+} from "../api/projectApiSlice";
+import {
+  useCreateProjectAssignMutation,
+  useDeleteProjectAssignMutation,
+  useLazyGetProjectAssignQuery,
+} from "../api/projectAssignApiSlice";
 import NewMemberModal from "./NewMemberModal";
-import { useSnackError } from "../hooks";
+import { useDebounce, useSnackError } from "../hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { useSnackbar } from "notistack";
 
@@ -39,16 +46,28 @@ const validationSchema = yup.object({
 });
 
 function ManageProjects() {
-  const [currProjId, setCurrProjId] = useState<string>("");
-  const [addMemberModal, setAddMemberModal] = useState(false);
   const { snackbarError } = useSnackError();
   const { enqueueSnackbar } = useSnackbar();
   const [getProjectUsers, projectUsers] = useLazyGetProjectAssignQuery();
-  const projects = useGetProjectsQuery({ limit: 20, offset: 0 });
-
+  const [updateProject] = useUpdateProjectMutation();
+  const [deleteAssign] = useDeleteProjectAssignMutation();
+  const [createAssign] = useCreateProjectAssignMutation();
+  const [currProjId, setCurrProjId] = useState<string>("");
+  const [addMemberModal, setAddMemberModal] = useState(false);
   const [idsToRemove, setIdsToRemove] = useState<number[]>([]);
   const [idsToAdd, setIdsToAdd] = useState<number[]>([]);
   const [currMembers, setCurrMembers] = useState<User[]>([] as User[]);
+
+  const [projectSearch, setProjectSearch] = useState<string>("");
+
+  //Debouce value of projectSearch to reduce search queries
+  const debouncedSearch = useDebounce(projectSearch, 500);
+
+  const projects = useGetProjectsQuery({
+    title: debouncedSearch,
+    limit: 20,
+    offset: 0,
+  });
 
   useEffect(() => {
     const { data, isLoading, error, isFetching, isSuccess, isError } =
@@ -71,7 +90,50 @@ function ManageProjects() {
       description: "",
     },
     validationSchema,
-    onSubmit: () => {},
+    onSubmit: async (values) => {
+      const { title, description } = values;
+
+      let error_flag = false;
+
+      updateProject({
+        project_id: currProjId,
+        title: title,
+        descr: description,
+      })
+        .unwrap()
+        .catch((err: FetchBaseQueryError) => {
+          error_flag = true;
+          snackbarError(err);
+        });
+
+      if (idsToRemove.length >= 1) {
+        idsToRemove.forEach((user_id) => {
+          deleteAssign({ user_id: user_id, project_id: parseInt(currProjId) })
+            .unwrap()
+            .catch((err) => {
+              error_flag = true;
+              snackbarError(err);
+            });
+        });
+      }
+
+      if (idsToAdd.length >= 1) {
+        idsToAdd.forEach((user_id) => {
+          createAssign({ user_id: user_id, project_id: parseInt(currProjId) })
+            .unwrap()
+            .catch((err) => {
+              error_flag = true;
+              snackbarError(err);
+            });
+        });
+      }
+
+      if (!error_flag) {
+        enqueueSnackbar("Successfully Updated Project Information", {
+          variant: "success",
+        });
+      }
+    },
   });
 
   const handleProjectSelect = (project: Project) => {
@@ -131,6 +193,10 @@ function ManageProjects() {
     }
   };
 
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setProjectSearch(e.target.value);
+  };
+
   return (
     <>
       <NewMemberModal
@@ -149,7 +215,12 @@ function ManageProjects() {
             <PageSection
               title="Projects"
               action={
-                <SearchField value="" label="Search Project" size="small" />
+                <SearchField
+                  value={projectSearch}
+                  onChange={handleSearchChange}
+                  label="Search Project"
+                  size="small"
+                />
               }
             >
               {projects.isSuccess && !projects.isLoading && projects.data && (
@@ -173,14 +244,11 @@ function ManageProjects() {
                   </List>
                 </Paper>
               )}
-              {projects.isLoading && (
+              {(projects.isLoading || projects.isFetching) && (
                 <Stack spacing={1}>
-                  <Skeleton variant="rounded" height={72} />
-                  <Skeleton variant="rounded" height={72} />
-                  <Skeleton variant="rounded" height={72} />
-                  <Skeleton variant="rounded" height={72} />
-                  <Skeleton variant="rounded" height={72} />
-                  <Skeleton variant="rounded" height={72} />
+                  {[1, 2, 3, 4, 5].map((item) => (
+                    <Skeleton key={item} variant="rounded" height={72} />
+                  ))}
                 </Stack>
               )}
             </PageSection>
@@ -213,7 +281,12 @@ function ManageProjects() {
                       <Button variant="outlined" color="error">
                         Delete Project
                       </Button>
-                      <Button variant="contained">Edit</Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => formik.handleSubmit()}
+                      >
+                        Edit
+                      </Button>
                     </Stack>
                   </Stack>
                 </PageSection>
