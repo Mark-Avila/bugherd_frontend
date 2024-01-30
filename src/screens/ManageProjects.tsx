@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import PageSection from "../components/stateless/PageSection";
 import {
+  ConfirmDialog,
   ManageProjectUserList,
   ManageProjectsForm,
   ManageProjectsItem,
@@ -20,7 +21,7 @@ import * as yup from "yup";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Project, User } from "../types";
 import {
-  useGetProjectsQuery,
+  useLazyGetProjectsQuery,
   useUpdateProjectMutation,
 } from "../api/projectApiSlice";
 import {
@@ -57,17 +58,25 @@ function ManageProjects() {
   const [idsToRemove, setIdsToRemove] = useState<number[]>([]);
   const [idsToAdd, setIdsToAdd] = useState<number[]>([]);
   const [currMembers, setCurrMembers] = useState<User[]>([] as User[]);
-
+  const [ogData, setOgData] = useState<{ title: string; description: string }>({
+    title: "",
+    description: "",
+  });
   const [projectSearch, setProjectSearch] = useState<string>("");
+  const [confirmDialog, setConfirmDialog] = useState(false);
 
   //Debouce value of projectSearch to reduce search queries
   const debouncedSearch = useDebounce(projectSearch, 500);
 
-  const projects = useGetProjectsQuery({
-    title: debouncedSearch,
-    limit: 20,
-    offset: 0,
-  });
+  const [getProjects, projects] = useLazyGetProjectsQuery();
+
+  useEffect(() => {
+    getProjects({
+      title: debouncedSearch,
+      limit: 20,
+      offset: 0,
+    }).unwrap();
+  }, []);
 
   useEffect(() => {
     const { data, isLoading, error, isFetching, isSuccess, isError } =
@@ -91,6 +100,10 @@ function ManageProjects() {
     },
     validationSchema,
     onSubmit: async (values) => {
+      if (!projects.data) {
+        return;
+      }
+
       const { title, description } = values;
 
       let error_flag = false;
@@ -129,9 +142,17 @@ function ManageProjects() {
       }
 
       if (!error_flag) {
+        setCurrProjId("");
+        setCurrMembers([]);
+        setConfirmDialog(false);
         enqueueSnackbar("Successfully Updated Project Information", {
           variant: "success",
         });
+        getProjects({
+          title: debouncedSearch,
+          limit: 20,
+          offset: 0,
+        }).unwrap();
       }
     },
   });
@@ -139,10 +160,12 @@ function ManageProjects() {
   const handleProjectSelect = (project: Project) => {
     if (project.id) {
       setCurrProjId(project.id.toString());
-      formik.setValues({
+      const values = {
         title: project.title,
         description: project.descr,
-      });
+      };
+      formik.setValues(values);
+      setOgData(values);
       getProjectUsers(project.id.toString());
       setIdsToRemove([]);
       setIdsToAdd([]);
@@ -197,8 +220,36 @@ function ManageProjects() {
     setProjectSearch(e.target.value);
   };
 
+  const openConfirm = () => {
+    const { title, description } = formik.values;
+
+    const isInfoNotUpdated =
+      title === ogData.title && description === ogData.description;
+    const isMembersNotUpdated =
+      idsToRemove.length === 0 && idsToAdd.length === 0;
+
+    if (isInfoNotUpdated && isMembersNotUpdated) {
+      enqueueSnackbar("No Information was updated", { variant: "info" });
+      return;
+    }
+
+    setConfirmDialog(true);
+  };
+
+  const closeConfirm = () => {
+    setConfirmDialog(false);
+  };
+
   return (
     <>
+      <ConfirmDialog
+        open={confirmDialog}
+        title="Confirm Changes"
+        descr="Are you sure you want to save the changes to this Project?"
+        onClose={closeConfirm}
+        onNo={closeConfirm}
+        onYes={formik.handleSubmit}
+      />
       <NewMemberModal
         open={addMemberModal}
         onClose={handleModalClose}
@@ -232,6 +283,7 @@ function ManageProjects() {
                     {projects.data.data.map((item: Project) => (
                       <ManageProjectsItem
                         key={item.id}
+                        id={item.id!}
                         title={item.title}
                         descr={
                           item.descr.length >= 60
@@ -281,10 +333,7 @@ function ManageProjects() {
                       <Button variant="outlined" color="error">
                         Delete Project
                       </Button>
-                      <Button
-                        variant="contained"
-                        onClick={() => formik.handleSubmit()}
-                      >
+                      <Button variant="contained" onClick={openConfirm}>
                         Edit
                       </Button>
                     </Stack>
