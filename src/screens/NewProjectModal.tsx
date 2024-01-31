@@ -128,7 +128,9 @@ function NewProjectModal({ onClose, open }: Props) {
 
         if (response.success) {
           createdProjectId = response.data[0].id!;
-          enqueueSnackbar(response.message);
+          enqueueSnackbar("Successfully created new project", {
+            variant: "success",
+          });
         }
       } catch (err: unknown) {
         snackbarError(err as FetchBaseQueryError);

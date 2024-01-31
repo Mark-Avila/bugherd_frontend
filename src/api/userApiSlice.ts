@@ -51,6 +51,13 @@ export const userApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    updateUserArchive: builder.mutation({
+      query: ({ userId, archive }) => ({
+        url: `/user/${userId}/archive?archive=${archive}`,
+        method: "PATCH",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -58,6 +65,8 @@ export const {
   useSigninMutation,
   useSignupMutation,
   useGetUsersQuery,
+  useLazyGetUsersQuery,
   useUpdateUserMutation,
   useGetCurrentTicketStatsQuery,
+  useUpdateUserArchiveMutation,
 } = userApiSlice;

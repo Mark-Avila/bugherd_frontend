@@ -1,7 +1,16 @@
 import { Divider, Grid, List, Paper, Stack, Typography } from "@mui/material";
 import PageSection from "../components/stateless/PageSection";
-import { ManageUsersForm, ManageUsersItem, SearchField } from "../components";
-import { useGetUsersQuery, useUpdateUserMutation } from "../api/userApiSlice";
+import {
+  ConfirmDialog,
+  ManageUsersForm,
+  ManageUsersItem,
+  SearchField,
+} from "../components";
+import {
+  useLazyGetUsersQuery,
+  useUpdateUserArchiveMutation,
+  useUpdateUserMutation,
+} from "../api/userApiSlice";
 import { InputData, ResponseBody, User } from "../types";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
@@ -9,6 +18,7 @@ import { useFormik } from "formik";
 import dayjs, { Dayjs } from "dayjs";
 import { useSnackError } from "../hooks";
 import { useSnackbar } from "notistack";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 // import { useGetUsersQuery } from "../api/userApiSlice";
 
 const validationSchema = yup.object({
@@ -30,18 +40,25 @@ function ManageUsers() {
   const { snackbarError } = useSnackError();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [userId, setUserId] = useState(0);
-
-  const users = useGetUsersQuery({
-    name: "",
-  });
+  const [currUser, setCurrUser] = useState<User | null>(null);
+  const [updateUserArchive] = useUpdateUserArchiveMutation();
+  const [getUsers, users] = useLazyGetUsersQuery();
   const [updateUser] = useUpdateUserMutation();
+
+  const [confArchDialog, setConfArchDialog] = useState<boolean>(false);
+  const [confUnArchDialog, setConfUnArchDialog] = useState<boolean>(false);
+
+  useEffect(() => {
+    getUsers({
+      name: "",
+    }).unwrap();
+  }, []);
 
   useEffect(() => {
     if (!users.isLoading && users.isSuccess && users.data) {
       setUserData(users.data.data);
     }
-  }, [users.isLoading]);
+  }, [users.data]);
 
   const [contact, setContact] = useState<InputData<string>>({
     value: "",
@@ -61,13 +78,17 @@ function ManageUsers() {
     initialValues,
     validationSchema,
     onSubmit: async (values) => {
+      if (!currUser) {
+        return;
+      }
+
       const payload = {
         ...values,
         bday: bday.value?.toISOString(),
         contact: contact.value.replace(/\s+/g, ""),
       };
 
-      updateUser({ userId, payload })
+      updateUser({ currUser: currUser.id, payload })
         .unwrap()
         .then((res: ResponseBody<unknown>) => {
           if (res.success) {
@@ -80,12 +101,14 @@ function ManageUsers() {
           snackbarError(err);
         });
 
+      resetBday();
+      resetContact();
       formik.resetForm();
     },
   });
 
   const handleSelectUser = (user: User) => {
-    setUserId(user.id as number);
+    setCurrUser(user);
 
     formik.setValues({
       fname: user.fname,
@@ -97,7 +120,6 @@ function ManageUsers() {
     const birthDate = new Date(user.bday);
     const daysJsBday = dayjs(birthDate);
     handleBdayOnChange(daysJsBday);
-
     handleContactOnChange(user.contact);
   };
 
@@ -115,8 +137,77 @@ function ManageUsers() {
     }));
   };
 
+  const onConfArchClose = () => setConfArchDialog(false);
+  const onConfArchOpen = () => setConfArchDialog(true);
+  const onConfUnArchClose = () => setConfUnArchDialog(false);
+  const onConfUnArchOpen = () => setConfUnArchDialog(true);
+
+  const resetContact = () => {
+    setContact({
+      value: "",
+      helper: "",
+      isError: false,
+      label: "Contact",
+    });
+  };
+
+  const resetBday = () => {
+    setBday({
+      value: null,
+      helper: "",
+      isError: false,
+      label: "Contact",
+    });
+  };
+
+  const handleUserArchive = (archive: boolean) => {
+    if (!currUser) {
+      return;
+    }
+
+    updateUserArchive({ userId: currUser.id, archive: archive })
+      .unwrap()
+      .then((res: ResponseBody<unknown>) => {
+        if (res.success) {
+          enqueueSnackbar(`Successfully ${archive ? "" : "un"}archived user`, {
+            variant: "success",
+          });
+        }
+      })
+      .finally(() => {
+        resetBday();
+        resetContact();
+        setCurrUser(null);
+        formik.resetForm();
+        onConfUnArchClose();
+        onConfArchClose();
+        getUsers({
+          name: "",
+        }).unwrap();
+      })
+      .catch((err: FetchBaseQueryError) => {
+        snackbarError(err);
+      });
+  };
+
   return (
     <>
+      <ConfirmDialog
+        open={confUnArchDialog}
+        title="Unarchive user"
+        descr="Are you sure you want to unarchive this user?"
+        onClose={onConfUnArchClose}
+        onNo={onConfUnArchOpen}
+        onYes={() => handleUserArchive(false)}
+      />
+      <ConfirmDialog
+        open={confArchDialog}
+        title="Archive user"
+        descr="Are you sure you want to archive this user?"
+        onClose={onConfArchClose}
+        onNo={onConfArchClose}
+        onYes={() => handleUserArchive(true)}
+      />
       <PageSection
         title="Manage Users"
         primaryTypographyProps={{ fontSize: 32 }}
@@ -148,11 +239,14 @@ function ManageUsers() {
         </Grid>
         <Grid item xs={6}>
           <PageSection title="User Information">
-            {formik.values.fname !== "" ? (
+            {currUser && formik.values.fname !== "" ? (
               <ManageUsersForm
                 formik={formik}
                 contact={contact}
                 bday={bday}
+                isArchived={currUser.archived!}
+                onArchive={onConfArchOpen}
+                onUnArchive={onConfUnArchOpen}
                 setBday={handleBdayOnChange}
                 setContact={handleContactOnChange}
                 onSubmit={handleOnSubmit}

@@ -1,11 +1,8 @@
-import { Close, Edit } from "@mui/icons-material";
 import {
-  Avatar,
   Button,
   Divider,
   FormControl,
   Grid,
-  IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -31,6 +28,9 @@ interface Props {
   contact: InputData<string>;
   setContact: (new_contact: string) => void;
   onSubmit: VoidFunction;
+  onArchive: VoidFunction;
+  onUnArchive: VoidFunction;
+  isArchived: boolean;
 }
 
 function ManageUsersForm({
@@ -39,6 +39,9 @@ function ManageUsersForm({
   setContact,
   bday,
   contact,
+  isArchived,
+  onArchive,
+  onUnArchive,
 }: Props) {
   const handleRoleChange = (event: SelectChangeEvent) => {
     formik.setFieldValue("role", event.target.value);
@@ -65,21 +68,6 @@ function ManageUsersForm({
         </Select>
       </FormControl>
       <Divider sx={{ marginY: 1 }} />
-      <Stack
-        marginBottom={2}
-        spacing={3}
-        useFlexGap
-        direction="row"
-        alignItems="center"
-      >
-        <Avatar sx={{ width: 56, height: 56 }} />
-        <IconButton size="small">
-          <Edit fontSize="small" />
-        </IconButton>
-        <IconButton size="small">
-          <Close fontSize="small" />
-        </IconButton>
-      </Stack>
       <Grid container spacing={1}>
         <Grid item xs={6}>
           <TextField
@@ -140,32 +128,16 @@ function ManageUsersForm({
         value={bday.value}
         onChange={setBday}
       />
-      {/* <TextField
-        variant="outlined"
-        label="Contact"
-        fullWidth
-        size="small"
-        name="contact"
-        value={formik.values.contact}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        helperText={formik.touched.contact && formik.errors.contact}
-        error={formik.touched.contact && Boolean(formik.errors.contact)}
-      /> */}
-      {/* <TextField
-        variant="outlined"
-        label="Birthday"
-        fullWidth
-        size="small"
-        name="bday"
-        value={formik.values.bday}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        helperText={formik.touched.bday && formik.errors.bday}
-        error={formik.touched.bday && Boolean(formik.errors.bday)}
-      /> */}
-
-      <Stack direction="row" justifyContent="flex-end">
+      <Stack direction="row" justifyContent="space-between">
+        {isArchived ? (
+          <Button onClick={onUnArchive} variant="outlined" color="warning">
+            Unrchive User
+          </Button>
+        ) : (
+          <Button onClick={onArchive} variant="outlined" color="warning">
+            Archive User
+          </Button>
+        )}
         <Button variant="contained" onClick={() => formik.handleSubmit()}>
           Update
         </Button>

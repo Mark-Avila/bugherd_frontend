@@ -30,7 +30,7 @@ export interface Project {
   descr: string;
   user_id: number;
   num: number;
-  archived: boolean;
+  archived?: boolean;
   createdAt?: string;
 }
 
@@ -44,6 +44,7 @@ export interface User {
   role: 0 | 1 | 2;
   bday: string;
   createdat?: string;
+  archived?: boolean;
 }
 
 export interface Comment {
