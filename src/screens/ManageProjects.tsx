@@ -68,6 +68,7 @@ function ManageProjects() {
   const [projectSearch, setProjectSearch] = useState<string>("");
   const [confirmEditDialog, setConfirmEditDialog] = useState(false);
   const [confirmArchDialog, setConfirmArchDialog] = useState(false);
+  const [confirmUnarchDialog, setConfirmUnarchDialog] = useState(false);
 
   //Debouce value of projectSearch to reduce search queries
   const debouncedSearch = useDebounce(projectSearch, 500);
@@ -250,14 +251,17 @@ function ManageProjects() {
   const openArchiveConfirm = () => setConfirmArchDialog(true);
   const closeArchiveConfirm = () => setConfirmArchDialog(false);
 
-  const handleArchiveProject = () => {
+  const openUnArchiveConfirm = () => setConfirmUnarchDialog(true);
+  const closeUnArchiveConfirm = () => setConfirmUnarchDialog(false);
+
+  const handleArchiveProject = (archive: boolean) => {
     if (!currProj) {
       return;
     }
 
     archiveProject({
       project_id: currProj.id!.toString(),
-      archive: true,
+      archive: archive,
     })
       .unwrap()
       .then((res) => {
@@ -269,6 +273,14 @@ function ManageProjects() {
       })
       .finally(() => {
         closeArchiveConfirm();
+        closeUnArchiveConfirm();
+        setCurrProj(null);
+        setCurrMembers([]);
+        getProjects({
+          title: debouncedSearch,
+          limit: 20,
+          offset: 0,
+        }).unwrap();
       })
       .catch((err: FetchBaseQueryError) => {
         snackbarError(err);
@@ -283,7 +295,15 @@ function ManageProjects() {
         descr="Are you sure you want to archive this Project?"
         onClose={closeArchiveConfirm}
         onNo={closeArchiveConfirm}
-        onYes={handleArchiveProject}
+        onYes={() => handleArchiveProject(true)}
+      />
+      <ConfirmDialog
+        open={confirmUnarchDialog}
+        title="Unarchive Project"
+        descr="Are you sure you want to unarchive this Project?"
+        onClose={closeUnArchiveConfirm}
+        onNo={closeUnArchiveConfirm}
+        onYes={() => handleArchiveProject(false)}
       />
       <ConfirmDialog
         open={confirmEditDialog}
@@ -373,13 +393,23 @@ function ManageProjects() {
                       </Stack>
                     )}
                     <Stack direction="row" justifyContent="space-between">
-                      <Button
-                        onClick={openArchiveConfirm}
-                        variant="outlined"
-                        color="warning"
-                      >
-                        Archive Project
-                      </Button>
+                      {currProj && currProj.archived ? (
+                        <Button
+                          onClick={openUnArchiveConfirm}
+                          variant="outlined"
+                          color="warning"
+                        >
+                          Unarchive Project
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={openArchiveConfirm}
+                          variant="outlined"
+                          color="warning"
+                        >
+                          Archive Project
+                        </Button>
+                      )}
                       <Button variant="contained" onClick={openEditConfirm}>
                         Edit
                       </Button>
