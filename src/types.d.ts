@@ -30,6 +30,7 @@ export interface Project {
   descr: string;
   user_id: number;
   num: number;
+  archived: boolean;
   createdAt?: string;
 }
 

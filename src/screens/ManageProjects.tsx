@@ -21,6 +21,7 @@ import * as yup from "yup";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Project, User } from "../types";
 import {
+  useArchiveProjectMutation,
   useLazyGetProjectsQuery,
   useUpdateProjectMutation,
 } from "../api/projectApiSlice";
@@ -53,7 +54,9 @@ function ManageProjects() {
   const [updateProject] = useUpdateProjectMutation();
   const [deleteAssign] = useDeleteProjectAssignMutation();
   const [createAssign] = useCreateProjectAssignMutation();
-  const [currProjId, setCurrProjId] = useState<string>("");
+  const [archiveProject] = useArchiveProjectMutation();
+  // const [currProjId, setCurrProjId] = useState<string>("");
+  const [currProj, setCurrProj] = useState<Project | null>(null);
   const [addMemberModal, setAddMemberModal] = useState(false);
   const [idsToRemove, setIdsToRemove] = useState<number[]>([]);
   const [idsToAdd, setIdsToAdd] = useState<number[]>([]);
@@ -63,7 +66,8 @@ function ManageProjects() {
     description: "",
   });
   const [projectSearch, setProjectSearch] = useState<string>("");
-  const [confirmDialog, setConfirmDialog] = useState(false);
+  const [confirmEditDialog, setConfirmEditDialog] = useState(false);
+  const [confirmArchDialog, setConfirmArchDialog] = useState(false);
 
   //Debouce value of projectSearch to reduce search queries
   const debouncedSearch = useDebounce(projectSearch, 500);
@@ -104,12 +108,17 @@ function ManageProjects() {
         return;
       }
 
+      if (!currProj) {
+        return;
+      }
+
       const { title, description } = values;
 
       let error_flag = false;
+      const projectId = currProj.id!.toString();
 
       updateProject({
-        project_id: currProjId,
+        project_id: projectId,
         title: title,
         descr: description,
       })
@@ -121,7 +130,7 @@ function ManageProjects() {
 
       if (idsToRemove.length >= 1) {
         idsToRemove.forEach((user_id) => {
-          deleteAssign({ user_id: user_id, project_id: parseInt(currProjId) })
+          deleteAssign({ user_id: user_id, project_id: parseInt(projectId) })
             .unwrap()
             .catch((err) => {
               error_flag = true;
@@ -132,7 +141,7 @@ function ManageProjects() {
 
       if (idsToAdd.length >= 1) {
         idsToAdd.forEach((user_id) => {
-          createAssign({ user_id: user_id, project_id: parseInt(currProjId) })
+          createAssign({ user_id: user_id, project_id: parseInt(projectId) })
             .unwrap()
             .catch((err) => {
               error_flag = true;
@@ -142,9 +151,9 @@ function ManageProjects() {
       }
 
       if (!error_flag) {
-        setCurrProjId("");
+        setCurrProj(null);
         setCurrMembers([]);
-        setConfirmDialog(false);
+        setConfirmEditDialog(false);
         enqueueSnackbar("Successfully Updated Project Information", {
           variant: "success",
         });
@@ -158,15 +167,15 @@ function ManageProjects() {
   });
 
   const handleProjectSelect = (project: Project) => {
-    if (project.id) {
-      setCurrProjId(project.id.toString());
+    if (project) {
+      setCurrProj(project);
       const values = {
         title: project.title,
         description: project.descr,
       };
       formik.setValues(values);
       setOgData(values);
-      getProjectUsers(project.id.toString());
+      getProjectUsers(project.id!.toString());
       setIdsToRemove([]);
       setIdsToAdd([]);
     }
@@ -220,7 +229,7 @@ function ManageProjects() {
     setProjectSearch(e.target.value);
   };
 
-  const openConfirm = () => {
+  const openEditConfirm = () => {
     const { title, description } = formik.values;
 
     const isInfoNotUpdated =
@@ -233,21 +242,55 @@ function ManageProjects() {
       return;
     }
 
-    setConfirmDialog(true);
+    setConfirmEditDialog(true);
   };
 
-  const closeConfirm = () => {
-    setConfirmDialog(false);
+  const closeEditConfirm = () => setConfirmEditDialog(false);
+
+  const openArchiveConfirm = () => setConfirmArchDialog(true);
+  const closeArchiveConfirm = () => setConfirmArchDialog(false);
+
+  const handleArchiveProject = () => {
+    if (!currProj) {
+      return;
+    }
+
+    archiveProject({
+      project_id: currProj.id!.toString(),
+      archive: true,
+    })
+      .unwrap()
+      .then((res) => {
+        if (res.success) {
+          enqueueSnackbar("Successfully archived Project", {
+            variant: "success",
+          });
+        }
+      })
+      .finally(() => {
+        closeArchiveConfirm();
+      })
+      .catch((err: FetchBaseQueryError) => {
+        snackbarError(err);
+      });
   };
 
   return (
     <>
       <ConfirmDialog
-        open={confirmDialog}
+        open={confirmArchDialog}
+        title="Archive Project"
+        descr="Are you sure you want to archive this Project?"
+        onClose={closeArchiveConfirm}
+        onNo={closeArchiveConfirm}
+        onYes={handleArchiveProject}
+      />
+      <ConfirmDialog
+        open={confirmEditDialog}
         title="Confirm Changes"
         descr="Are you sure you want to save the changes to this Project?"
-        onClose={closeConfirm}
-        onNo={closeConfirm}
+        onClose={closeEditConfirm}
+        onNo={closeEditConfirm}
         onYes={formik.handleSubmit}
       />
       <NewMemberModal
@@ -306,7 +349,7 @@ function ManageProjects() {
             </PageSection>
           </Grid>
           <Grid item xs={6}>
-            {currProjId && currProjId !== "" && (
+            {currProj && (
               <Stack spacing={2}>
                 <PageSection title="Project Information">
                   <ManageProjectsForm formik={formik} />
@@ -330,10 +373,14 @@ function ManageProjects() {
                       </Stack>
                     )}
                     <Stack direction="row" justifyContent="space-between">
-                      <Button variant="outlined" color="error">
-                        Delete Project
+                      <Button
+                        onClick={openArchiveConfirm}
+                        variant="outlined"
+                        color="warning"
+                      >
+                        Archive Project
                       </Button>
-                      <Button variant="contained" onClick={openConfirm}>
+                      <Button variant="contained" onClick={openEditConfirm}>
                         Edit
                       </Button>
                     </Stack>
@@ -342,7 +389,7 @@ function ManageProjects() {
               </Stack>
             )}
 
-            {!currProjId && (
+            {!currProj && (
               <Stack>
                 <Typography variant="h3" color="text.disabled">
                   No Project selected

@@ -57,6 +57,16 @@ export const projectApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    archiveProject: builder.mutation<
+      ResponseBody<unknown>,
+      { project_id: string; archive: boolean }
+    >({
+      query: ({ project_id, archive }) => ({
+        url: `/project/${project_id}?archive=${archive}`,
+        method: "PATCH",
+        credentials: "include",
+      }),
+    }),
     updateProject: builder.mutation<
       ResponseBody<unknown>,
       { project_id: string; title: string; descr: string }
@@ -82,4 +92,5 @@ export const {
   useLazyGetCurrentProjectQuery,
   useLazyGetProjectsQuery,
   useUpdateProjectMutation,
+  useArchiveProjectMutation,
 } = projectApiSlice;
