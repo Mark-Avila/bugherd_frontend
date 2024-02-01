@@ -30,7 +30,7 @@ function ProjectListItem({ data, ...props }: Props) {
               {data.title}
             </Typography>
           </Box>
-          <Box flex={2}>
+          <Box display={{ xs: "none", md: "block" }} flex={2}>
             <Typography variant="body2" fontSize="small">
               {data.desc}
             </Typography>

@@ -1,9 +1,9 @@
 import { Box, Card, List, ListItem, Stack, Typography } from "@mui/material";
-import { Project } from "../../types";
+import { ProjectWithUser } from "../../types";
 import ProjectListItem from "./ProjectListItem";
 
 interface Props {
-  projects?: Project[];
+  projects?: ProjectWithUser[];
 }
 
 export default function ProjectList({ projects }: Props) {
@@ -19,7 +19,7 @@ export default function ProjectList({ projects }: Props) {
                     Title
                   </Typography>
                 </Box>
-                <Box flex={2}>
+                <Box display={{ xs: "none", md: "block" }} flex={2}>
                   <Typography variant="body2" fontWeight="bold">
                     Description
                   </Typography>
@@ -40,7 +40,7 @@ export default function ProjectList({ projects }: Props) {
                   id: item.id ? item.id.toString() : "",
                   title: item.title,
                   desc: item.descr,
-                  manager: "Joe Bud",
+                  manager: `${item.fname} ${item.lname}`,
                 }}
                 divider={row.length !== index + 1}
               />

@@ -12,7 +12,7 @@ import { DataCard, ProjectList } from "../components";
 import { useLazyGetCurrentProjectQuery } from "../api/projectApiSlice";
 import React, { useEffect, useState } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { ResponseBody } from "../types";
+import { ProjectWithUser, ResponseBody } from "../types";
 import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
 import { useToggle } from "../hooks";
@@ -128,7 +128,11 @@ export default function Dashboard() {
           title="Projects assigned"
         >
           {!projects.isLoading && projects.isSuccess && (
-            <ProjectList projects={projects.data && projects.data.data} />
+            <ProjectList
+              projects={
+                projects.data && (projects.data.data as ProjectWithUser[])
+              }
+            />
           )}
           <Box marginTop={2}>
             <Pagination
