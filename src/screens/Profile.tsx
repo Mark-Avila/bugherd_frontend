@@ -10,10 +10,10 @@ import {
 
 function Profile() {
   return (
-    <Box display="flex" justifyContent="center">
-      <Stack>
+    <Box display="flex" width={{ xs: "100%", md: 400 }} justifyContent="center">
+      <Stack width="100%">
         <Typography variant="h6">Your Profile</Typography>
-        <Box width={400} mt={2}>
+        <Box width="100%" mt={2}>
           <Paper variant="outlined">
             <Stack>
               <Box display="flex" alignItems="center" gap={2} padding={2}>
