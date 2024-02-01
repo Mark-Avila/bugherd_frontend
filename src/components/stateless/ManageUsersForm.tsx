@@ -48,7 +48,7 @@ function ManageUsersForm({
   };
 
   return (
-    <Stack sx={{ paddingRight: 16 }} useFlexGap spacing={2}>
+    <Stack useFlexGap spacing={2}>
       <FormControl fullWidth>
         <InputLabel id="user-role">Role</InputLabel>
         <Select

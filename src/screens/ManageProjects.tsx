@@ -325,7 +325,7 @@ function ManageProjects() {
         <Typography fontSize="small">Modify organization projects</Typography>
         <Divider sx={{ my: 4 }} />
         <Grid container spacing={4}>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <PageSection
               title="Projects"
               action={
@@ -368,7 +368,7 @@ function ManageProjects() {
               )}
             </PageSection>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             {currProj && (
               <Stack spacing={2}>
                 <PageSection title="Project Information">
@@ -421,9 +421,11 @@ function ManageProjects() {
 
             {!currProj && (
               <Stack>
-                <Typography variant="h3" color="text.disabled">
-                  No Project selected
-                </Typography>
+                <PageSection title="Project Information">
+                  <Typography variant="h3" color="text.disabled">
+                    No Project selected
+                  </Typography>
+                </PageSection>
               </Stack>
             )}
           </Grid>

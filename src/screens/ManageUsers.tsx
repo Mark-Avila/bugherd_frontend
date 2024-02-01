@@ -216,7 +216,7 @@ function ManageUsers() {
       </PageSection>
       <Divider sx={{ marginY: 4 }} />
       <Grid container spacing={4}>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <PageSection
             title="Users"
             action={<SearchField label="Search User" />}
@@ -237,7 +237,7 @@ function ManageUsers() {
             </Paper>
           </PageSection>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <PageSection title="User Information">
             {currUser && formik.values.fname !== "" ? (
               <ManageUsersForm
