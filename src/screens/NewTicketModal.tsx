@@ -97,7 +97,7 @@ function NewTicketModal({ onClose, open, project_id }: Props) {
             variant: "success",
           });
 
-          updateTickets(project_id.toString());
+          updateTickets({ project_id: project_id.toString() });
           return handleOnClose();
         }
       } catch (err: unknown) {

@@ -5,7 +5,6 @@ import UserListItem from "./stateless/UserListItem";
 import ProjectHeader from "./stateless/ProjectHeader";
 import UserList from "./stateless/UserList";
 import TicketList from "./stateless/TicketList";
-import TicketInfo from "./stateless/TicketInfo";
 import ModalWrapper from "./stateless/ModalWrapper";
 import ProjectDetailsForms from "./stateless/ProjectDetailsForm";
 import SelectMembers from "./stateless/SelectMembers";
@@ -36,7 +35,6 @@ export {
   DataCard,
   UserListItem,
   TicketList,
-  TicketInfo,
   ModalWrapper,
   ProjectDetailsForms,
   LoadingScreen,

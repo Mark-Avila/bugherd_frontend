@@ -1,7 +1,7 @@
 import { ResponseBody, Ticket, TicketWithUser, User } from "../types";
 import { apiSlice } from "./apiSlice";
 
-type Args = { offset: number; limit: number };
+type Args = { offset?: number; limit?: number };
 
 const ticketApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -36,8 +36,8 @@ const ticketApiSlice = apiSlice.injectEndpoints({
         let offset = 0;
 
         if (args) {
-          limit = args.limit;
-          offset = args.offset;
+          limit = args.limit ? args.limit : 10;
+          offset = args.offset ? args.offset : 0;
         }
 
         return {

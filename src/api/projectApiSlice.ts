@@ -3,7 +3,7 @@ import { apiSlice } from "./apiSlice";
 
 type ProjectListResponse = ResponseBody<Project[] | ProjectWithUser[]>;
 
-type Args = { title: string; offset: number; limit: number };
+type Args = { title?: string; offset?: number; limit?: number };
 
 export const projectApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -13,8 +13,8 @@ export const projectApiSlice = apiSlice.injectEndpoints({
         let offset = 0;
 
         if (args) {
-          limit = args.limit;
-          offset = args.offset;
+          limit = args.limit ? args.limit : 10;
+          offset = args.offset ? args.offset : 0;
         }
 
         return {
@@ -30,9 +30,9 @@ export const projectApiSlice = apiSlice.injectEndpoints({
         let title = "";
 
         if (args) {
-          limit = args.limit;
-          offset = args.offset;
-          title = args.title;
+          limit = args.limit ? args.limit : 10;
+          offset = args.offset ? args.offset : 0;
+          title = args.title ? args.title : "";
         }
 
         return {
