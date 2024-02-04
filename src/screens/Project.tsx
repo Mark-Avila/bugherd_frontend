@@ -4,13 +4,14 @@ import {
   UserList,
   TicketList,
   LoadingScreen,
+  PageBreadcrumbs,
 } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import { useEffect, useState } from "react";
 import NewTicketModal from "./NewTicketModal";
 import { useGetProjectByIdQuery } from "../api/projectApiSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import { Project as ProjectType } from "../types";
+import { BreadItem, Project as ProjectType } from "../types";
 import { useGetProjectAssignQuery } from "../api/projectAssignApiSlice";
 import { useLazyGetTicketByProjectIdQuery } from "../api/ticketApiSlice";
 import { useSelector } from "react-redux";
@@ -90,6 +91,17 @@ function Project() {
     setEditModal(true);
   };
 
+  const breadItems: BreadItem[] = [
+    {
+      label: "Dashboard",
+      to: "/dashboard",
+    },
+    {
+      label: projectData ? projectData.title : "...",
+      to: `/project/${projectData.id}`,
+    },
+  ];
+
   return (
     <>
       {projectData.id && (
@@ -101,6 +113,7 @@ function Project() {
           onClose={handleModalClose}
         />
       )}
+      <PageBreadcrumbs items={breadItems} />
       <PageSection
         title={projectData?.title || ""}
         action={

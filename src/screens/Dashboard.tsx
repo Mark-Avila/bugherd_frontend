@@ -8,11 +8,11 @@ import {
   Theme,
   useMediaQuery,
 } from "@mui/material";
-import { DataCard, ProjectList } from "../components";
+import { DataCard, PageBreadcrumbs, ProjectList } from "../components";
 import { useLazyGetCurrentProjectQuery } from "../api/projectApiSlice";
 import React, { useEffect, useState } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { ProjectWithUser, ResponseBody } from "../types";
+import { BreadItem, ProjectWithUser, ResponseBody } from "../types";
 import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
 import { useToggle } from "../hooks";
@@ -93,10 +93,18 @@ export default function Dashboard() {
     }
   };
 
+  const breadItems: BreadItem[] = [
+    {
+      label: "Dashboard",
+      to: "/dashboard",
+    },
+  ];
+
   return (
     <>
       <NewProjectModal open={isProjToggled} onClose={toggleProj} />
       <Stack spacing={2}>
+        <PageBreadcrumbs items={breadItems} />
         <PageSection title="Personal statistics">
           <Stack direction={isSmallScreen ? "column" : "row"} spacing={2}>
             {ticketStats.data && (

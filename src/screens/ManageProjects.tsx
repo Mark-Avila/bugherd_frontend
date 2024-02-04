@@ -14,12 +14,13 @@ import {
   ManageProjectUserList,
   ManageProjectsForm,
   ManageProjectsItem,
+  PageBreadcrumbs,
   SearchField,
 } from "../components";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { ChangeEvent, useEffect, useState } from "react";
-import { Project, User } from "../types";
+import { BreadItem, Project, User } from "../types";
 import {
   useArchiveProjectMutation,
   useLazyGetProjectsQuery,
@@ -287,6 +288,17 @@ function ManageProjects() {
       });
   };
 
+  const breadItems: BreadItem[] = [
+    {
+      label: "Dashboard",
+      to: "/dashboard",
+    },
+    {
+      label: "Manage Projects",
+      to: "/manage/projects",
+    },
+  ];
+
   return (
     <>
       <ConfirmDialog
@@ -318,6 +330,7 @@ function ManageProjects() {
         onClose={handleModalClose}
         onClick={addMember}
       />
+      <PageBreadcrumbs items={breadItems} />
       <PageSection
         title="Manage Projects"
         primaryTypographyProps={{ fontSize: 32 }}

@@ -83,7 +83,7 @@ const router = createBrowserRouter(
         <Route
           path="/manage/users"
           element={
-            <DrawerLayout title="Manage User Roles">
+            <DrawerLayout>
               <ManageUsers />
             </DrawerLayout>
           }

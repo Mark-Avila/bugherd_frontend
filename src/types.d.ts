@@ -82,7 +82,7 @@ export interface Ticket {
   est: number;
   num?: number;
   user_id: number;
-  project_title?: number;
+  project_title?: string;
   project_id: number;
   created_at?: string;
 }
@@ -127,4 +127,9 @@ export interface InputData<T> {
   label: string;
   isError: boolean;
   helper: string;
+}
+
+export interface BreadItem {
+  label: string;
+  to: string;
 }

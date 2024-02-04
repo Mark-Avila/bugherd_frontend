@@ -4,6 +4,7 @@ import {
   ConfirmDialog,
   ManageUsersForm,
   ManageUsersItem,
+  PageBreadcrumbs,
   SearchField,
 } from "../components";
 import {
@@ -11,7 +12,7 @@ import {
   useUpdateUserArchiveMutation,
   useUpdateUserMutation,
 } from "../api/userApiSlice";
-import { InputData, ResponseBody, User } from "../types";
+import { BreadItem, InputData, ResponseBody, User } from "../types";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -190,6 +191,17 @@ function ManageUsers() {
       });
   };
 
+  const breadItems: BreadItem[] = [
+    {
+      label: "Dashboard",
+      to: "/dashboard",
+    },
+    {
+      label: "Manage Users",
+      to: "/manage/users",
+    },
+  ];
+
   return (
     <>
       <ConfirmDialog
@@ -208,6 +220,7 @@ function ManageUsers() {
         onNo={onConfArchClose}
         onYes={() => handleUserArchive(true)}
       />
+      <PageBreadcrumbs items={breadItems} />
       <PageSection
         title="Manage Users"
         primaryTypographyProps={{ fontSize: 32 }}

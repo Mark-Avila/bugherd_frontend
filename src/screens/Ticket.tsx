@@ -1,11 +1,16 @@
 import { Box, Grid, IconButton, Tooltip } from "@mui/material";
-import { CommentSection, TicketDetails, TicketHeader } from "../components";
+import {
+  CommentSection,
+  PageBreadcrumbs,
+  TicketDetails,
+  TicketHeader,
+} from "../components";
 import PageSection from "../components/stateless/PageSection";
 import TicketDescription from "../components/stateless/TicketDescription";
 import { useGetTicketByIdQuery } from "../api/ticketApiSlice";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Comment, Ticket as TicketType, User } from "../types";
+import { BreadItem, Comment, Ticket as TicketType, User } from "../types";
 import {
   useGetCommentsByTicketIdQuery,
   useLazyGetCommentsByTicketIdQuery,
@@ -42,8 +47,24 @@ function Ticket() {
     updateComments(ticket_id!);
   };
 
+  const breadItems: BreadItem[] = [
+    {
+      label: "Dashboard",
+      to: "/dashboard",
+    },
+    {
+      label: ticketData ? ticketData.project_title! : "...",
+      to: `/project/${ticketData?.project_id}`,
+    },
+    {
+      label: ticketData ? ticketData.title : "...",
+      to: `/ticket/${ticketData?.id}`,
+    },
+  ];
+
   return (
     <Box>
+      <PageBreadcrumbs items={breadItems} />
       <Box component="header">
         {ticketData && ticketData.num && (
           <TicketHeader

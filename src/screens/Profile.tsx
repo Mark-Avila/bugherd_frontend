@@ -1,9 +1,14 @@
-import { Box, Grid, Stack } from "@mui/material";
-import { ProfileInfo, ProjectList, TicketList } from "../components";
+import { Grid, Stack } from "@mui/material";
+import {
+  PageBreadcrumbs,
+  ProfileInfo,
+  ProjectList,
+  TicketList,
+} from "../components";
 import PageSection from "../components/stateless/PageSection";
 import { useGetTicketsOfCurrentUserQuery } from "../api/ticketApiSlice";
 import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
-import { ProjectWithUser } from "../types";
+import { BreadItem, ProjectWithUser } from "../types";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
@@ -12,8 +17,20 @@ function Profile() {
   const projects = useGetCurrentProjectQuery();
   const { user } = useSelector((state: RootState) => state.auth);
 
+  const breadItems: BreadItem[] = [
+    {
+      label: "Dashboard",
+      to: "/dashboard",
+    },
+    {
+      label: "My Profile",
+      to: "/profile",
+    },
+  ];
+
   return (
-    <Box display="flex" width="100%" justifyContent="center">
+    <Stack width="100%" direction="column">
+      <PageBreadcrumbs items={breadItems} />
       <Grid container width="100%" spacing={2}>
         <Grid item lg={4}>
           <PageSection title="User Details" width="100%">
@@ -35,7 +52,7 @@ function Profile() {
           </Stack>
         </Grid>
       </Grid>
-    </Box>
+    </Stack>
   );
 }
 
