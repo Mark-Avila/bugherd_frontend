@@ -59,6 +59,7 @@ export const {
   useCreateTicketMutation,
   useGetTicketByProjectIdQuery,
   useGetTicketByIdQuery,
+  useGetTicketsOfCurrentUserQuery,
   useLazyGetTicketByIdQuery,
   useLazyGetTicketByProjectIdQuery,
   useLazyGetTicketsOfCurrentUserQuery,

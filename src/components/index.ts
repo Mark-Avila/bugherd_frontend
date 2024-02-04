@@ -26,6 +26,7 @@ import ManageProjectUserItem from "./stateless/ManageProjectUserItem";
 import ManageProjectsForm from "./stateless/ManageProjectsForm";
 import ManageProjectUserList from "./stateless/ManageProjectUserList";
 import ConfirmDialog from "./stateless/ConfirmDialog";
+import ProfileInfo from "./stateless/ProfileInfo";
 
 export {
   PageDrawer,
@@ -56,4 +57,5 @@ export {
   ManageProjectsForm,
   ManageProjectUserList,
   ConfirmDialog,
+  ProfileInfo,
 };

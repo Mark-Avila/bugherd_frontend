@@ -4,9 +4,10 @@ import ProjectListItem from "./ProjectListItem";
 
 interface Props {
   projects?: ProjectWithUser[];
+  includeDescr?: boolean;
 }
 
-export default function ProjectList({ projects }: Props) {
+export default function ProjectList({ projects, includeDescr }: Props) {
   return (
     <Box>
       <Card variant="outlined">
@@ -19,11 +20,13 @@ export default function ProjectList({ projects }: Props) {
                     Title
                   </Typography>
                 </Box>
-                <Box display={{ xs: "none", md: "block" }} flex={2}>
-                  <Typography variant="body2" fontWeight="bold">
-                    Description
-                  </Typography>
-                </Box>
+                {includeDescr && (
+                  <Box display={{ xs: "none", md: "block" }} flex={2}>
+                    <Typography variant="body2" fontWeight="bold">
+                      Description
+                    </Typography>
+                  </Box>
+                )}
                 <Box flex={1}>
                   <Typography variant="body2" fontWeight="bold">
                     Project Manager
@@ -43,6 +46,7 @@ export default function ProjectList({ projects }: Props) {
                   manager: `${item.fname} ${item.lname}`,
                 }}
                 divider={row.length !== index + 1}
+                includeDescr={includeDescr}
               />
             ))}
         </List>

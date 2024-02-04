@@ -16,6 +16,7 @@ import { ChangeEvent, useState } from "react";
 import { useDebounce } from "../hooks";
 import { useGetUsersQuery } from "../api/userApiSlice";
 import { User } from "../types";
+import getRole from "../utils/getRole";
 
 interface Props {
   open: boolean;
@@ -37,18 +38,6 @@ function NewMemberModal({ open, onClose, onClick }: Props) {
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-  };
-
-  const getRole = (role: number) => {
-    let role_str = "Developer";
-
-    if (role === 1) {
-      role_str = "Project Manager";
-    } else if (role === 2) {
-      role_str = "Administrator";
-    }
-
-    return role_str;
   };
 
   return (

@@ -129,6 +129,7 @@ export default function Dashboard() {
         >
           {!projects.isLoading && projects.isSuccess && (
             <ProjectList
+              includeDescr
               projects={
                 projects.data && (projects.data.data as ProjectWithUser[])
               }

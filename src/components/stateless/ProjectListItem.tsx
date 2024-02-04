@@ -14,9 +14,10 @@ type Props = ListItemButtonProps & {
     desc: string;
     manager: string;
   };
+  includeDescr?: boolean;
 };
 
-function ProjectListItem({ data, ...props }: Props) {
+function ProjectListItem({ includeDescr, data, ...props }: Props) {
   const navigate = useNavigate();
 
   const handleOnClick = () => navigate(`/project/${data.id}`);
@@ -30,11 +31,13 @@ function ProjectListItem({ data, ...props }: Props) {
               {data.title}
             </Typography>
           </Box>
-          <Box display={{ xs: "none", md: "block" }} flex={2}>
-            <Typography variant="body2" fontSize="small">
-              {data.desc}
-            </Typography>
-          </Box>
+          {includeDescr && (
+            <Box display={{ xs: "none", md: "block" }} flex={2}>
+              <Typography variant="body2" fontSize="small">
+                {data.desc}
+              </Typography>
+            </Box>
+          )}
           <Box flex={1}>
             <Typography variant="body2" fontSize="small">
               {data.manager}
