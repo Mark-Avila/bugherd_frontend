@@ -3,13 +3,11 @@ import List from "@mui/material/List";
 import {
   AccountCircle,
   AssignmentInd,
-  ConfirmationNumber,
   DarkMode,
   Dashboard,
   LightMode,
   ListAlt,
   Logout,
-  Menu,
 } from "@mui/icons-material";
 import {
   Box,
@@ -18,6 +16,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  ListSubheader,
   Switch,
   Toolbar,
   Typography,
@@ -52,12 +51,13 @@ function DrawerItem({ text, icon, onClick }: IDrawerItem) {
 
 interface IDrawerBody {
   items: IDrawerItem[];
+  adminItems: IDrawerItem[];
 }
 
 /**
  * Drawer body or content component
  */
-function DrawerBody({ items }: IDrawerBody) {
+function DrawerBody({ items, adminItems }: IDrawerBody) {
   const { toggle, mode } = useContext(ColorModeContext);
 
   const dispatch = useDispatch();
@@ -81,16 +81,28 @@ function DrawerBody({ items }: IDrawerBody) {
         </Typography>
       </Box>
       <Divider />
-      <List>
-        {items.map((item, index) => (
-          <DrawerItem
-            key={index}
-            text={item.text}
-            icon={item.icon}
-            onClick={item.onClick}
-          />
-        ))}
-      </List>
+      <nav>
+        <List>
+          {items.map((item, index) => (
+            <DrawerItem
+              key={index}
+              text={item.text}
+              icon={item.icon}
+              onClick={item.onClick}
+            />
+          ))}
+          <Divider />
+          <ListSubheader>Administration</ListSubheader>
+          {adminItems.map((item, index) => (
+            <DrawerItem
+              key={index}
+              text={item.text}
+              icon={item.icon}
+              onClick={item.onClick}
+            />
+          ))}
+        </List>
+      </nav>
       <Divider />
       <List>
         <ListItem>
@@ -135,21 +147,9 @@ function PageDrawer({ open, onClose, width }: Props) {
       icon: <AccountCircle />,
       onClick: () => handleOnItemClick("/profile"),
     },
-    // {
-    //   text: "Project Users",
-    //   icon: <GroupAdd />,
-    //   onClick: () => handleOnItemClick("/dashboard"),
-    // },
-    {
-      text: "My Projects",
-      icon: <Menu />,
-      onClick: () => handleOnItemClick("/projects"),
-    },
-    {
-      text: "My Tickets",
-      icon: <ConfirmationNumber />,
-      onClick: () => handleOnItemClick("/tickets"),
-    },
+  ];
+
+  const AdminNavItems: IDrawerItem[] = [
     {
       text: "Manage Users",
       icon: <AssignmentInd />,
@@ -179,7 +179,7 @@ function PageDrawer({ open, onClose, width }: Props) {
           },
         }}
       >
-        <DrawerBody items={NavItems} />
+        <DrawerBody items={NavItems} adminItems={AdminNavItems} />
       </Drawer>
       <Drawer
         variant="permanent"
@@ -192,7 +192,7 @@ function PageDrawer({ open, onClose, width }: Props) {
         }}
         open
       >
-        <DrawerBody items={NavItems} />
+        <DrawerBody items={NavItems} adminItems={AdminNavItems} />
       </Drawer>
     </>
   );

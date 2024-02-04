@@ -1,4 +1,4 @@
-import { Box, Grid, List, ListItem, Skeleton, Stack } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import { ProfileInfo, ProjectList, TicketList } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import { useGetTicketsOfCurrentUserQuery } from "../api/ticketApiSlice";
@@ -23,27 +23,14 @@ function Profile() {
         <Grid item lg={8}>
           <Stack spacing={4}>
             <PageSection title="Projects Assigned">
-              {projects.data && !projects.isLoading && !projects.isFetching && (
-                <ProjectList
-                  projects={projects.data.data as ProjectWithUser[]}
-                />
-              )}
+              <ProjectList
+                projects={
+                  projects.data && (projects.data.data as ProjectWithUser[])
+                }
+              />
             </PageSection>
             <PageSection title="Tickets created">
-              {tickets.data && <TicketList tickets={tickets.data.data} />}
-              <List>
-                {(tickets.isLoading || tickets.isFetching) &&
-                  [2, 4, 6, 8, 10].map((item, index) => (
-                    <ListItem>
-                      <Skeleton
-                        key={item * index}
-                        variant="rounded"
-                        width="100%"
-                        height={64}
-                      />
-                    </ListItem>
-                  ))}
-              </List>
+              {<TicketList tickets={tickets.data && tickets.data.data} />}
             </PageSection>
           </Stack>
         </Grid>

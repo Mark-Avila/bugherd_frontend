@@ -1,4 +1,12 @@
-import { Box, Card, List, ListItem, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  List,
+  ListItem,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { ProjectWithUser } from "../../types";
 import ProjectListItem from "./ProjectListItem";
 
@@ -35,20 +43,29 @@ export default function ProjectList({ projects, includeDescr }: Props) {
               </Stack>
             </Box>
           </ListItem>
-          {projects &&
-            projects.map((item, index, row) => (
-              <ProjectListItem
-                key={index}
-                data={{
-                  id: item.id ? item.id.toString() : "",
-                  title: item.title,
-                  desc: item.descr,
-                  manager: `${item.fname} ${item.lname}`,
-                }}
-                divider={row.length !== index + 1}
-                includeDescr={includeDescr}
-              />
-            ))}
+          {projects
+            ? projects.map((item, index, row) => (
+                <ProjectListItem
+                  key={index}
+                  data={{
+                    id: item.id ? item.id.toString() : "",
+                    title: item.title,
+                    desc: item.descr,
+                    manager: `${item.fname} ${item.lname}`,
+                  }}
+                  divider={row.length !== index + 1}
+                  includeDescr={includeDescr}
+                />
+              ))
+            : [1, 2, 3, 4, 5].map((item, index) => (
+                <Skeleton
+                  key={item * index}
+                  variant="rounded"
+                  width="100%"
+                  height={72}
+                  sx={{ marginTop: 1 }}
+                />
+              ))}
         </List>
       </Card>
     </Box>
