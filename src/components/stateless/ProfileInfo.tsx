@@ -17,6 +17,12 @@ interface Props {
 }
 
 function ProfileInfo({ user }: Props) {
+  const getAge = (bday: string) => {
+    const currentDate = dayjs().toISOString();
+
+    return dayjs(currentDate).diff(dayjs(bday), "year").toString();
+  };
+
   return (
     <Box width="100%">
       <Paper variant="outlined">
@@ -61,14 +67,16 @@ function ProfileInfo({ user }: Props) {
             )}
           </Box>
           <Divider />
-          {/* <Box display="flex" alignItems="center" gap={2} padding={2}>
+          <Box display="flex" alignItems="center" gap={2} padding={2}>
             <Typography>Age:</Typography>
             {user ? (
-              <Typography color="text.secondary">{user.}</Typography>
+              <Typography color="text.secondary">
+                {getAge(user.bday)}
+              </Typography>
             ) : (
               <Skeleton variant="text" width={150} />
             )}
-          </Box> */}
+          </Box>
           <Divider />
           <Box display="flex" alignItems="center" gap={2} padding={2}>
             <Typography>Contact:</Typography>
