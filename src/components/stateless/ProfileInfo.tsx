@@ -23,6 +23,18 @@ function ProfileInfo({ user }: Props) {
     return dayjs(currentDate).diff(dayjs(bday), "year").toString();
   };
 
+  const getRoleColor = (role: number) => {
+    if (role === 0) {
+      return "default";
+    }
+    if (role === 1) {
+      return "primary";
+    }
+    if (role === 2) {
+      return "success";
+    }
+  };
+
   return (
     <Box width="100%">
       <Paper variant="outlined">
@@ -49,7 +61,10 @@ function ProfileInfo({ user }: Props) {
             <Stack direction="row" spacing={2} alignItems="center">
               <Typography>Role: </Typography>
               {user ? (
-                <Chip label={getRole(user.role)} color="primary" />
+                <Chip
+                  label={getRole(user.role)}
+                  color={getRoleColor(user.role)}
+                />
               ) : (
                 <Skeleton variant="text" width={100} />
               )}
