@@ -83,6 +83,7 @@ export interface Ticket {
   num?: number;
   user_id: number;
   project_title?: string;
+  project_archived?: boolean;
   project_id: number;
   created_at?: string;
 }

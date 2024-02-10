@@ -10,7 +10,7 @@ import TicketDescription from "../components/stateless/TicketDescription";
 import { useGetTicketByIdQuery } from "../api/ticketApiSlice";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { BreadItem, Comment, Ticket as TicketType, User } from "../types";
+import { BreadItem, Comment, Ticket as TicketType } from "../types";
 import {
   useGetCommentsByTicketIdQuery,
   useLazyGetCommentsByTicketIdQuery,
@@ -20,9 +20,9 @@ import { RootState } from "../store";
 import { Refresh } from "@mui/icons-material";
 
 function Ticket() {
-  const [ticketData, setTicketData] = useState<(TicketType & User) | null>(
-    null
-  );
+  const [ticketData, setTicketData] = useState<
+    (TicketType & { fname: string; lname: string }) | null
+  >(null);
   const [commentsData, setComments] = useState<Comment[]>([]);
 
   const auth = useSelector((state: RootState) => state.auth);
@@ -73,6 +73,7 @@ function Ticket() {
             title={ticketData.title}
             author={`${ticketData.fname} ${ticketData.lname}`}
             createdAt="3 days ago"
+            archived={ticketData.project_archived}
           />
         )}
       </Box>
@@ -110,6 +111,7 @@ function Ticket() {
             user_id={auth.user.id.toString()}
             ticket_id={(ticketData as TicketType).id as string}
             onSubmit={handleUpdateComments}
+            archived={ticketData.project_archived}
           />
         )}
       </PageSection>

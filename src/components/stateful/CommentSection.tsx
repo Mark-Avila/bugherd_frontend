@@ -22,9 +22,16 @@ interface Props {
   user_id: string;
   ticket_id: string;
   onSubmit: VoidFunction;
+  archived?: boolean;
 }
 
-function CommentSection({ comments, user_id, ticket_id, onSubmit }: Props) {
+function CommentSection({
+  comments,
+  archived,
+  user_id,
+  ticket_id,
+  onSubmit,
+}: Props) {
   const auth = useSelector((state: RootState) => state.auth);
   const [createComment] = useCreateCommentMutation();
 
@@ -77,7 +84,7 @@ function CommentSection({ comments, user_id, ticket_id, onSubmit }: Props) {
         ))}
       </List>
       <Divider />
-      <CommentInput formik={formik} />
+      {!archived && <CommentInput formik={formik} />}
     </>
   );
 }

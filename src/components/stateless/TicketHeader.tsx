@@ -1,4 +1,4 @@
-import { Avatar, Stack, Typography } from "@mui/material";
+import { Avatar, Chip, Stack, Tooltip, Typography } from "@mui/material";
 
 interface Props {
   issueProject: string;
@@ -6,6 +6,7 @@ interface Props {
   title: string;
   author: string;
   createdAt: string;
+  archived?: boolean;
 }
 
 function TicketHeader({
@@ -14,15 +15,23 @@ function TicketHeader({
   title,
   author,
   createdAt,
+  archived,
 }: Props) {
   return (
     <>
       <Typography variant="body2" color="text.secondary">
         {`${issueProject} #${issueNumber}`}
       </Typography>
-      <Typography mt={2} variant="h4">
-        {title}
-      </Typography>
+      <Stack direction="row" spacing={2} alignItems="center">
+        <Typography mt={2} variant="h4">
+          {title}
+        </Typography>
+        {archived && (
+          <Tooltip title="This Ticket's Project has been archived">
+            <Chip label="Archived" color="warning" />
+          </Tooltip>
+        )}
+      </Stack>
       <Stack direction="row" alignItems="center" mt={2}>
         <Avatar sx={{ width: 24, height: 24, mr: 1 }} />
         <Typography variant="body2" fontWeight="bold">
