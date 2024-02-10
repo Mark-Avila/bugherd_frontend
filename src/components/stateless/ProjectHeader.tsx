@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 
 interface Props {
-  title: string;
-  desc: string;
+  title?: string;
+  desc?: string;
   onEditClick: VoidFunction;
   archived?: boolean;
 }
@@ -25,7 +25,7 @@ function ProjectHeader({ title, desc, archived, onEditClick }: Props) {
         spacing={3}
       >
         <Typography variant="h4">{title}</Typography>
-        <IconButton onClick={onEditClick}>
+        <IconButton onClick={onEditClick} disabled={archived}>
           <Edit />
         </IconButton>
         {archived && (

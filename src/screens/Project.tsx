@@ -132,6 +132,7 @@ function Project() {
                 onClick={toggleTicketModal}
                 variant="contained"
                 size="small"
+                disabled={projectData?.archived}
               >
                 New ticket
               </Button>
@@ -155,8 +156,13 @@ function Project() {
           <PageSection
             title="Team"
             action={
-              auth.user?.id?.toString() === projectData.user_id?.toString() ? (
-                <Button variant="contained" size="small">
+              auth.user?.id?.toString() === projectData.user_id?.toString() ||
+              auth.user?.role === 2 ? (
+                <Button
+                  variant="contained"
+                  size="small"
+                  disabled={projectData?.archived}
+                >
                   Add member
                 </Button>
               ) : (
@@ -164,7 +170,9 @@ function Project() {
               )
             }
           >
-            {assigned.data && <UserList users={assigned.data.data} />}
+            {assigned.data && (
+              <UserList users={assigned.data.data} lead={projectData.user_id} />
+            )}
           </PageSection>
         </Grid>
       </Grid>
