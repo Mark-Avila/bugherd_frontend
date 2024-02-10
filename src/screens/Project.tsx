@@ -114,16 +114,12 @@ function Project() {
         />
       )}
       <PageBreadcrumbs items={breadItems} />
-      <PageSection
-        title={projectData?.title || ""}
-        action={
-          <Button variant="contained" onClick={handleModalOpen}>
-            Edit
-          </Button>
-        }
-      >
-        <ProjectHeader desc={projectData?.descr || ""} />
-      </PageSection>
+      <ProjectHeader
+        title={projectData?.title || "..."}
+        desc={projectData?.descr || ""}
+        onEditClick={handleModalOpen}
+        archived={projectData?.archived}
+      />
 
       <Divider sx={{ marginY: 4 }} />
 
