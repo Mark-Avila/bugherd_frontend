@@ -21,11 +21,12 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ColorModeContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../slices/authSlice";
 import { useDispatch } from "react-redux";
+import ConfirmDialog from "./ConfirmDialog";
 
 interface IDrawerItem {
   text: string;
@@ -59,13 +60,26 @@ interface IDrawerBody {
  */
 function DrawerBody({ items, adminItems }: IDrawerBody) {
   const { toggle, mode } = useContext(ColorModeContext);
+  const [logoutDialog, setLogoutDialog] = useState(false);
 
   const dispatch = useDispatch();
 
   const handleLogOut = () => dispatch(logout());
 
+  const openLogout = () => setLogoutDialog(true);
+
+  const closeLogout = () => setLogoutDialog(false);
+
   return (
     <>
+      <ConfirmDialog
+        open={logoutDialog}
+        title="Log out"
+        descr="Are you sure you want to log out of your account?"
+        onClose={closeLogout}
+        onNo={closeLogout}
+        onYes={handleLogOut}
+      />
       <Toolbar
         sx={{
           display: {
@@ -104,7 +118,7 @@ function DrawerBody({ items, adminItems }: IDrawerBody) {
         </List>
       </nav>
       <Divider />
-      <List>
+      <List sx={{ mt: "auto" }}>
         <ListItem>
           <ListItemIcon>
             {mode === "light" ? <LightMode /> : <DarkMode />}
@@ -115,7 +129,7 @@ function DrawerBody({ items, adminItems }: IDrawerBody) {
             checked={mode === "dark"}
           />
         </ListItem>
-        <DrawerItem text="Sign out" icon={<Logout />} onClick={handleLogOut} />
+        <DrawerItem text="Sign out" icon={<Logout />} onClick={openLogout} />
       </List>
     </>
   );
