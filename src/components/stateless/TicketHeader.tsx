@@ -1,4 +1,4 @@
-import { Avatar, Chip, Stack, Tooltip, Typography } from "@mui/material";
+import { Chip, Stack, Tooltip, Typography } from "@mui/material";
 
 interface Props {
   issueProject: string;
@@ -32,14 +32,12 @@ function TicketHeader({
           </Tooltip>
         )}
       </Stack>
-      <Stack direction="row" alignItems="center" mt={2}>
-        <Avatar sx={{ width: 24, height: 24, mr: 1 }} />
+      <Stack direction="row" alignItems="center" spacing={2} mt={2}>
         <Typography variant="body2" fontWeight="bold">
           {author}
-          {"   "}
-          <Typography variant="body2" component="span" color="text.secondary">
-            {createdAt}
-          </Typography>
+        </Typography>
+        <Typography variant="body2" component="span" color="text.secondary">
+          {createdAt}
         </Typography>
       </Stack>
     </>

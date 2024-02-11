@@ -18,6 +18,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { Refresh } from "@mui/icons-material";
+import dayjs from "dayjs";
 
 function Ticket() {
   const [ticketData, setTicketData] = useState<
@@ -72,7 +73,9 @@ function Ticket() {
             issueProject={ticketData.project_title!.toString()}
             title={ticketData.title}
             author={`${ticketData.fname} ${ticketData.lname}`}
-            createdAt="3 days ago"
+            createdAt={`Created ${dayjs(ticketData.created_at).format(
+              "MMMM DD, YYYY"
+            )}`}
             archived={ticketData.project_archived}
           />
         )}

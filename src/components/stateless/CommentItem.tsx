@@ -8,6 +8,7 @@ import {
   ListItemText,
   Skeleton,
 } from "@mui/material";
+import dayjs from "dayjs";
 
 interface Props {
   name?: string;
@@ -53,7 +54,11 @@ function CommentItem({ name, date, message }: Props) {
               fontSize="small"
               color="text.secondary"
             >
-              {date ? `— commented on ${date}` : ""}
+              {date
+                ? `— commented on ${dayjs(date).format(
+                    "HH:MM - MMMM DD, YYYY"
+                  )}`
+                : ""}
             </Typography>
           </>
         }
