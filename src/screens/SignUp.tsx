@@ -7,11 +7,11 @@ import {
   Grid,
   Box,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { TypographyProps } from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useSnackbar } from "notistack";
@@ -34,8 +34,6 @@ function Copyright(props: TypographyProps) {
     </Typography>
   );
 }
-
-const defaultTheme = createTheme();
 
 interface Props {
   handleScreen: VoidFunction;
@@ -79,7 +77,7 @@ export default function SignUp({ handleScreen }: Props) {
     label: "Contact",
   });
 
-  const [signup] = useSignupMutation();
+  const [signup, { isLoading: isLoading }] = useSignupMutation();
 
   const formik = useFormik({
     initialValues: {
@@ -128,7 +126,13 @@ export default function SignUp({ handleScreen }: Props) {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
+      {isLoading && (
+        <CircularProgress
+          sx={{ position: "absolute", left: 0, top: 0, margin: 2 }}
+          size="2rem"
+        />
+      )}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -164,6 +168,7 @@ export default function SignUp({ handleScreen }: Props) {
                   helperText={formik.touched.fname && formik.errors.fname}
                   error={formik.touched.fname && Boolean(formik.errors.fname)}
                   fullWidth
+                  disabled={isLoading}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -178,6 +183,7 @@ export default function SignUp({ handleScreen }: Props) {
                   helperText={formik.touched.lname && formik.errors.lname}
                   error={formik.touched.lname && Boolean(formik.errors.lname)}
                   fullWidth
+                  disabled={isLoading}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -193,6 +199,7 @@ export default function SignUp({ handleScreen }: Props) {
                   onBlur={formik.handleBlur}
                   helperText={formik.touched.email && formik.errors.email}
                   error={formik.touched.email && Boolean(formik.errors.email)}
+                  disabled={isLoading}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -206,6 +213,7 @@ export default function SignUp({ handleScreen }: Props) {
                   fullWidth
                   size="small"
                   defaultCountry="PH"
+                  disabled={isLoading}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -217,6 +225,7 @@ export default function SignUp({ handleScreen }: Props) {
                   onChange={(newDate) =>
                     setBday((prev) => ({ ...prev, value: newDate }))
                   }
+                  disabled={isLoading}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -237,6 +246,7 @@ export default function SignUp({ handleScreen }: Props) {
                   error={
                     formik.touched.password1 && Boolean(formik.errors.password1)
                   }
+                  disabled={isLoading}
                 />
               </Grid>
               {/* <Grid item xs={12}>
@@ -260,6 +270,7 @@ export default function SignUp({ handleScreen }: Props) {
                   error={
                     formik.touched.password2 && Boolean(formik.errors.password2)
                   }
+                  disabled={isLoading}
                 />
               </Grid>
             </Grid>
@@ -268,6 +279,7 @@ export default function SignUp({ handleScreen }: Props) {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={isLoading}
             >
               Sign Up
             </Button>
@@ -277,6 +289,7 @@ export default function SignUp({ handleScreen }: Props) {
                   onClick={handleScreen}
                   style={{ textTransform: "none" }}
                   size="small"
+                  disabled={isLoading}
                 >
                   Already have an account? Sign in
                 </Button>
@@ -286,6 +299,6 @@ export default function SignUp({ handleScreen }: Props) {
         </Box>
         <Copyright sx={{ mt: 5 }} />
       </Container>
-    </ThemeProvider>
+    </>
   );
 }

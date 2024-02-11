@@ -104,7 +104,7 @@ export default function SignIn({ handleScreen }: Props) {
           <Stack
             width={{
               xs: "100%",
-              lg: "450px",
+              lg: "400px",
             }}
             alignItems="center"
             padding={{
