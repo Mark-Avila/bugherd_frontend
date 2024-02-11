@@ -157,6 +157,7 @@ function DrawerLayout({ title, children }: Props) {
             md: 3,
           },
           display: "flex",
+          position: "relative",
           flexDirection: "column",
         }}
         aria-label="main-body"

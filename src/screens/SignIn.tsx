@@ -5,10 +5,10 @@ import {
   Grid,
   Box,
   Typography,
-  Container,
   TextField,
+  CircularProgress,
+  Stack,
 } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { TypographyProps } from "@mui/material/Typography";
 import { LockOutlined as LockOutlinedIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -35,8 +35,6 @@ function Copyright(props: TypographyProps) {
 }
 
 // TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
-
 interface Props {
   handleScreen: VoidFunction;
 }
@@ -53,7 +51,7 @@ export default function SignIn({ handleScreen }: Props) {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
-  const [signin] = useSigninMutation();
+  const [signin, { isLoading: isLoading }] = useSigninMutation();
   const dispatch = useDispatch();
 
   const formik = useFormik({
@@ -86,85 +84,111 @@ export default function SignIn({ handleScreen }: Props) {
   });
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+    <>
+      {isLoading && (
+        <CircularProgress
+          sx={{ position: "absolute", top: 0, left: 0, margin: 4 }}
+        />
+      )}
+      <Box component="main">
         <CssBaseline />
-        <Box
+        <Stack
           sx={{
             marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
+            justifyContent: "center",
             alignItems: "center",
+            width: "100%",
+            height: "100%",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={formik.handleSubmit}
-            noValidate
-            sx={{
-              mt: 4,
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
+          <Stack
+            width={{
+              xs: "100%",
+              lg: "450px",
+            }}
+            alignItems="center"
+            padding={{
+              xs: "1rem",
+              lg: "0",
             }}
           >
-            <TextField
-              id="email"
-              label="Email Address"
-              name="email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              helperText={formik.touched.email && formik.errors.email}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              required
-              fullWidth
-              size="small"
-            />
-            <TextField
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              helperText={formik.touched.password && formik.errors.password}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              size="small"
-              required
-              fullWidth
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <Box
+              component="form"
+              onSubmit={formik.handleSubmit}
+              noValidate
+              sx={{
+                mt: 4,
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+              }}
             >
-              Sign In
-            </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Button
-                  onClick={handleScreen}
-                  style={{ textTransform: "none" }}
-                  size="small"
-                >
-                  Don't have an account? Sign Up
-                </Button>
+              <TextField
+                id="email"
+                label="Email Address"
+                name="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                helperText={formik.touched.email && formik.errors.email}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                required
+                fullWidth
+                size="small"
+                placeholder="Email"
+                disabled={isLoading}
+              />
+              <TextField
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                helperText={formik.touched.password && formik.errors.password}
+                error={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
+                size="small"
+                required
+                fullWidth
+                placeholder="Password"
+                disabled={isLoading}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                disabled={isLoading}
+              >
+                Sign In
+              </Button>
+              <Grid container justifyContent="flex-end">
+                <Grid item>
+                  <Button
+                    onClick={handleScreen}
+                    style={{ textTransform: "none" }}
+                    size="small"
+                    disabled={isLoading}
+                  >
+                    Don't have an account? Sign Up
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          </Box>
-        </Box>
+            </Box>
+          </Stack>
+        </Stack>
         <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
-    </ThemeProvider>
+      </Box>
+    </>
   );
 }
