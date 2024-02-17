@@ -1,6 +1,7 @@
 import {
   Box,
   Card,
+  Grid,
   List,
   ListItem,
   Skeleton,
@@ -58,13 +59,26 @@ export default function ProjectList({ projects, includeDescr }: Props) {
                 />
               ))
             : [1, 2, 3, 4, 5].map((item, index) => (
-                <Skeleton
-                  key={item * index}
-                  variant="rounded"
-                  width="100%"
-                  height={72}
-                  sx={{ marginTop: 1 }}
-                />
+                <Grid container height={48} width="100%">
+                  <Grid item xs={6}>
+                    <Skeleton
+                      key={item * index}
+                      variant="text"
+                      height={24}
+                      width="50%"
+                      sx={{ ml: 1, mt: 1 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Skeleton
+                      key={item * index}
+                      variant="text"
+                      width="50%"
+                      height={24}
+                      sx={{ ml: 0, mt: 1 }}
+                    />
+                  </Grid>
+                </Grid>
               ))}
         </List>
       </Card>

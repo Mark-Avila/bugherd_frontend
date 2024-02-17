@@ -4,6 +4,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
+import { deepmerge } from "@mui/utils";
 import {
   Dashboard,
   Landing,
@@ -23,6 +24,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { SnackbarProvider } from "notistack";
 import PrivateRoute from "./components/stateful/PrivateRoute";
+import { getDesignTokens, getThemedComponents } from "./utils/theme";
 // import PrivateRoute from "./components/stateful/PrivateRoute";
 
 interface IColorModeContext {
@@ -142,15 +144,22 @@ function App() {
     []
   );
 
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-        },
-      }),
-    [mode]
-  );
+  // const theme = useMemo(
+  //   () =>
+  //     createTheme({
+  //       palette: {
+  //         mode,
+  //       },
+  //     }),
+  //   [mode]
+  // );
+
+  const theme = useMemo(() => {
+    const designTokens = getDesignTokens(mode);
+    let newTheme = createTheme(designTokens);
+    newTheme = deepmerge(newTheme, getThemedComponents(newTheme));
+    return newTheme;
+  }, [mode]);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme");
