@@ -17,6 +17,16 @@ interface Props {
 }
 
 export default function ProjectList({ projects, includeDescr }: Props) {
+  let combinedProjects = null;
+
+  if (projects) {
+    const emptyProjects = Array.from(
+      { length: 5 - projects.length },
+      () => ({} as ProjectWithUser)
+    );
+    combinedProjects = projects.concat(emptyProjects);
+  }
+
   return (
     <Box>
       <Card variant="outlined">
@@ -44,18 +54,19 @@ export default function ProjectList({ projects, includeDescr }: Props) {
               </Stack>
             </Box>
           </ListItem>
-          {projects
-            ? projects.map((item, index, row) => (
+          {projects && combinedProjects
+            ? combinedProjects.map((item, index, row) => (
                 <ProjectListItem
                   key={index}
                   data={{
                     id: item.id ? item.id.toString() : "",
-                    title: item.title,
-                    desc: item.descr,
-                    manager: `${item.fname} ${item.lname}`,
+                    title: item.title || "", // Make sure to handle empty title
+                    desc: item.descr || "", // Make sure to handle empty description
+                    manager: `${item.fname || ""} ${item.lname || ""}`, // Make sure to handle empty manager names
                   }}
                   divider={row.length !== index + 1}
                   includeDescr={includeDescr}
+                  itemDisabled={!item.id}
                 />
               ))
             : [1, 2, 3, 4, 5].map((item, index) => (

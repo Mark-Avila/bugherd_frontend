@@ -15,15 +15,26 @@ type Props = ListItemButtonProps & {
     manager: string;
   };
   includeDescr?: boolean;
+  itemDisabled?: boolean;
 };
 
-function ProjectListItem({ includeDescr, data, ...props }: Props) {
+function ProjectListItem({
+  includeDescr,
+  itemDisabled,
+  data,
+  ...props
+}: Props) {
   const navigate = useNavigate();
 
   const handleOnClick = () => navigate(`/project/${data.id}`);
 
   return (
-    <ListItemButton {...props} onClick={handleOnClick}>
+    <ListItemButton
+      {...props}
+      onClick={handleOnClick}
+      disabled={itemDisabled}
+      sx={{ height: 56 }}
+    >
       <Box width="100%" py={1}>
         <Stack direction="row" justifyContent="space-between">
           <Box flex={1}>
@@ -34,7 +45,9 @@ function ProjectListItem({ includeDescr, data, ...props }: Props) {
           {includeDescr && (
             <Box display={{ xs: "none", md: "block" }} flex={2}>
               <Typography variant="body2" fontSize="small">
-                {data.desc}
+                {data.desc.length >= 80
+                  ? data.desc.slice(0, 80) + "..."
+                  : data.desc}
               </Typography>
             </Box>
           )}
