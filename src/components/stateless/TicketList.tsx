@@ -18,12 +18,11 @@ interface Props {
 function TicketList({ tickets }: Props) {
   return (
     <Paper variant="outlined">
-      {tickets ? (
-        tickets.length !== 0 && (
+      {tickets ? tickets.length !== 0 && (
           <List disablePadding>
-            {tickets.map((ticket) => (
+            {tickets.map((ticket, index) => (
               <TicketListItem
-                key={ticket.id}
+                key={index}
                 id={ticket.id}
                 title={ticket.title}
                 number={(ticket.num as number).toString()}
@@ -34,20 +33,17 @@ function TicketList({ tickets }: Props) {
               />
             ))}
           </List>
-        )
       ) : (
         <List>
           {[1, 2, 3, 4, 5].map((item, index) => (
-            <ListItem divider>
+            <ListItem divider key={item * index}>
               <Stack>
                 <Skeleton
-                  key={item * index}
                   variant="text"
                   width={120}
                   height={24}
                 />
                 <Skeleton
-                  key={item * index}
                   variant="text"
                   width={300}
                   height={24}

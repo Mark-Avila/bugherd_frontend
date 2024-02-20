@@ -45,7 +45,7 @@ const router = createBrowserRouter(
         <Route
           path="/dashboard"
           element={
-            <DrawerLayout title="Dashboard">
+            <DrawerLayout >
               <Dashboard />
             </DrawerLayout>
           }
@@ -55,7 +55,7 @@ const router = createBrowserRouter(
         <Route
           path="/project/:project_id"
           element={
-            <DrawerLayout title="Project">
+            <DrawerLayout >
               <Project />
             </DrawerLayout>
           }
@@ -65,7 +65,7 @@ const router = createBrowserRouter(
         <Route
           path="/ticket/:ticket_id"
           element={
-            <DrawerLayout title="Ticket information">
+            <DrawerLayout >
               <Ticket />
             </DrawerLayout>
           }
@@ -75,7 +75,7 @@ const router = createBrowserRouter(
         <Route
           path="/profile"
           element={
-            <DrawerLayout title="Profile">
+            <DrawerLayout >
               <Profile />
             </DrawerLayout>
           }
@@ -115,7 +115,7 @@ const router = createBrowserRouter(
         <Route
           path="/tickets"
           element={
-            <DrawerLayout title="View Tickets">
+            <DrawerLayout>
               <UserTickets />
             </DrawerLayout>
           }

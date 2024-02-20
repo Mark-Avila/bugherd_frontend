@@ -1,7 +1,6 @@
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import {
-  AccountCircle,
   AssignmentInd,
   DarkMode,
   Dashboard,
@@ -10,6 +9,7 @@ import {
   Logout,
 } from "@mui/icons-material";
 import {
+  Avatar,
   Box,
   Drawer,
   ListItem,
@@ -25,8 +25,9 @@ import { useContext, useState } from "react";
 import { ColorModeContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../slices/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ConfirmDialog from "./ConfirmDialog";
+import { RootState } from "../../store";
 
 interface IDrawerItem {
   text: string;
@@ -53,12 +54,17 @@ function DrawerItem({ text, icon, onClick }: IDrawerItem) {
 interface IDrawerBody {
   items: IDrawerItem[];
   adminItems: IDrawerItem[];
+  user: {
+    name?: string;
+    email?: string;
+  }
+  userClick: VoidFunction;
 }
 
 /**
  * Drawer body or content component
  */
-function DrawerBody({ items, adminItems }: IDrawerBody) {
+function DrawerBody({ items, adminItems, user, userClick }: IDrawerBody) {
   const { toggle, mode } = useContext(ColorModeContext);
   const [logoutDialog, setLogoutDialog] = useState(false);
 
@@ -97,6 +103,12 @@ function DrawerBody({ items, adminItems }: IDrawerBody) {
       <Divider />
       <nav>
         <List>
+          <ListItemButton onClick={userClick}>
+            <ListItemIcon>
+              <Avatar />
+            </ListItemIcon>
+            <ListItemText primary={user.name || "..."} secondary={user.email || "..."} />
+          </ListItemButton>
           {items.map((item, index) => (
             <DrawerItem
               key={index}
@@ -149,17 +161,13 @@ function PageDrawer({ open, onClose, width }: Props) {
   const handleOnItemClick = (to: string) => {
     navigate(to);
   };
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const NavItems: IDrawerItem[] = [
     {
       text: "Dashboard",
       icon: <Dashboard />,
       onClick: () => handleOnItemClick("/dashboard"),
-    },
-    {
-      text: "Profile",
-      icon: <AccountCircle />,
-      onClick: () => handleOnItemClick("/profile"),
     },
   ];
 
@@ -193,7 +201,7 @@ function PageDrawer({ open, onClose, width }: Props) {
           },
         }}
       >
-        <DrawerBody items={NavItems} adminItems={AdminNavItems} />
+        <DrawerBody items={NavItems} adminItems={AdminNavItems} userClick={() => handleOnItemClick("/profile")} user={{ name: user?.fname, email: user?.email }} />
       </Drawer>
       <Drawer
         variant="permanent"
@@ -206,7 +214,7 @@ function PageDrawer({ open, onClose, width }: Props) {
         }}
         open
       >
-        <DrawerBody items={NavItems} adminItems={AdminNavItems} />
+        <DrawerBody items={NavItems} adminItems={AdminNavItems} userClick={() => handleOnItemClick("/profile")} user={{ name: user?.fname, email: user?.email }} />
       </Drawer>
     </>
   );

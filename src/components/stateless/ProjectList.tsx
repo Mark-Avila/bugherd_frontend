@@ -70,10 +70,9 @@ export default function ProjectList({ projects, includeDescr }: Props) {
                 />
               ))
             : [1, 2, 3, 4, 5].map((item, index) => (
-                <Grid container height={48} width="100%">
+                <Grid container height={48} width="100%" key={item * index}>
                   <Grid item xs={6}>
                     <Skeleton
-                      key={item * index}
                       variant="text"
                       height={24}
                       width="50%"
@@ -82,7 +81,6 @@ export default function ProjectList({ projects, includeDescr }: Props) {
                   </Grid>
                   <Grid item xs={6}>
                     <Skeleton
-                      key={item * index}
                       variant="text"
                       width="50%"
                       height={24}

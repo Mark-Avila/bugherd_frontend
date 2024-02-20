@@ -4,6 +4,7 @@ import {
   Button,
   Divider,
   Pagination,
+  Skeleton,
   Stack,
   Theme,
   useMediaQuery,
@@ -107,7 +108,7 @@ export default function Dashboard() {
         <PageBreadcrumbs items={breadItems} />
         <PageSection title="Personal statistics">
           <Stack direction={isSmallScreen ? "column" : "row"} spacing={2}>
-            {ticketStats.data && (
+            {ticketStats.data ? (
               <>
                 <DataCard
                   data={ticketStats.data?.data[0].type}
@@ -122,6 +123,12 @@ export default function Dashboard() {
                   title="Tickets by status"
                 />
               </>
+            ) : (
+              <>
+                <Skeleton variant="rounded" width="100%" height={200} />
+                <Skeleton variant="rounded" width="100%" height={200} />
+                <Skeleton variant="rounded" width="100%" height={200} />
+              </>
             )}
           </Stack>
         </PageSection>
@@ -135,13 +142,15 @@ export default function Dashboard() {
           }
           title="Projects assigned"
         >
-          {!projects.isLoading && projects.isSuccess && (
+          {!projects.isLoading && projects.isSuccess ? (
             <ProjectList
               includeDescr
               projects={
                 projects.data && (projects.data.data as ProjectWithUser[])
               }
             />
+          ) : (
+            <Skeleton width="100%" height={310} variant="rounded" />
           )}
           <Box marginTop={2}>
             <Pagination
