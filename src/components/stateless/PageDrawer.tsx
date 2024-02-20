@@ -107,7 +107,7 @@ function DrawerBody({ items, adminItems, user, userClick }: IDrawerBody) {
             <ListItemIcon>
               <Avatar />
             </ListItemIcon>
-            <ListItemText primary={user.name || "..."} secondary={user.email || "..."} />
+            <ListItemText primary={user.name || "..."} secondary={user.email || "..."} secondaryTypographyProps={{ fontSize: "12px" }}/>
           </ListItemButton>
           {items.map((item, index) => (
             <DrawerItem

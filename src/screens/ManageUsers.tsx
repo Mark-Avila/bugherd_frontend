@@ -89,7 +89,7 @@ function ManageUsers() {
         contact: contact.value.replace(/\s+/g, ""),
       };
 
-      updateUser({ currUser: currUser.id, payload })
+      updateUser({ userId: currUser.id, payload })
         .unwrap()
         .then((res: ResponseBody<unknown>) => {
           if (res.success) {

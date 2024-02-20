@@ -14,17 +14,20 @@ import { useLazyGetCurrentProjectQuery } from "../api/projectApiSlice";
 import React, { useEffect, useState } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { BreadItem, ProjectWithUser, ResponseBody } from "../types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../slices/authSlice";
 import { useToggle } from "../hooks";
 import NewProjectModal from "./NewProjectModal";
 import PageSection from "../components/stateless/PageSection";
 import { useSnackbar } from "notistack";
 import { useGetCurrentTicketStatsQuery } from "../api/userApiSlice";
+import { RootState } from "../store";
 
 export default function Dashboard() {
   const [getProjects, projects] = useLazyGetCurrentProjectQuery();
   const ticketStats = useGetCurrentTicketStatsQuery();
+  const { user } = useSelector((state: RootState) => state.auth)
+
   const [isProjToggled, toggleProj] = useToggle(false);
   const [maxPage, setMaxPage] = useState(0);
   const [currPage, setCurrPage] = useState(1);
@@ -135,10 +138,10 @@ export default function Dashboard() {
         <Divider />
         <PageSection
           width="100%"
-          action={
+          action={user && user?.role >= 1 ?
             <Button onClick={toggleProj} variant="contained" size="small">
               New Project
-            </Button>
+            </Button> : <></>
           }
           title="Projects assigned"
         >
