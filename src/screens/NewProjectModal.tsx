@@ -15,7 +15,6 @@ import { useGetUsersQuery } from "../api/userApiSlice";
 import { Project, ProjectAssign, ResponseBody, User } from "../types";
 import {
   useCreateProjectMutation,
-  useLazyGetCurrentProjectQuery,
 } from "../api/projectApiSlice";
 import { useSnackbar } from "notistack";
 import { useCreateProjectAssignMutation } from "../api/projectAssignApiSlice";
@@ -44,13 +43,14 @@ const validationSchema = yup.object({
 interface Props {
   open: boolean;
   onClose: VoidFunction;
+  onSuccess?: VoidFunction;
 }
 
 /**
  * Modal UI component for creating a new project
  * @prop {VoidFunction} onClose Function to execute when the "close"
  */
-function NewProjectModal({ onClose, open }: Props) {
+function NewProjectModal({ onClose, open, onSuccess }: Props) {
   //Assigned users
   const [assigned, setAssigned] = useState<User[]>([] as User[]);
 
@@ -74,7 +74,6 @@ function NewProjectModal({ onClose, open }: Props) {
 
   const [createProject] = useCreateProjectMutation();
   const [createProjectAssign] = useCreateProjectAssignMutation();
-  const [updateProjectData] = useLazyGetCurrentProjectQuery();
 
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
@@ -148,8 +147,11 @@ function NewProjectModal({ onClose, open }: Props) {
           }
         }
       }
-
-      updateProjectData();
+      
+      if (onSuccess) {
+        onSuccess();
+      }
+      
       onClose();
     },
   });

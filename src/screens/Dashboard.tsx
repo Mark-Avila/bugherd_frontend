@@ -87,6 +87,10 @@ export default function Dashboard() {
     }
   }, [projects]);
 
+  const handleOnSuccess = () => {
+    getProjects({ offset: 0, limit: PAGE_LIMIT });
+  } 
+
   const handlePagination = (
     event: React.ChangeEvent<unknown>,
     value: number
@@ -106,7 +110,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <NewProjectModal open={isProjToggled} onClose={toggleProj} />
+      <NewProjectModal open={isProjToggled} onClose={toggleProj} onSuccess={handleOnSuccess}/>
       <Stack spacing={2}>
         <PageBreadcrumbs items={breadItems} />
         <PageSection title="Personal statistics">
@@ -145,7 +149,7 @@ export default function Dashboard() {
           }
           title="Projects assigned"
         >
-          {!projects.isLoading && projects.isSuccess ? (
+          {!projects.isLoading && !projects.isFetching && projects.isSuccess ? (
             <ProjectList
               includeDescr
               projects={
@@ -153,15 +157,15 @@ export default function Dashboard() {
               }
             />
           ) : (
-            <Skeleton width="100%" height={310} variant="rounded" />
+            <Skeleton width="100%" height={210} variant="rounded" />
           )}
-          <Box marginTop={2}>
+          {maxPage > 1 && <Box marginTop={2}>
             <Pagination
               count={maxPage}
               onChange={handlePagination}
               page={currPage}
             />
-          </Box>
+          </Box>}
         </PageSection>
       </Stack>
     </>

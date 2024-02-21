@@ -17,15 +17,15 @@ interface Props {
 }
 
 export default function ProjectList({ projects, includeDescr }: Props) {
-  let combinedProjects = null;
+  // let combinedProjects = null;
 
-  if (projects) {
-    const emptyProjects = Array.from(
-      { length: 5 - projects.length },
-      () => ({} as ProjectWithUser)
-    );
-    combinedProjects = projects.concat(emptyProjects);
-  }
+  // // if (projects) {
+  // //   const emptyProjects = Array.from(
+  // //     { length: 5 - projects.length },
+  // //     () => ({} as ProjectWithUser)
+  // //   );
+  // //   combinedProjects = projects.concat(emptyProjects);
+  // // }
 
   return (
     <Box>
@@ -54,10 +54,10 @@ export default function ProjectList({ projects, includeDescr }: Props) {
               </Stack>
             </Box>
           </ListItem>
-          {projects && combinedProjects
-            ? combinedProjects.map((item, index, row) => (
+          {projects
+            ? projects.map((item, index, row) => (
                 <ProjectListItem
-                  key={index}
+                  key={item.id ? item.id : index}
                   data={{
                     id: item.id ? item.id.toString() : "",
                     title: item.title || "", // Make sure to handle empty title

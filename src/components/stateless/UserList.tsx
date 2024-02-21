@@ -13,9 +13,9 @@ function UserList({ isButton, users, lead }: Props) {
     <Paper variant="outlined" elevation={0}>
       <List sx={{ overflow: "auto" }} disablePadding>
         {users &&
-          users.map((user, index) => (
+          users.map((user) => (
             <UserListItem
-              key={(user.id as number) + index}
+              key={(user.id as number)}
               isButton={isButton}
               isLead={Boolean(lead) && user.id === lead}
               name={`${user.fname} ${user.lname}`}

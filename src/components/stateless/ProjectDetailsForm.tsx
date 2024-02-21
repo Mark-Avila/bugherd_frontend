@@ -89,13 +89,13 @@ function ProjectDetailsForms({
                 }
               />
               <ListItemSecondaryAction>
-                <Tooltip title="Project Manager">
+                {user.role >= 1 && <Tooltip title="Project Manager">
                   <IconButton
                     onClick={() => handleToggleLeader(user.id as number)}
                   >
                     <AssignmentInd />
                   </IconButton>
-                </Tooltip>
+                </Tooltip>}
 
                 {auth.user ? (
                   auth.user.id !== user.id && (
