@@ -91,6 +91,8 @@ function Project() {
     setEditModal(true);
   };
 
+  const handleOnSuccess = () => getTickets({ offset: 0, limit: 10, project_id: project_id as string });
+
   const breadItems: BreadItem[] = [
     {
       label: "Dashboard",
@@ -181,6 +183,7 @@ function Project() {
         open={ticketModal}
         project_id={parseInt(project_id!)}
         onClose={handleOnClose}
+        onSuccess={handleOnSuccess}
       />
     </>
   );

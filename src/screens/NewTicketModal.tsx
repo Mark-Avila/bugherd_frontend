@@ -36,6 +36,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 
 interface Props {
   onClose: VoidFunction;
+  onSuccess?: VoidFunction;
   open: boolean;
   project_id: number;
 }
@@ -53,7 +54,7 @@ const validationSchema = yup.object({
  * Modal UI component for creating a new ticket
  * @prop {VoidFunction} onClose Function to execute when the "close"
  */
-function NewTicketModal({ onClose, open, project_id }: Props) {
+function NewTicketModal({ onClose, open, project_id, onSuccess }: Props) {
   const [createTicket] = useCreateTicketMutation();
   const { user } = useSelector((state: RootState) => state.auth);
   const { enqueueSnackbar } = useSnackbar();
@@ -93,11 +94,13 @@ function NewTicketModal({ onClose, open, project_id }: Props) {
         ).unwrap();
 
         if (response.success) {
-          enqueueSnackbar("Successfully created new ticket", {
-            variant: "success",
-          });
 
           updateTickets({ project_id: project_id.toString() });
+
+          if (onSuccess) {
+            onSuccess();
+          }
+
           return handleOnClose();
         }
       } catch (err: unknown) {

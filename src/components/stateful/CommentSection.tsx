@@ -8,7 +8,6 @@ import { RootState } from "../../store";
 import { useCreateCommentMutation } from "../../api/commentApiSlice";
 import { useSnackError } from "../../hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { useSnackbar } from "notistack";
 
 const validationSchema = yup.object({
   message: yup
@@ -36,7 +35,6 @@ function CommentSection({
   const [createComment] = useCreateCommentMutation();
 
   const { snackbarError } = useSnackError();
-  const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
     initialValues: {
@@ -57,9 +55,6 @@ function CommentSection({
           ).unwrap();
 
           if (response.success) {
-            enqueueSnackbar(response.message, {
-              variant: "success",
-            });
             formik.resetForm();
           }
 
