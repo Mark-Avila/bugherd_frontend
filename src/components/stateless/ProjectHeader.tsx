@@ -7,6 +7,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 interface Props {
   title?: string;
@@ -16,6 +18,8 @@ interface Props {
 }
 
 function ProjectHeader({ title, desc, archived, onEditClick }: Props) {
+  const { user } = useSelector((state: RootState) => state.auth)
+
   return (
     <Box sx={{ width: "100%" }}>
       <Stack
@@ -25,9 +29,9 @@ function ProjectHeader({ title, desc, archived, onEditClick }: Props) {
         spacing={3}
       >
         <Typography variant="h4">{title}</Typography>
-        <IconButton onClick={onEditClick} disabled={archived}>
+        {user && user.role >= 1 && <IconButton onClick={onEditClick} disabled={archived}>
           <Edit />
-        </IconButton>
+        </IconButton>}
         {archived && (
           <Tooltip title="This project has been archived">
             <Chip label="Archived" color="warning" />
