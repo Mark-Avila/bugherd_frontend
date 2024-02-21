@@ -58,13 +58,14 @@ interface IDrawerBody {
     name?: string;
     email?: string;
   }
+  isAdmin: boolean;
   userClick: VoidFunction;
 }
 
 /**
  * Drawer body or content component
  */
-function DrawerBody({ items, adminItems, user, userClick }: IDrawerBody) {
+function DrawerBody({ items, isAdmin, adminItems, user, userClick }: IDrawerBody) {
   const { toggle, mode } = useContext(ColorModeContext);
   const [logoutDialog, setLogoutDialog] = useState(false);
 
@@ -117,6 +118,7 @@ function DrawerBody({ items, adminItems, user, userClick }: IDrawerBody) {
               onClick={item.onClick}
             />
           ))}
+          {isAdmin && <>
           <Divider />
           <ListSubheader>Administration</ListSubheader>
           {adminItems.map((item, index) => (
@@ -127,6 +129,7 @@ function DrawerBody({ items, adminItems, user, userClick }: IDrawerBody) {
               onClick={item.onClick}
             />
           ))}
+          </>}
         </List>
       </nav>
       <Divider />
@@ -201,7 +204,7 @@ function PageDrawer({ open, onClose, width }: Props) {
           },
         }}
       >
-        <DrawerBody items={NavItems} adminItems={AdminNavItems} userClick={() => handleOnItemClick("/profile")} user={{ name: user?.fname, email: user?.email }} />
+        <DrawerBody items={NavItems} isAdmin={user?.role === 2} adminItems={AdminNavItems} userClick={() => handleOnItemClick("/profile")} user={{ name: user?.fname, email: user?.email }} />
       </Drawer>
       <Drawer
         variant="permanent"
@@ -214,7 +217,7 @@ function PageDrawer({ open, onClose, width }: Props) {
         }}
         open
       >
-        <DrawerBody items={NavItems} adminItems={AdminNavItems} userClick={() => handleOnItemClick("/profile")} user={{ name: user?.fname, email: user?.email }} />
+        <DrawerBody items={NavItems} isAdmin={user?.role === 2} adminItems={AdminNavItems} userClick={() => handleOnItemClick("/profile")} user={{ name: user?.fname, email: user?.email }} />
       </Drawer>
     </>
   );
