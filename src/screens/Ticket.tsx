@@ -88,7 +88,11 @@ function Ticket() {
                 "MMMM DD, YYYY"
               )}`}
               archived={ticketData.project_archived}
-              onUpdateClick={openEditModal}
+              onUpdateClick={
+                auth.user!.role >= 1 || auth.user?.id === ticketData.user_id
+                  ? openEditModal
+                  : null
+              }
             />
           )}
         </Box>

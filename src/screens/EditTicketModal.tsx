@@ -39,7 +39,7 @@ const validationSchema = yup.object({
   status: yup.number().oneOf([1, 0]),
   priority: yup.number().oneOf([1, 2, 3]),
   type: yup.string().oneOf(["issue", "bug", "feature", "error", "other"]),
-  est: yup.number().moreThan(0),
+  est: yup.number().moreThan(0, "Must be greater than 0"),
 });
 
 function EditTicketModal({ open, onClose, ticket }: Props) {
@@ -60,13 +60,15 @@ function EditTicketModal({ open, onClose, ticket }: Props) {
     validationSchema,
     onSubmit: (values) => {
       if (ticket && ticketId) {
+        const { title, desc, status, priority, est, type } = values;
+
         const data: Ticket = {
-          title: values.title,
-          descr: values.desc,
-          status: Boolean(values.status),
-          priority: values.priority as Priority,
-          est: values.est,
-          issue_type: values.type as Type,
+          title: title,
+          descr: desc,
+          status: Boolean(status),
+          priority: priority as Priority,
+          est: est,
+          issue_type: type as Type,
           user_id: ticket.user_id,
           project_id: ticket.project_id,
         };

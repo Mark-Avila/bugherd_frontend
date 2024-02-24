@@ -7,7 +7,7 @@ interface Props {
   author: string;
   createdAt: string;
   archived?: boolean;
-  onUpdateClick?: VoidFunction;
+  onUpdateClick?: VoidFunction | null;
 }
 
 function TicketHeader({
