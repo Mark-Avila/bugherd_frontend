@@ -11,10 +11,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Ticket } from "../types";
+import { Priority, Ticket, Type } from "../types";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useUpdateTicketMutation } from "../api/ticketApiSlice";
+import { useSnackbar } from "notistack";
+import { useSnackError } from "../hooks";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 
 interface Props {
   open?: boolean;
@@ -39,6 +43,11 @@ const validationSchema = yup.object({
 });
 
 function EditTicketModal({ open, onClose, ticket }: Props) {
+  const [ticketId, setTicketId] = useState<string | null>(null);
+  const [updateTicket] = useUpdateTicketMutation();
+  const { enqueueSnackbar } = useSnackbar();
+  const { snackbarError } = useSnackError();
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -50,7 +59,30 @@ function EditTicketModal({ open, onClose, ticket }: Props) {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      if (ticket && ticketId) {
+        const data: Ticket = {
+          title: values.title,
+          descr: values.desc,
+          status: Boolean(values.status),
+          priority: values.priority as Priority,
+          est: values.est,
+          issue_type: values.type as Type,
+          user_id: ticket.user_id,
+          project_id: ticket.project_id,
+        };
+
+        updateTicket({ id: ticketId, data: data })
+          .unwrap()
+          .then((res) => {
+            if (res.success) {
+              enqueueSnackbar("Successfully updated ticket information", {
+                variant: "success",
+              });
+            }
+          })
+          .finally(() => onClose())
+          .catch((err: FetchBaseQueryError) => snackbarError(err));
+      }
     },
   });
 
@@ -64,6 +96,8 @@ function EditTicketModal({ open, onClose, ticket }: Props) {
         type: ticket.issue_type,
         est: ticket.est,
       });
+
+      setTicketId(ticket.id!);
     }
   }, [ticket]);
 
@@ -102,7 +136,7 @@ function EditTicketModal({ open, onClose, ticket }: Props) {
             </Box>
             <Select
               value={formik.values.status}
-              name="description"
+              name="status"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.status && Boolean(formik.errors.status)}

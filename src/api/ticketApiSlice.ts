@@ -52,6 +52,17 @@ const ticketApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    updateTicket: builder.mutation<
+      ResponseBody<unknown>,
+      { id: string; data: Ticket }
+    >({
+      query: (args) => ({
+        url: `/ticket/${args.id}`,
+        method: "PUT",
+        body: args.data,
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -63,4 +74,5 @@ export const {
   useLazyGetTicketByIdQuery,
   useLazyGetTicketByProjectIdQuery,
   useLazyGetTicketsOfCurrentUserQuery,
+  useUpdateTicketMutation,
 } = ticketApiSlice;
