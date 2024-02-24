@@ -11,54 +11,144 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { Ticket } from "../types";
+import * as yup from "yup";
+import { useFormik } from "formik";
+import { useEffect } from "react";
 
 interface Props {
   open?: boolean;
   onClose: VoidFunction;
+  ticket?: Ticket & { fname: string; lname: string };
 }
 
-function EditTicketModal({ open, onClose }: Props) {
+const validationSchema = yup.object({
+  title: yup
+    .string()
+    .min(2, "Title is too short")
+    .max(30, "Title is too long")
+    .required("Please enter a title"),
+  desc: yup
+    .string()
+    .min(2, "Description is too short")
+    .required("Please enter a description"),
+  status: yup.number().oneOf([1, 0]),
+  priority: yup.number().oneOf([1, 2, 3]),
+  type: yup.string().oneOf(["issue", "bug", "feature", "error", "other"]),
+  est: yup.number().moreThan(0),
+});
+
+function EditTicketModal({ open, onClose, ticket }: Props) {
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+      desc: "",
+      status: 0,
+      priority: 1,
+      type: "issue",
+      est: 0,
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
+
+  useEffect(() => {
+    if (ticket) {
+      formik.setValues({
+        title: ticket.title,
+        desc: ticket.descr,
+        status: ticket.status ? 1 : 0,
+        priority: ticket.priority,
+        type: ticket.issue_type,
+        est: ticket.est,
+      });
+    }
+  }, [ticket]);
+
+  const handleSubmit = () => formik.handleSubmit();
+
   return (
     <Dialog open={Boolean(open)} onClose={onClose} fullWidth>
       <DialogTitle>Ticket Details</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
-          <TextField size="small" placeholder="Title" />
+          <TextField
+            size="small"
+            placeholder="Title"
+            name="title"
+            value={formik.values.title}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            helperText={formik.touched.title && formik.errors.title}
+            error={formik.touched.title && Boolean(formik.errors.title)}
+          />
           <TextField
             size="small"
             placeholder="Description"
             multiline
+            name="desc"
+            value={formik.values.desc}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            helperText={formik.touched.desc && formik.errors.desc}
+            error={formik.touched.desc && Boolean(formik.errors.desc)}
             rows={4}
           />
           <Stack direction="row" alignItems="center" spacing={5}>
             <Box width={70}>
               <Typography>Status</Typography>
             </Box>
-            <Select value={1} size="small" fullWidth>
+            <Select
+              value={formik.values.status}
+              name="description"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.status && Boolean(formik.errors.status)}
+              size="small"
+              fullWidth
+            >
               <MenuItem value={1}>Ongoing</MenuItem>
-              <MenuItem value={2}>Resolve</MenuItem>
+              <MenuItem value={0}>Resolve</MenuItem>
             </Select>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={5}>
             <Box width={70}>
               <Typography>Priority</Typography>
             </Box>
-            <Select value={1} size="small" fullWidth>
-              <MenuItem value={1}>High</MenuItem>
+            <Select
+              value={formik.values.priority}
+              name="priority"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.priority && Boolean(formik.errors.priority)}
+              size="small"
+              fullWidth
+            >
+              <MenuItem value={3}>High</MenuItem>
               <MenuItem value={2}>Intermediate</MenuItem>
-              <MenuItem value={3}>Low</MenuItem>
+              <MenuItem value={1}>Low</MenuItem>
             </Select>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={5}>
             <Box width={70}>
               <Typography>Type</Typography>
             </Box>
-            <Select value={1} size="small" fullWidth>
-              <MenuItem value={1}>Issue</MenuItem>
-              <MenuItem value={2}>Bug</MenuItem>
-              <MenuItem value={3}>Feature</MenuItem>
-              <MenuItem value={4}>Error</MenuItem>
-              <MenuItem value={5}>Other</MenuItem>
+            <Select
+              value={formik.values.type}
+              size="small"
+              fullWidth
+              name="type"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.type && Boolean(formik.errors.type)}
+            >
+              <MenuItem value="issue">Issue</MenuItem>
+              <MenuItem value="bug">Bug</MenuItem>
+              <MenuItem value="feature">Feature</MenuItem>
+              <MenuItem value="error">Error</MenuItem>
+              <MenuItem value="other">Other</MenuItem>
             </Select>
           </Stack>
           <Stack
@@ -70,13 +160,23 @@ function EditTicketModal({ open, onClose }: Props) {
             <Box width={70}>
               <Typography>Hours</Typography>
             </Box>
-            <TextField size="small" type="number" fullWidth />
+            <TextField
+              value={formik.values.est}
+              size="small"
+              type="number"
+              name="est"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              helperText={formik.touched.est && formik.errors.est}
+              error={formik.touched.est && Boolean(formik.errors.est)}
+              fullWidth
+            />
           </Stack>
         </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={() => {}} autoFocus variant="contained">
+        <Button onClick={handleSubmit} autoFocus variant="contained">
           Save
         </Button>
       </DialogActions>

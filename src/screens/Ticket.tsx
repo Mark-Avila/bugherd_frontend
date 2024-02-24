@@ -70,7 +70,11 @@ function Ticket() {
 
   return (
     <>
-      <EditTicketModal open={editModal} onClose={closeEditModal} />
+      <EditTicketModal
+        open={editModal}
+        onClose={closeEditModal}
+        ticket={ticketData as TicketType & { fname: string; lname: string }}
+      />
       <Box>
         <PageBreadcrumbs items={breadItems} />
         <Box component="header">
