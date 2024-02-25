@@ -89,26 +89,26 @@ function ProjectDetailsForms({
                 }
               />
               <ListItemSecondaryAction>
-                {user.role >= 1 && <Tooltip title="Project Manager">
-                  <IconButton
-                    onClick={() => handleToggleLeader(user.id as number)}
-                  >
-                    <AssignmentInd />
-                  </IconButton>
-                </Tooltip>}
+                {user.role >= 1 && (
+                  <Tooltip title="Project Manager">
+                    <IconButton
+                      onClick={() => handleToggleLeader(user.id as number)}
+                    >
+                      <AssignmentInd />
+                    </IconButton>
+                  </Tooltip>
+                )}
 
                 {auth.user ? (
-                  auth.user.id !== user.id && (
-                    <Tooltip title="Remove from team">
-                      <IconButton
-                        onClick={() =>
-                          handleRemoveFromAssigned(user.id as number)
-                        }
-                      >
-                        <Close fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )
+                  <Tooltip title="Remove from team">
+                    <IconButton
+                      onClick={() =>
+                        handleRemoveFromAssigned(user.id as number)
+                      }
+                    >
+                      <Close fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 ) : (
                   <></>
                 )}

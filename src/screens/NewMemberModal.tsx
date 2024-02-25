@@ -1,5 +1,7 @@
 import {
   Box,
+  Dialog,
+  DialogTitle,
   Divider,
   IconButton,
   List,
@@ -41,89 +43,51 @@ function NewMemberModal({ open, onClose, onClick }: Props) {
   };
 
   return (
-    <ModalWrapper open={open} onClose={onClose}>
-      <Box
-        display="flex"
-        flexDirection="column"
-        overflow="auto"
-        bgcolor="background.paper"
-        padding={2}
-        boxShadow={24}
-        borderRadius={1}
-        width={{
-          xs: "95%",
-          lg: 400,
-        }}
-        height={{
-          lg: 450,
-        }}
-        mx={{
-          xs: 1,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Typography variant="h6" ml={2} fontSize="small">
-            Add New Member
-          </Typography>
-          <IconButton onClick={onClose}>
-            <Close />
-          </IconButton>
-        </Box>
-        <Divider sx={{ my: 1 }} />
-        <Box mb={1}>
-          <TextField
-            size="small"
-            onChange={handleSearch}
-            placeholder="Search User"
-            fullWidth
-          />
-        </Box>
-        <Paper
-          sx={{
-            flexGrow: 1,
-            overflow: "auto",
-            height: "0px",
-          }}
-          variant="outlined"
-        >
-          <List disablePadding>
-            {users.data &&
-              users.isSuccess &&
-              !users.isFetching &&
-              !users.isLoading &&
-              users.data.data.map((user) => (
-                <ListItem
-                  key={user.id}
-                  divider
-                  secondaryAction={
-                    <Tooltip title="Add member">
-                      <IconButton
-                        onClick={() => (onClick ? onClick(user) : {})}
-                      >
-                        <Add />
-                      </IconButton>
-                    </Tooltip>
-                  }
-                >
-                  <ListItemText
-                    primaryTypographyProps={{ fontSize: 14 }}
-                    secondaryTypographyProps={{ fontSize: 12 }}
-                    primary={`${user.fname} ${user.lname}`}
-                    secondary={getRole(user.role)}
-                  />
-                </ListItem>
-              ))}
-          </List>
-        </Paper>
+    <Dialog open={open} onClose={onClose}>
+      <Box mb={1}>
+        <TextField
+          size="small"
+          onChange={handleSearch}
+          placeholder="Search User"
+          fullWidth
+        />
       </Box>
-    </ModalWrapper>
+      <Paper
+        sx={{
+          flexGrow: 1,
+          overflow: "auto",
+          height: "0px",
+        }}
+        variant="outlined"
+      >
+        <List disablePadding>
+          {users.data &&
+            users.isSuccess &&
+            !users.isFetching &&
+            !users.isLoading &&
+            users.data.data.map((user) => (
+              <ListItem
+                key={user.id}
+                divider
+                secondaryAction={
+                  <Tooltip title="Add member">
+                    <IconButton onClick={() => (onClick ? onClick(user) : {})}>
+                      <Add />
+                    </IconButton>
+                  </Tooltip>
+                }
+              >
+                <ListItemText
+                  primaryTypographyProps={{ fontSize: 14 }}
+                  secondaryTypographyProps={{ fontSize: 12 }}
+                  primary={`${user.fname} ${user.lname}`}
+                  secondary={getRole(user.role)}
+                />
+              </ListItem>
+            ))}
+        </List>
+      </Paper>
+    </Dialog>
   );
 }
 

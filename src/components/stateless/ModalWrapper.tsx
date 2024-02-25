@@ -1,30 +1,41 @@
-import { Modal } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogProps,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
 
-interface Props {
-  open: boolean;
+type Props = DialogProps & {
+  title: string;
   children: React.ReactNode;
   onClose: VoidFunction;
-}
+  action?: JSX.Element;
+};
 
 /**
  * Wrapper for modal components for cleaner code
  */
-function ModalWrapper({ onClose, children, open }: Props) {
+function ModalWrapper({ title, children, action, onClose, ...props }: Props) {
   return (
-    <Modal
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        margin: {
-          xs: 1,
-        },
-      }}
-      onClose={onClose}
-      open={open}
-    >
-      <>{children}</>
-    </Modal>
+    <Dialog {...props}>
+      <DialogTitle>{title}</DialogTitle>
+      <IconButton
+        onClick={onClose}
+        sx={{
+          position: "absolute",
+          right: 8,
+          top: 8,
+          color: (theme) => theme.palette.grey[500],
+        }}
+      >
+        <Close />
+      </IconButton>
+      <DialogContent dividers>{children}</DialogContent>
+      {action && <DialogActions>{action}</DialogActions>}
+    </Dialog>
   );
 }
 

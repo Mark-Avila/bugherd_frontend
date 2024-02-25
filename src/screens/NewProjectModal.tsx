@@ -1,21 +1,11 @@
-import { Close } from "@mui/icons-material";
-import {
-  Box,
-  Typography,
-  IconButton,
-  Divider,
-  Grid,
-  Button,
-} from "@mui/material";
+import { Box, Divider, Grid, Button } from "@mui/material";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useState, ChangeEvent, useEffect, useRef } from "react";
 import { useDebounce, useSnackError } from "../hooks";
 import { useGetUsersQuery } from "../api/userApiSlice";
 import { Project, ProjectAssign, ResponseBody, User } from "../types";
-import {
-  useCreateProjectMutation,
-} from "../api/projectApiSlice";
+import { useCreateProjectMutation } from "../api/projectApiSlice";
 import { useSnackbar } from "notistack";
 import { useCreateProjectAssignMutation } from "../api/projectAssignApiSlice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -147,11 +137,11 @@ function NewProjectModal({ onClose, open, onSuccess }: Props) {
           }
         }
       }
-      
+
       if (onSuccess) {
         onSuccess();
       }
-      
+
       onClose();
     },
   });
@@ -180,77 +170,45 @@ function NewProjectModal({ onClose, open, onSuccess }: Props) {
   };
 
   return (
-    <ModalWrapper open={open} onClose={onClose}>
-      <Box
-        display="flex"
-        flexDirection="column"
-        overflow="auto"
-        bgcolor="background.paper"
-        padding={2}
-        boxShadow={24}
-        borderRadius={1}
-        width={{
-          xs: "95%",
-          lg: 700,
-        }}
-        height={{
-          lg: 500,
-        }}
-        mx={{
-          xs: 1,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Typography variant="h6" ml={2} fontSize="small">
-            New Project
-          </Typography>
-          <IconButton onClick={onClose}>
-            <Close />
-          </IconButton>
-        </Box>
-        <Divider />
-        <Grid sx={{ flexGrow: 1 }} container spacing={2} mt={1}>
-          <Grid item xs={12} lg={6}>
-            {users.data && (
-              <ProjectDetailsForms
-                formik={formik}
-                assigned={assigned}
-                leader={leader}
-                handleRemoveFromAssigned={handleRemoveFromAssigned}
-                handleToggleLeader={handleToggleLeader}
-              />
-            )}
-          </Grid>
-
-          <Grid item xs={12} lg={6}>
-            {users.isSuccess && users.data ? (
-              <SelectMembers
-                search={search}
-                users={users.data.data}
-                handleSearch={handleSearch}
-                handleIsAssigned={handleIsAssigned}
-                handleAddAssigned={handleAddToAssigned}
-              />
-            ) : (
-              <LoadingScreen />
-            )}
-          </Grid>
+    <ModalWrapper
+      title="New Project"
+      fullWidth
+      maxWidth="md"
+      open={open}
+      onClose={onClose}
+    >
+      <Grid sx={{ flexGrow: 1, height: 350 }} container spacing={2}>
+        <Grid item xs={12} lg={6}>
+          {users.data && (
+            <ProjectDetailsForms
+              formik={formik}
+              assigned={assigned}
+              leader={leader}
+              handleRemoveFromAssigned={handleRemoveFromAssigned}
+              handleToggleLeader={handleToggleLeader}
+            />
+          )}
         </Grid>
-        <Divider sx={{ my: 2 }} />
-        <Box
-          sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
-        >
-          <Button onClick={() => formik.handleSubmit()} variant="contained">
-            SUBMIT
-          </Button>
-        </Box>
+
+        <Grid item xs={12} lg={6}>
+          {users.isSuccess && users.data ? (
+            <SelectMembers
+              search={search}
+              users={users.data.data}
+              handleSearch={handleSearch}
+              handleIsAssigned={handleIsAssigned}
+              handleAddAssigned={handleAddToAssigned}
+            />
+          ) : (
+            <LoadingScreen />
+          )}
+        </Grid>
+      </Grid>
+      <Divider sx={{ my: 2 }} />
+      <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+        <Button onClick={() => formik.handleSubmit()} variant="contained">
+          Create
+        </Button>
       </Box>
     </ModalWrapper>
   );
