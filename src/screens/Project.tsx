@@ -5,24 +5,39 @@ import {
   TicketList,
   LoadingScreen,
   PageBreadcrumbs,
+  ConfirmDialog,
 } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import { useEffect, useState } from "react";
 import NewTicketModal from "./NewTicketModal";
 import { useGetProjectByIdQuery } from "../api/projectApiSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import { BreadItem, Project as ProjectType } from "../types";
-import { useGetProjectAssignQuery } from "../api/projectAssignApiSlice";
+import {
+  BreadItem,
+  Project as ProjectType,
+  ResponseBody,
+  User,
+} from "../types";
+import {
+  useCreateProjectAssignMutation,
+  useLazyGetProjectAssignQuery,
+} from "../api/projectAssignApiSlice";
 import { useLazyGetTicketByProjectIdQuery } from "../api/ticketApiSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import EditProjectModal from "./EditProjectModal";
+import NewMemberModal from "./NewMemberModal";
+import { useSnackbar } from "notistack";
+import { useSnackError } from "../hooks";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 
 //TODO: Auth check on all submits
 
 function Project() {
   const [ticketModal, setTicketModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+  const [editConfirm, setEditConfirm] = useState(false);
+  const [memberModal, setMemberModal] = useState(false);
   const [projectData, setProjectData] = useState<ProjectType | null>(null);
   const toggleTicketModal = () => setTicketModal((prev) => !prev);
   const handleOnClose = () => setTicketModal(false);
@@ -30,11 +45,16 @@ function Project() {
   const navigate = useNavigate();
   const [maxPage, setMaxPage] = useState(0);
   const [currPage, setCurrPage] = useState(1);
+  const { enqueueSnackbar } = useSnackbar();
+  const { snackbarError } = useSnackError();
+  const [tempUser, setTempUser] = useState<User | null>(null);
 
   const auth = useSelector((state: RootState) => state.auth);
   const project = useGetProjectByIdQuery(project_id!);
-  const assigned = useGetProjectAssignQuery(project_id!);
+  const [getAssigned, assigned] = useLazyGetProjectAssignQuery();
   const [getTickets, tickets] = useLazyGetTicketByProjectIdQuery();
+  const [createAssign] = useCreateProjectAssignMutation();
+
   const TICKET_LIMIT = 5;
 
   useEffect(() => {
@@ -46,6 +66,10 @@ function Project() {
       setProjectData(project.data.data[0]);
     }
   }, [project.data]);
+
+  useEffect(() => {
+    getAssigned(project_id!);
+  }, [assigned.data]);
 
   useEffect(() => {
     getTickets({ offset: 0, limit: 10, project_id: project_id as string });
@@ -83,15 +107,41 @@ function Project() {
     }
   };
 
-  const handleModalClose = () => {
-    setEditModal(false);
+  const handleEditModal = (mode: boolean) => setEditModal(mode);
+
+  const handleMemberModal = (mode: boolean) => setMemberModal(mode);
+
+  const handleEditConfirm = (mode: boolean) => setEditConfirm(mode);
+
+  const handleAddMemberConfirm = (user: User) => {
+    setTempUser(user);
+    setEditConfirm(true);
   };
 
-  const handleModalOpen = () => {
-    setEditModal(true);
+  const handleAddMember = () => {
+    if (tempUser) {
+      createAssign({ user_id: tempUser.id!, project_id: projectData.id! })
+        .unwrap()
+        .then((res: ResponseBody<unknown>) => {
+          if (res.success) {
+            enqueueSnackbar("Successfully assigned member to project", {
+              variant: "success",
+            });
+          }
+        })
+        .finally(() => {
+          setTempUser(null);
+          setEditConfirm(false);
+          setMemberModal(false);
+        })
+        .catch((err: FetchBaseQueryError) => {
+          snackbarError(err);
+        });
+    }
   };
 
-  const handleOnSuccess = () => getTickets({ offset: 0, limit: 10, project_id: project_id as string });
+  const handleOnSuccess = () =>
+    getTickets({ offset: 0, limit: 10, project_id: project_id as string });
 
   const breadItems: BreadItem[] = [
     {
@@ -112,19 +162,33 @@ function Project() {
           description={projectData?.descr || "..."}
           project_id={projectData.id?.toString()}
           open={editModal}
-          onClose={handleModalClose}
+          onClose={() => handleEditModal(false)}
+        />
+      )}
+      <ConfirmDialog
+        open={editConfirm}
+        onClose={() => handleEditConfirm(false)}
+        title="Are you sure"
+        descr="Are you sure you want to assign this user to this project"
+        onNo={() => handleEditConfirm(false)}
+        onYes={handleAddMember}
+      />
+      {assigned.data && (
+        <NewMemberModal
+          open={memberModal}
+          onClose={() => handleMemberModal(false)}
+          onClick={handleAddMemberConfirm}
+          existingIds={assigned.data.data.map((item) => item.id!)}
         />
       )}
       <PageBreadcrumbs items={breadItems} />
       <ProjectHeader
         title={projectData?.title || "..."}
         desc={projectData?.descr || ""}
-        onEditClick={handleModalOpen}
+        onEditClick={() => handleEditModal(true)}
         archived={projectData?.archived}
       />
-
       <Divider sx={{ marginY: 4 }} />
-
       <Grid container spacing={2} component="main">
         <Grid item xs={12} md={6} lg={9}>
           <PageSection
@@ -164,6 +228,7 @@ function Project() {
                   variant="contained"
                   size="small"
                   disabled={projectData?.archived}
+                  onClick={() => handleMemberModal(true)}
                 >
                   Add member
                 </Button>

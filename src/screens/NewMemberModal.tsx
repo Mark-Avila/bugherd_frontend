@@ -21,9 +21,10 @@ interface Props {
   open: boolean;
   onClose: VoidFunction;
   onClick?: (user: User) => void;
+  existingIds?: number[];
 }
 
-function NewMemberModal({ open, onClose, onClick }: Props) {
+function NewMemberModal({ open, onClose, onClick, existingIds }: Props) {
   //Search string used for searching users
   const [search, setSearch] = useState<string>("");
 
@@ -47,7 +48,7 @@ function NewMemberModal({ open, onClose, onClick }: Props) {
       maxWidth="xs"
       fullWidth
     >
-      <Stack height={500}>
+      <Stack height={350}>
         <Box mb={1}>
           <TextField
             size="small"
@@ -69,28 +70,34 @@ function NewMemberModal({ open, onClose, onClick }: Props) {
               users.isSuccess &&
               !users.isFetching &&
               !users.isLoading &&
-              users.data.data.map((user) => (
-                <ListItem
-                  key={user.id}
-                  divider
-                  secondaryAction={
-                    <Tooltip title="Add member">
-                      <IconButton
-                        onClick={() => (onClick ? onClick(user) : {})}
-                      >
-                        <Add />
-                      </IconButton>
-                    </Tooltip>
-                  }
-                >
-                  <ListItemText
-                    primaryTypographyProps={{ fontSize: 14 }}
-                    secondaryTypographyProps={{ fontSize: 12 }}
-                    primary={`${user.fname} ${user.lname}`}
-                    secondary={getRole(user.role)}
-                  />
-                </ListItem>
-              ))}
+              users.data.data.map((user) => {
+                if (existingIds && existingIds.some((id) => id === user.id)) {
+                  return;
+                }
+
+                return (
+                  <ListItem
+                    key={user.id}
+                    divider
+                    secondaryAction={
+                      <Tooltip title="Add member">
+                        <IconButton
+                          onClick={() => (onClick ? onClick(user) : {})}
+                        >
+                          <Add />
+                        </IconButton>
+                      </Tooltip>
+                    }
+                  >
+                    <ListItemText
+                      primaryTypographyProps={{ fontSize: 14 }}
+                      secondaryTypographyProps={{ fontSize: 12 }}
+                      primary={`${user.fname} ${user.lname}`}
+                      secondary={getRole(user.role)}
+                    />
+                  </ListItem>
+                );
+              })}
           </List>
         </Paper>
       </Stack>
