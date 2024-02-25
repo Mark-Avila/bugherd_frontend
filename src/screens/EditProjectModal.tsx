@@ -1,14 +1,5 @@
-import {
-  Box,
-  Button,
-  Divider,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Stack, TextField } from "@mui/material";
 import { ModalWrapper } from "../components";
-import { Close } from "@mui/icons-material";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useUpdateProjectMutation } from "../api/projectApiSlice";
@@ -77,76 +68,48 @@ function EditProjectModal({
   });
 
   return (
-    <ModalWrapper open={open} onClose={onClose}>
-      <Box
-        display="flex"
-        flexDirection="column"
-        overflow="auto"
-        bgcolor="background.paper"
-        padding={2}
-        boxShadow={24}
-        borderRadius={1}
-        width={{
-          xs: "95%",
-          lg: 700,
-        }}
-        mx={{
-          xs: 1,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Typography variant="h6" ml={2} fontSize="small">
-            New Project
-          </Typography>
-          <IconButton onClick={onClose}>
-            <Close />
-          </IconButton>
-        </Box>
-        <Divider sx={{ my: 2 }} />
-        <Stack spacing={2}>
-          <TextField
-            size="small"
-            label="Title"
-            id="project-title"
-            name="title"
-            value={formik.values.title}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            helperText={formik.touched.title && formik.errors.title}
-            error={formik.touched.title && Boolean(formik.errors.title)}
-            fullWidth
-          />
-          <TextField
-            size="small"
-            label="Description"
-            id="project-desc"
-            name="description"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            helperText={formik.touched.description && formik.errors.description}
-            error={
-              formik.touched.description && Boolean(formik.errors.description)
-            }
-            multiline
-            rows={5}
-            fullWidth
-          />
-        </Stack>
-        <Stack mt={2} direction="row" justifyContent="space-between">
-          <Button>Clear</Button>
-          <Button variant="contained" onClick={() => formik.handleSubmit()}>
-            Submit
-          </Button>
-        </Stack>
-      </Box>
+    <ModalWrapper
+      title="Edit Project"
+      open={open}
+      fullWidth
+      maxWidth="sm"
+      onClose={onClose}
+    >
+      <Stack spacing={2}>
+        <TextField
+          size="small"
+          label="Title"
+          id="project-title"
+          name="title"
+          value={formik.values.title}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          helperText={formik.touched.title && formik.errors.title}
+          error={formik.touched.title && Boolean(formik.errors.title)}
+          fullWidth
+        />
+        <TextField
+          size="small"
+          label="Description"
+          id="project-desc"
+          name="description"
+          value={formik.values.description}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          helperText={formik.touched.description && formik.errors.description}
+          error={
+            formik.touched.description && Boolean(formik.errors.description)
+          }
+          multiline
+          rows={5}
+          fullWidth
+        />
+      </Stack>
+      <Stack mt={2} direction="row" justifyContent="flex-end">
+        <Button variant="contained" onClick={() => formik.handleSubmit()}>
+          Submit
+        </Button>
+      </Stack>
     </ModalWrapper>
   );
 }
