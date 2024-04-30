@@ -9,11 +9,11 @@ import {
   Theme,
   useMediaQuery,
 } from "@mui/material";
-import { DataCard, PageBreadcrumbs, ProjectList } from "../components";
+import { DataCard, ProjectList } from "../components";
 import { useLazyGetCurrentProjectQuery } from "../api/projectApiSlice";
 import React, { useEffect, useState } from "react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { BreadItem, ProjectWithUser, ResponseBody } from "../types";
+import { ProjectWithUser, ResponseBody } from "../types";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../slices/authSlice";
 import { useToggle } from "../hooks";
@@ -22,11 +22,12 @@ import PageSection from "../components/stateless/PageSection";
 import { useSnackbar } from "notistack";
 import { useGetCurrentTicketStatsQuery } from "../api/userApiSlice";
 import { RootState } from "../store";
+import { setBreadcrumbs } from "../slices/breadSlice";
 
 export default function Dashboard() {
   const [getProjects, projects] = useLazyGetCurrentProjectQuery();
   const ticketStats = useGetCurrentTicketStatsQuery();
-  const { user } = useSelector((state: RootState) => state.auth)
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const [isProjToggled, toggleProj] = useToggle(false);
   const [maxPage, setMaxPage] = useState(0);
@@ -42,6 +43,17 @@ export default function Dashboard() {
 
   useEffect(() => {
     getProjects({ offset: 0, limit: PAGE_LIMIT });
+  }, []);
+
+  useEffect(() => {
+    dispatch(
+      setBreadcrumbs([
+        {
+          label: "Dashboard",
+          to: "/dashboard",
+        },
+      ])
+    );
   }, []);
 
   useEffect(() => {
@@ -89,7 +101,7 @@ export default function Dashboard() {
 
   const handleOnSuccess = () => {
     getProjects({ offset: 0, limit: PAGE_LIMIT });
-  } 
+  };
 
   const handlePagination = (
     event: React.ChangeEvent<unknown>,
@@ -101,18 +113,14 @@ export default function Dashboard() {
     }
   };
 
-  const breadItems: BreadItem[] = [
-    {
-      label: "Dashboard",
-      to: "/dashboard",
-    },
-  ];
-
   return (
     <>
-      <NewProjectModal open={isProjToggled} onClose={toggleProj} onSuccess={handleOnSuccess}/>
+      <NewProjectModal
+        open={isProjToggled}
+        onClose={toggleProj}
+        onSuccess={handleOnSuccess}
+      />
       <Stack spacing={2}>
-        <PageBreadcrumbs items={breadItems} />
         <PageSection title="Personal statistics">
           <Stack direction={isSmallScreen ? "column" : "row"} spacing={2}>
             {ticketStats.data ? (
@@ -142,10 +150,14 @@ export default function Dashboard() {
         <Divider />
         <PageSection
           width="100%"
-          action={user && user?.role >= 1 ?
-            <Button onClick={toggleProj} variant="contained" size="small">
-              New Project
-            </Button> : <></>
+          action={
+            user && user?.role >= 1 ? (
+              <Button onClick={toggleProj} variant="contained" size="small">
+                New Project
+              </Button>
+            ) : (
+              <></>
+            )
           }
           title="Projects assigned"
         >
@@ -159,13 +171,15 @@ export default function Dashboard() {
           ) : (
             <Skeleton width="100%" height={210} variant="rounded" />
           )}
-          {maxPage > 1 && <Box marginTop={2}>
-            <Pagination
-              count={maxPage}
-              onChange={handlePagination}
-              page={currPage}
-            />
-          </Box>}
+          {maxPage > 1 && (
+            <Box marginTop={2}>
+              <Pagination
+                count={maxPage}
+                onChange={handlePagination}
+                page={currPage}
+              />
+            </Box>
+          )}
         </PageSection>
       </Stack>
     </>

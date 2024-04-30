@@ -1,9 +1,9 @@
-import {
-  Box,
-  CssBaseline,
-} from "@mui/material";
-import { PageDrawer } from "../components";
+import { AppBar, Box, CssBaseline, IconButton, Toolbar } from "@mui/material";
+import { PageBreadcrumbs, PageDrawer } from "../components";
 import { ReactNode, useState } from "react";
+import { Menu } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const DRAWER_WIDTH = 240;
 
@@ -14,10 +14,31 @@ interface Props {
 function DrawerLayout({ children }: Props) {
   const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { breadcrumbs } = useSelector((root: RootState) => root.breadcrumbs);
 
   return (
     <Box sx={{ display: "flex", width: "100%" }}>
       <CssBaseline />
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
+          ml: { sm: `${DRAWER_WIDTH}px` },
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: "none" } }}
+          >
+            <Menu />
+          </IconButton>
+          <PageBreadcrumbs items={breadcrumbs} />
+        </Toolbar>
+      </AppBar>
       <Box
         component="nav"
         sx={{ width: { lg: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
@@ -43,7 +64,7 @@ function DrawerLayout({ children }: Props) {
         }}
         aria-label="main-body"
       >
-        {/* <Toolbar /> */}
+        <Toolbar />
         {children}
       </Box>
     </Box>

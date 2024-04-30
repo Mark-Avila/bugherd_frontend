@@ -14,13 +14,13 @@ function PageBreadcrumbs({ items }: Props) {
   };
 
   return (
-    <Breadcrumbs sx={{ mb: 2 }}>
+    <Breadcrumbs>
       {items.map((item, index) => (
         <Link
           key={index}
           underline="hover"
           fontSize="small"
-          color="inherit"
+          color="white"
           component="button"
           onClick={() => handleOnItemClick(item.to)}
         >

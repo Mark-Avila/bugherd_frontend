@@ -4,7 +4,6 @@ import {
   ConfirmDialog,
   ManageUsersForm,
   ManageUsersItem,
-  PageBreadcrumbs,
   SearchField,
 } from "../components";
 import {
@@ -12,7 +11,7 @@ import {
   useUpdateUserArchiveMutation,
   useUpdateUserMutation,
 } from "../api/userApiSlice";
-import { BreadItem, InputData, ResponseBody, User } from "../types";
+import { InputData, ResponseBody, User } from "../types";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -20,6 +19,8 @@ import dayjs, { Dayjs } from "dayjs";
 import { useSnackError } from "../hooks";
 import { useSnackbar } from "notistack";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { useDispatch } from "react-redux";
+import { setBreadcrumbs } from "../slices/breadSlice";
 // import { useGetUsersQuery } from "../api/userApiSlice";
 
 const validationSchema = yup.object({
@@ -49,10 +50,25 @@ function ManageUsers() {
   const [confArchDialog, setConfArchDialog] = useState<boolean>(false);
   const [confUnArchDialog, setConfUnArchDialog] = useState<boolean>(false);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     getUsers({
       name: "",
     }).unwrap();
+
+    dispatch(
+      setBreadcrumbs([
+        {
+          label: "Dashboard",
+          to: "/dashboard",
+        },
+        {
+          label: "Manage Users",
+          to: "/manage/users",
+        },
+      ])
+    );
   }, []);
 
   useEffect(() => {
@@ -191,17 +207,6 @@ function ManageUsers() {
       });
   };
 
-  const breadItems: BreadItem[] = [
-    {
-      label: "Dashboard",
-      to: "/dashboard",
-    },
-    {
-      label: "Manage Users",
-      to: "/manage/users",
-    },
-  ];
-
   return (
     <>
       <ConfirmDialog
@@ -220,7 +225,6 @@ function ManageUsers() {
         onNo={onConfArchClose}
         onYes={() => handleUserArchive(true)}
       />
-      <PageBreadcrumbs items={breadItems} />
       <PageSection
         title="Manage Users"
         primaryTypographyProps={{ fontSize: 32 }}

@@ -14,13 +14,12 @@ import {
   ManageProjectUserList,
   ManageProjectsForm,
   ManageProjectsItem,
-  PageBreadcrumbs,
   SearchField,
 } from "../components";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { ChangeEvent, useEffect, useState } from "react";
-import { BreadItem, Project, User } from "../types";
+import { Project, User } from "../types";
 import {
   useArchiveProjectMutation,
   useLazyGetProjectsQuery,
@@ -35,6 +34,8 @@ import NewMemberModal from "./NewMemberModal";
 import { useDebounce, useSnackError } from "../hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { useSnackbar } from "notistack";
+import { setBreadcrumbs } from "../slices/breadSlice";
+import { useDispatch } from "react-redux";
 
 const validationSchema = yup.object({
   title: yup
@@ -75,6 +76,7 @@ function ManageProjects() {
   const debouncedSearch = useDebounce(projectSearch, 500);
 
   const [getProjects, projects] = useLazyGetProjectsQuery();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getProjects({
@@ -82,6 +84,19 @@ function ManageProjects() {
       limit: 20,
       offset: 0,
     }).unwrap();
+
+    dispatch(
+      setBreadcrumbs([
+        {
+          label: "Dashboard",
+          to: "/dashboard",
+        },
+        {
+          label: "Manage Projects",
+          to: "/manage/projects",
+        },
+      ])
+    );
   }, []);
 
   useEffect(() => {
@@ -288,17 +303,6 @@ function ManageProjects() {
       });
   };
 
-  const breadItems: BreadItem[] = [
-    {
-      label: "Dashboard",
-      to: "/dashboard",
-    },
-    {
-      label: "Manage Projects",
-      to: "/manage/projects",
-    },
-  ];
-
   return (
     <>
       <ConfirmDialog
@@ -330,7 +334,6 @@ function ManageProjects() {
         onClose={handleModalClose}
         onClick={addMember}
       />
-      <PageBreadcrumbs items={breadItems} />
       <PageSection
         title="Manage Projects"
         primaryTypographyProps={{ fontSize: 32 }}
@@ -373,9 +376,9 @@ function ManageProjects() {
                 </Paper>
               )}
               {(projects.isLoading || projects.isFetching) && (
-                <Stack spacing={1}>
+                <Stack spacing={0.5}>
                   {[1, 2, 3, 4, 5].map((item) => (
-                    <Skeleton key={item} variant="rounded" height={72} />
+                    <Skeleton key={item} variant="rectangular" height={72} />
                   ))}
                 </Stack>
               )}

@@ -1,25 +1,21 @@
 import { Box, Grid, IconButton, Tooltip } from "@mui/material";
-import {
-  CommentSection,
-  PageBreadcrumbs,
-  TicketDetails,
-  TicketHeader,
-} from "../components";
+import { CommentSection, TicketDetails, TicketHeader } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import TicketDescription from "../components/stateless/TicketDescription";
 import { useGetTicketByIdQuery } from "../api/ticketApiSlice";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { BreadItem, Comment, Ticket as TicketType } from "../types";
+import { Comment, Ticket as TicketType } from "../types";
 import {
   useGetCommentsByTicketIdQuery,
   useLazyGetCommentsByTicketIdQuery,
 } from "../api/commentApiSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { Refresh } from "@mui/icons-material";
 import dayjs from "dayjs";
 import EditTicketModal from "./EditTicketModal";
+import { setBreadcrumbs } from "../slices/breadSlice";
 
 function Ticket() {
   const [ticketData, setTicketData] = useState<
@@ -33,6 +29,27 @@ function Ticket() {
   const comments = useGetCommentsByTicketIdQuery(ticket_id!);
 
   const [updateComments] = useLazyGetCommentsByTicketIdQuery();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(
+      setBreadcrumbs([
+        {
+          label: "Dashboard",
+          to: "/dashboard",
+        },
+        {
+          label: ticketData ? ticketData.project_title! : "...",
+          to: `/project/${ticketData?.project_id}`,
+        },
+        {
+          label: ticketData ? ticketData.title : "...",
+          to: `/ticket/${ticketData?.id}`,
+        },
+      ])
+    );
+  }, [ticketData]);
 
   useEffect(() => {
     if (!ticket.isLoading && ticket.data) {
@@ -50,21 +67,6 @@ function Ticket() {
     updateComments(ticket_id!);
   };
 
-  const breadItems: BreadItem[] = [
-    {
-      label: "Dashboard",
-      to: "/dashboard",
-    },
-    {
-      label: ticketData ? ticketData.project_title! : "...",
-      to: `/project/${ticketData?.project_id}`,
-    },
-    {
-      label: ticketData ? ticketData.title : "...",
-      to: `/ticket/${ticketData?.id}`,
-    },
-  ];
-
   const openEditModal = () => setEditModal(true);
   const closeEditModal = () => setEditModal(false);
 
@@ -76,7 +78,6 @@ function Ticket() {
         ticket={ticketData as TicketType & { fname: string; lname: string }}
       />
       <Box>
-        <PageBreadcrumbs items={breadItems} />
         <Box component="header">
           {ticketData && ticketData.num && (
             <TicketHeader

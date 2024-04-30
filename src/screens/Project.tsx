@@ -4,7 +4,6 @@ import {
   UserList,
   TicketList,
   LoadingScreen,
-  PageBreadcrumbs,
   ConfirmDialog,
 } from "../components";
 import PageSection from "../components/stateless/PageSection";
@@ -12,24 +11,20 @@ import { useEffect, useState } from "react";
 import NewTicketModal from "./NewTicketModal";
 import { useGetProjectByIdQuery } from "../api/projectApiSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  BreadItem,
-  Project as ProjectType,
-  ResponseBody,
-  User,
-} from "../types";
+import { Project as ProjectType, ResponseBody, User } from "../types";
 import {
   useCreateProjectAssignMutation,
   useLazyGetProjectAssignQuery,
 } from "../api/projectAssignApiSlice";
 import { useLazyGetTicketByProjectIdQuery } from "../api/ticketApiSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import EditProjectModal from "./EditProjectModal";
 import NewMemberModal from "./NewMemberModal";
 import { useSnackbar } from "notistack";
 import { useSnackError } from "../hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { setBreadcrumbs } from "../slices/breadSlice";
 
 //TODO: Auth check on all submits
 
@@ -57,6 +52,27 @@ function Project() {
 
   const TICKET_LIMIT = 5;
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getTickets({ offset: 0, limit: 10, project_id: project_id as string });
+  }, []);
+
+  useEffect(() => {
+    dispatch(
+      setBreadcrumbs([
+        {
+          label: "Dashboard",
+          to: "/dashboard",
+        },
+        {
+          label: projectData ? projectData.title : "...",
+          to: `/project/${projectData ? projectData.id : "..."}`,
+        },
+      ])
+    );
+  }, [projectData]);
+
   useEffect(() => {
     if (project.data) {
       if (project.data.data.length === 0) {
@@ -70,10 +86,6 @@ function Project() {
   useEffect(() => {
     getAssigned(project_id!);
   }, [assigned.data]);
-
-  useEffect(() => {
-    getTickets({ offset: 0, limit: 10, project_id: project_id as string });
-  }, []);
 
   useEffect(() => {
     const { isError, isLoading, isSuccess } = tickets;
@@ -143,17 +155,6 @@ function Project() {
   const handleOnSuccess = () =>
     getTickets({ offset: 0, limit: 10, project_id: project_id as string });
 
-  const breadItems: BreadItem[] = [
-    {
-      label: "Dashboard",
-      to: "/dashboard",
-    },
-    {
-      label: projectData ? projectData.title : "...",
-      to: `/project/${projectData.id}`,
-    },
-  ];
-
   return (
     <>
       {projectData.id && (
@@ -181,7 +182,6 @@ function Project() {
           existingIds={assigned.data.data.map((item) => item.id!)}
         />
       )}
-      <PageBreadcrumbs items={breadItems} />
       <ProjectHeader
         title={projectData?.title || "..."}
         desc={projectData?.descr || ""}
