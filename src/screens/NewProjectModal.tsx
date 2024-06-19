@@ -17,6 +17,7 @@ import {
 } from "../components";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import { useCreateNotificationMutation } from "../api/notifApiSlice";
 
 const validationSchema = yup.object({
   title: yup
@@ -64,6 +65,7 @@ function NewProjectModal({ onClose, open, onSuccess }: Props) {
 
   const [createProject] = useCreateProjectMutation();
   const [createProjectAssign] = useCreateProjectAssignMutation();
+  const [createNotification] = useCreateNotificationMutation();
 
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
@@ -131,6 +133,12 @@ function NewProjectModal({ onClose, open, onSuccess }: Props) {
             await createProjectAssign({
               user_id: assigned[i].id as number,
               project_id: createdProjectId,
+            });
+            await createNotification({
+              body: `You were assigned to the project ${values.title}`,
+              to_id: assigned[i].id as number,
+              from_id: auth.user!.id as number,
+              view_path: `/project/${createdProjectId}`,
             });
           } catch (err) {
             snackbarError(err as FetchBaseQueryError);

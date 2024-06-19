@@ -134,3 +134,14 @@ export interface BreadItem {
   label: string;
   to: string;
 }
+
+export interface Notification {
+  id: number;
+  body: string;
+  from_id: number;
+  to_id: number;
+  view_path?: string;
+  fname: string;
+  lname: string;
+  createdat: string;
+}

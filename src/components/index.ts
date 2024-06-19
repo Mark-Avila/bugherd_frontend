@@ -28,6 +28,7 @@ import ManageProjectUserList from "./stateless/ManageProjectUserList";
 import ConfirmDialog from "./stateless/ConfirmDialog";
 import ProfileInfo from "./stateless/ProfileInfo";
 import PageBreadcrumbs from "./stateless/PageBreadcrumbs";
+import NotifList from "./stateless/NotifList";
 
 export {
   PageDrawer,
@@ -60,4 +61,5 @@ export {
   ConfirmDialog,
   ProfileInfo,
   PageBreadcrumbs,
+  NotifList,
 };
