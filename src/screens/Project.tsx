@@ -244,12 +244,15 @@ function Project() {
         </Grid>
       </Grid>
 
-      <NewTicketModal
-        open={ticketModal}
-        project_id={parseInt(project_id!)}
-        onClose={handleOnClose}
-        onSuccess={handleOnSuccess}
-      />
+      {assigned && assigned.data && project && (
+        <NewTicketModal
+          open={ticketModal}
+          project={project.data.data[0]}
+          projectMembers={assigned.data.data}
+          onClose={handleOnClose}
+          onSuccess={handleOnSuccess}
+        />
+      )}
     </>
   );
 }

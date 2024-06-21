@@ -9,9 +9,11 @@ import { useFormik } from "formik";
 import {
   FormikNewTicket,
   Priority,
+  Project,
   ResponseBody,
   Ticket,
   Type,
+  User,
 } from "../types";
 import {
   useCreateTicketMutation,
@@ -23,12 +25,14 @@ import { useSnackbar } from "notistack";
 import { logout } from "../slices/authSlice";
 import { useSnackError } from "../hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { useCreateNotificationMutation } from "../api/notifApiSlice";
 
 interface Props {
   onClose: VoidFunction;
   onSuccess?: VoidFunction;
   open: boolean;
-  project_id: number;
+  project: Project;
+  projectMembers: User[];
 }
 
 const validationSchema = yup.object({
@@ -44,12 +48,19 @@ const validationSchema = yup.object({
  * Modal UI component for creating a new ticket
  * @prop {VoidFunction} onClose Function to execute when the "close"
  */
-function NewTicketModal({ onClose, open, project_id, onSuccess }: Props) {
+function NewTicketModal({
+  onClose,
+  open,
+  project,
+  projectMembers,
+  onSuccess,
+}: Props) {
   const [createTicket] = useCreateTicketMutation();
   const { user } = useSelector((state: RootState) => state.auth);
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
   const [updateTickets] = useLazyGetTicketByProjectIdQuery();
+  const [createNotification] = useCreateNotificationMutation();
 
   const formik = useFormik<FormikNewTicket>({
     initialValues: {
@@ -65,6 +76,7 @@ function NewTicketModal({ onClose, open, project_id, onSuccess }: Props) {
       if (!user) {
         enqueueSnackbar("Session expired", { variant: "error" });
         logout();
+        return;
       }
 
       const payload: Ticket = {
@@ -75,26 +87,59 @@ function NewTicketModal({ onClose, open, project_id, onSuccess }: Props) {
         issue_type: values.type as Type,
         est: values.hours,
         user_id: user?.id as number,
-        project_id: project_id,
+        project_id: project.id!,
       };
 
+      let response: ResponseBody<Ticket[]> | null = null;
+
       try {
-        const response: ResponseBody<unknown> = await createTicket(
-          payload
-        ).unwrap();
-
-        if (response.success) {
-          updateTickets({ project_id: project_id.toString() });
-
-          if (onSuccess) {
-            onSuccess();
-          }
-
-          return handleOnClose();
-        }
+        response = (await createTicket(payload).unwrap()) as ResponseBody<
+          Ticket[]
+        >;
       } catch (err: unknown) {
-        snackbarError(err as FetchBaseQueryError);
+        snackbarError(err as FetchBaseQueryError, "Failed to create ticket");
       }
+
+      if (response && response.success) {
+        for await (const member of projectMembers) {
+          if (member.id !== user!.id) {
+            try {
+              await createNotification({
+                body: `A new ticket was created by ${user!.fname} ${
+                  user!.lname
+                } in ${project.title}`,
+                to_id: member.id as number,
+                from_id: user!.id as number,
+                view_path: `/ticket/${response.data[0].id}`,
+              });
+            } catch (err: unknown) {
+              snackbarError(
+                err as FetchBaseQueryError,
+                "Failed to notify members"
+              );
+            }
+          }
+        }
+      }
+
+      try {
+        await updateTickets({ project_id: project.id!.toString() });
+      } catch (err: unknown) {
+        snackbarError(
+          err as FetchBaseQueryError,
+          "Failed to fetch updated ticket data"
+        );
+      }
+
+      if (onSuccess) {
+        onSuccess();
+      }
+
+      enqueueSnackbar("Successfully created new ticket", {
+        variant: "success",
+      });
+
+      return handleOnClose();
     },
   });
 

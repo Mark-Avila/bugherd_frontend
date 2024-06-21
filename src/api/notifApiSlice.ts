@@ -1,6 +1,14 @@
 import { Notification, ResponseBody } from "../types";
 import { apiSlice } from "./apiSlice";
 
+/**
+ * TODO: Add notifications
+ *  - Create New Ticket (DONE)
+ *  - Ticket Comment
+ *  - Updated Ticket Details
+ *  - Admin updated user information
+ */
+
 export const notifApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getNotificationsOfUser: builder.query<ResponseBody<Notification[]>, string>(

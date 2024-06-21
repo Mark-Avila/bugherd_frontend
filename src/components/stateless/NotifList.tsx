@@ -83,7 +83,7 @@ function NotifList({ notifs, handleCloseNotif, handleReadNotif }: Props) {
                 </Stack>
                 <Box>
                   <IconButton
-                    onClick={() => handleReadNotif(item.id)}
+                    onClick={() => handleReadNotif(item.id as number)}
                     size="small"
                   >
                     <Close />

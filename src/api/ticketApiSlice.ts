@@ -18,8 +18,13 @@ const ticketApiSlice = apiSlice.injectEndpoints({
       { project_id: string } & Args
     >({
       query: (args) => {
-        const limit = args.limit;
-        const offset = args.offset;
+        let limit = args.limit;
+        let offset = args.offset;
+
+        if (args) {
+          limit = args.limit ? args.limit : 10;
+          offset = args.offset ? args.offset : 0;
+        }
 
         return {
           url: `/ticket/${args.project_id}/project?offset=${offset}&limit=${limit}`,

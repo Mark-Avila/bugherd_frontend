@@ -15,10 +15,15 @@ function useSnackError() {
   /**
    * Display an error message as a snackbar notification.
    */
-  const snackbarError = (err: FetchBaseQueryError) => {
+  const snackbarError = (err: FetchBaseQueryError, message?: string) => {
     if ("error" in err) {
       enqueueSnackbar("Connection failed", { variant: "error" });
     } else if ("message" in (err.data as ErrorBody)) {
+      if (message) {
+        enqueueSnackbar(message, {
+          variant: "error",
+        });
+      }
       enqueueSnackbar((err.data as ErrorBody).message, {
         variant: "error",
       });
