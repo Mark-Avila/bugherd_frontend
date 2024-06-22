@@ -4,7 +4,7 @@ import { apiSlice } from "./apiSlice";
 /**
  * TODO: Add notifications
  *  - Create New Ticket (DONE)
- *  - Ticket Comment
+ *  - Ticket Comment (DONE)
  *  - Updated Ticket Details
  *  - Admin updated user information
  */

@@ -86,6 +86,8 @@ export interface Ticket {
   project_archived?: boolean;
   project_id: number;
   created_at?: string;
+  fname?: string;
+  lname?: string;
 }
 
 export interface UserTicketStats {

@@ -18,9 +18,7 @@ import EditTicketModal from "./EditTicketModal";
 import { setBreadcrumbs } from "../slices/breadSlice";
 
 function Ticket() {
-  const [ticketData, setTicketData] = useState<
-    (TicketType & { fname: string; lname: string }) | null
-  >(null);
+  const [ticketData, setTicketData] = useState<TicketType | null>(null);
   const [commentsData, setComments] = useState<Comment[]>([]);
   const [editModal, setEditModal] = useState(false);
   const { ticket_id } = useParams();
@@ -131,7 +129,7 @@ function Ticket() {
             <CommentSection
               comments={commentsData}
               user_id={auth.user.id.toString()}
-              ticket_id={(ticketData as TicketType).id as string}
+              ticket={ticketData}
               onSubmit={handleUpdateComments}
               archived={ticketData.project_archived}
             />

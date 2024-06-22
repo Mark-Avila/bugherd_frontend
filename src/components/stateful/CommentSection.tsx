@@ -1,5 +1,5 @@
 import { Divider, List } from "@mui/material";
-import { Comment, ResponseBody } from "../../types";
+import { Comment, ResponseBody, Ticket } from "../../types";
 import { CommentInput, CommentItem } from "..";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -8,6 +8,7 @@ import { RootState } from "../../store";
 import { useCreateCommentMutation } from "../../api/commentApiSlice";
 import { useSnackError } from "../../hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { useCreateNotificationMutation } from "../../api/notifApiSlice";
 
 const validationSchema = yup.object({
   message: yup
@@ -19,7 +20,7 @@ const validationSchema = yup.object({
 interface Props {
   comments: Comment[];
   user_id: string;
-  ticket_id: string;
+  ticket: Ticket;
   onSubmit: VoidFunction;
   archived?: boolean;
 }
@@ -28,11 +29,12 @@ function CommentSection({
   comments,
   archived,
   user_id,
-  ticket_id,
+  ticket,
   onSubmit,
 }: Props) {
   const auth = useSelector((state: RootState) => state.auth);
   const [createComment] = useCreateCommentMutation();
+  const [createNotification] = useCreateNotificationMutation();
 
   const { snackbarError } = useSnackError();
 
@@ -42,11 +44,11 @@ function CommentSection({
     },
     validationSchema,
     onSubmit: async (values) => {
-      if (auth && auth.user) {
+      if (auth && auth.user && ticket) {
         const payload: Comment = {
           msg: values.message,
           user_id: user_id,
-          ticket_id: ticket_id,
+          ticket_id: ticket.id as string,
         };
 
         try {
@@ -61,6 +63,21 @@ function CommentSection({
           onSubmit();
         } catch (err: unknown) {
           snackbarError(err as FetchBaseQueryError);
+        }
+
+        if (auth.user.id !== ticket.user_id) {
+          const currentUserName = `${auth.user.fname} ${auth.user.lname}`;
+
+          try {
+            await createNotification({
+              body: `${currentUserName} commented on your ticket`,
+              to_id: ticket.user_id,
+              from_id: auth.user!.id as number,
+              view_path: `/ticket/${ticket.id}`,
+            });
+          } catch (err: unknown) {
+            snackbarError(err as FetchBaseQueryError);
+          }
         }
       }
     },
