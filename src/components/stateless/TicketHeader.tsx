@@ -7,6 +7,7 @@ interface Props {
   author: string;
   createdAt: string;
   archived?: boolean;
+  isAuthor?: boolean;
   onUpdateClick?: VoidFunction | null;
 }
 
@@ -18,6 +19,7 @@ function TicketHeader({
   createdAt,
   archived,
   onUpdateClick,
+  isAuthor,
 }: Props) {
   return (
     <>
@@ -35,7 +37,7 @@ function TicketHeader({
             </Tooltip>
           )}
         </Stack>
-        {onUpdateClick && (
+        {isAuthor && onUpdateClick && (
           <Button variant="contained" size="small" onClick={onUpdateClick}>
             Update Ticket
           </Button>

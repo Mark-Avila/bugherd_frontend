@@ -68,15 +68,18 @@ function Ticket() {
 
   const openEditModal = () => setEditModal(true);
   const closeEditModal = () => setEditModal(false);
+  const isAuthor = auth.user!.id === ticketData?.user_id;
 
   return (
     <>
-      <EditTicketModal
-        open={editModal}
-        onClose={closeEditModal}
-        ticket={ticketData as TicketType}
-        projectId={ticketData?.project_id as number}
-      />
+      {isAuthor && (
+        <EditTicketModal
+          open={editModal}
+          onClose={closeEditModal}
+          ticket={ticketData as TicketType}
+          projectId={ticketData?.project_id as number}
+        />
+      )}
       <Box>
         <Box component="header">
           {ticketData && ticketData.num && (
@@ -94,6 +97,7 @@ function Ticket() {
                   ? openEditModal
                   : null
               }
+              isAuthor={isAuthor}
             />
           )}
         </Box>

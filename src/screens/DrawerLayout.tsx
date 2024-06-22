@@ -55,6 +55,10 @@ function DrawerLayout({ children }: Props) {
     if (auth.user) {
       await readNotification(notif_id);
       await getNotifications(auth.user.id!.toString());
+
+      if (notifs.data?.data.length === 0) {
+        handleNotifClose();
+      }
     }
   };
 

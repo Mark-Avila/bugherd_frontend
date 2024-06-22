@@ -5,6 +5,8 @@ import {
   ListItemButton,
   Box,
   IconButton,
+  ListItem,
+  Link,
 } from "@mui/material";
 import { Notification } from "../../types";
 import moment, { Duration } from "moment";
@@ -58,19 +60,25 @@ function NotifList({ notifs, handleCloseNotif, handleReadNotif }: Props) {
           const timePassed = getTimePassed(duration);
 
           return (
-            <ListItemButton
-              key={item.id}
-              onClick={() => handleOnClick(item.view_path)}
-              divider
-            >
+            <ListItem key={item.id} divider>
               <Stack
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
                 width="100%"
               >
-                <Stack gap={1} width="100%">
-                  <Typography fontSize="small">{item.body}</Typography>
+                <Stack gap={1} width="100%" pr={1}>
+                  <Link
+                    component="text"
+                    variant="body2"
+                    fontSize="small"
+                    textAlign="left"
+                    color="white"
+                    sx={{ fontWeight: "normal" }}
+                    onClick={() => handleOnClick(item.view_path)}
+                  >
+                    {item.body}
+                  </Link>
                   <Stack
                     direction="row"
                     alignItems="center"
@@ -90,7 +98,7 @@ function NotifList({ notifs, handleCloseNotif, handleReadNotif }: Props) {
                   </IconButton>
                 </Box>
               </Stack>
-            </ListItemButton>
+            </ListItem>
           );
         })
       ) : (
