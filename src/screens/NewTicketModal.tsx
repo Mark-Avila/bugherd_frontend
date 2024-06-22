@@ -36,7 +36,7 @@ interface Props {
 }
 
 const validationSchema = yup.object({
-  title: yup.string().min(2).max(50).required(),
+  title: yup.string().min(2).max(100).required(),
   description: yup.string().min(2).required(),
   type: yup.string().required(),
   status: yup.boolean().required(),

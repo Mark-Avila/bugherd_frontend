@@ -7,27 +7,35 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Priority, Ticket, Type } from "../types";
+import { Priority, Project, ResponseBody, Ticket, Type, User } from "../types";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import { useUpdateTicketMutation } from "../api/ticketApiSlice";
+import {
+  useLazyGetTicketByIdQuery,
+  useUpdateTicketMutation,
+} from "../api/ticketApiSlice";
 import { useSnackbar } from "notistack";
 import { useSnackError } from "../hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { ModalWrapper } from "../components";
+import { useLazyGetProjectAssignQuery } from "../api/projectAssignApiSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import { useCreateNotificationMutation } from "../api/notifApiSlice";
 
 interface Props {
   open?: boolean;
   onClose: VoidFunction;
-  ticket?: Ticket & { fname: string; lname: string };
+  ticket?: Ticket;
+  projectId: number;
 }
 
 const validationSchema = yup.object({
   title: yup
     .string()
     .min(2, "Title is too short")
-    .max(30, "Title is too long")
+    .max(100, "Title is too long")
     .required("Please enter a title"),
   desc: yup
     .string()
@@ -44,6 +52,9 @@ function EditTicketModal({ open, onClose, ticket }: Props) {
   const [updateTicket] = useUpdateTicketMutation();
   const { enqueueSnackbar } = useSnackbar();
   const { snackbarError } = useSnackError();
+  const [getAssigned] = useLazyGetProjectAssignQuery();
+  const [createNotification] = useCreateNotificationMutation();
+  const { user } = useSelector((root: RootState) => root.auth);
 
   const formik = useFormik({
     initialValues: {
@@ -55,7 +66,7 @@ function EditTicketModal({ open, onClose, ticket }: Props) {
       est: 0,
     },
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       if (ticket && ticketId) {
         const { title, desc, status, priority, est, type } = values;
 
@@ -70,17 +81,60 @@ function EditTicketModal({ open, onClose, ticket }: Props) {
           project_id: ticket.project_id,
         };
 
-        updateTicket({ id: ticketId, data: data })
-          .unwrap()
-          .then((res) => {
-            if (res.success) {
-              enqueueSnackbar("Successfully updated ticket information", {
-                variant: "success",
-              });
+        let response: ResponseBody<unknown> | null = null;
+
+        try {
+          response = (await updateTicket({
+            id: ticketId,
+            data: data,
+          }).unwrap()) as ResponseBody<Ticket[]>;
+        } catch (err: unknown) {
+          snackbarError(err as FetchBaseQueryError, "Failed to update ticket");
+        }
+
+        if (response && response.success) {
+          try {
+            response = (await getAssigned(
+              ticket.project_id.toString()
+            ).unwrap()) as ResponseBody<User[]>;
+          } catch (err: unknown) {
+            snackbarError(
+              err as FetchBaseQueryError,
+              "Failed to compelete ticket update process"
+            );
+          }
+        }
+
+        if (response && response.success) {
+          let projectMembers: User[] = (response as ResponseBody<User[]>).data;
+
+          for await (const member of projectMembers) {
+            if (member.id !== user!.id) {
+              try {
+                await createNotification({
+                  body: `A ticket's details was updated by ${user!.fname} ${
+                    user!.lname
+                  } in ${ticket.project_title}`,
+                  to_id: member.id as number,
+                  from_id: user!.id as number,
+                  view_path: `/ticket/${ticket.id}`,
+                });
+              } catch (err: unknown) {
+                snackbarError(
+                  err as FetchBaseQueryError,
+                  "Failed to notify members"
+                );
+              }
             }
-          })
-          .finally(() => onClose())
-          .catch((err: FetchBaseQueryError) => snackbarError(err));
+          }
+        }
+
+        if (response && response.success) {
+          enqueueSnackbar("Successfully updated ticket information", {
+            variant: "success",
+          });
+          onClose();
+        }
       }
     },
   });

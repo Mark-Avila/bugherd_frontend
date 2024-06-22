@@ -22,6 +22,7 @@ function Ticket() {
   const [commentsData, setComments] = useState<Comment[]>([]);
   const [editModal, setEditModal] = useState(false);
   const { ticket_id } = useParams();
+
   const auth = useSelector((state: RootState) => state.auth);
   const ticket = useGetTicketByIdQuery(ticket_id!);
   const comments = useGetCommentsByTicketIdQuery(ticket_id!);
@@ -73,7 +74,8 @@ function Ticket() {
       <EditTicketModal
         open={editModal}
         onClose={closeEditModal}
-        ticket={ticketData as TicketType & { fname: string; lname: string }}
+        ticket={ticketData as TicketType}
+        projectId={ticketData?.project_id as number}
       />
       <Box>
         <Box component="header">

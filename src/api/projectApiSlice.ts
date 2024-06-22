@@ -89,6 +89,7 @@ export const {
   useGetCurrentProjectQuery,
   useGetProjectsQuery,
   useGetProjectByIdQuery,
+  useLazyGetProjectByIdQuery,
   useLazyGetCurrentProjectQuery,
   useLazyGetProjectsQuery,
   useUpdateProjectMutation,
