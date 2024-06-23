@@ -35,7 +35,9 @@ import { useDebounce, useSnackError } from "../hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { useSnackbar } from "notistack";
 import { setBreadcrumbs } from "../slices/breadSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useCreateNotificationMutation } from "../api/notifApiSlice";
+import { RootState } from "../store";
 
 const validationSchema = yup.object({
   title: yup
@@ -57,7 +59,6 @@ function ManageProjects() {
   const [deleteAssign] = useDeleteProjectAssignMutation();
   const [createAssign] = useCreateProjectAssignMutation();
   const [archiveProject] = useArchiveProjectMutation();
-  // const [currProjId, setCurrProjId] = useState<string>("");
   const [currProj, setCurrProj] = useState<Project | null>(null);
   const [addMemberModal, setAddMemberModal] = useState(false);
   const [idsToRemove, setIdsToRemove] = useState<number[]>([]);
@@ -71,10 +72,12 @@ function ManageProjects() {
   const [confirmEditDialog, setConfirmEditDialog] = useState(false);
   const [confirmArchDialog, setConfirmArchDialog] = useState(false);
   const [confirmUnarchDialog, setConfirmUnarchDialog] = useState(false);
+  const [createNotification] = useCreateNotificationMutation();
+  const { user } = useSelector((root: RootState) => root.auth);
 
   //Debouce value of projectSearch to reduce search queries
   const debouncedSearch = useDebounce(projectSearch, 500);
-
+  1;
   const [getProjects, projects] = useLazyGetProjectsQuery();
   const dispatch = useDispatch();
 
@@ -134,51 +137,89 @@ function ManageProjects() {
       let error_flag = false;
       const projectId = currProj.id!.toString();
 
-      updateProject({
-        project_id: projectId,
-        title: title,
-        descr: description,
-      })
-        .unwrap()
-        .catch((err: FetchBaseQueryError) => {
-          error_flag = true;
-          snackbarError(err);
+      try {
+        await updateProject({
+          project_id: projectId,
+          title: title,
+          descr: description,
         });
+      } catch (err: unknown) {
+        error_flag = true;
+        snackbarError(err as FetchBaseQueryError, "Failed to update project");
+      }
 
       if (idsToRemove.length >= 1) {
-        idsToRemove.forEach((user_id) => {
-          deleteAssign({ user_id: user_id, project_id: parseInt(projectId) })
-            .unwrap()
-            .catch((err) => {
-              error_flag = true;
-              snackbarError(err);
+        for await (const userId of idsToRemove) {
+          try {
+            await deleteAssign({
+              user_id: userId,
+              project_id: parseInt(projectId),
             });
-        });
+          } catch (err: unknown) {
+            error_flag = true;
+            snackbarError(
+              err as FetchBaseQueryError,
+              "Failed to remove a member"
+            );
+          }
+        }
       }
 
       if (idsToAdd.length >= 1) {
-        idsToAdd.forEach((user_id) => {
-          createAssign({ user_id: user_id, project_id: parseInt(projectId) })
-            .unwrap()
-            .catch((err) => {
-              error_flag = true;
-              snackbarError(err);
+        for await (const userId of idsToAdd) {
+          try {
+            await createAssign({
+              user_id: userId,
+              project_id: parseInt(projectId),
             });
-        });
+          } catch (err: unknown) {
+            error_flag = true;
+            snackbarError(
+              err as FetchBaseQueryError,
+              "Failed to add new member"
+            );
+          }
+        }
       }
 
       if (!error_flag) {
-        setCurrProj(null);
-        setCurrMembers([]);
-        setConfirmEditDialog(false);
         enqueueSnackbar("Successfully Updated Project Information", {
           variant: "success",
         });
-        getProjects({
+
+        await getProjects({
           title: debouncedSearch,
           limit: 20,
           offset: 0,
-        }).unwrap();
+        });
+
+        for await (const member of currMembers) {
+          try {
+            await createNotification({
+              body: "A project you're assigned to has been updated by an administrator",
+              to_id: member.id as number,
+              from_id: user!.id as number,
+              view_path: `/project/${currProj.id}`,
+            });
+          } catch (err: unknown) {
+            error_flag = true;
+            snackbarError(
+              err as FetchBaseQueryError,
+              "Failed to add new member"
+            );
+          }
+
+          setCurrProj(null);
+          setCurrMembers([]);
+          setConfirmEditDialog(false);
+        }
+
+        // await createNotification({
+        //   body: `A project `,
+        //   to_id: member.id as number,
+        //   from_id: user!.id as number,
+        //   view_path: `/ticket/${response.data[0].id}`,
+        // })
       }
     },
   });

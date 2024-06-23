@@ -74,7 +74,7 @@ function NotifList({ notifs, handleCloseNotif, handleReadNotif }: Props) {
                     fontSize="small"
                     textAlign="left"
                     color="white"
-                    sx={{ fontWeight: "normal" }}
+                    sx={{ fontWeight: "normal", cursor: "pointer" }}
                     onClick={() => handleOnClick(item.view_path)}
                   >
                     {item.body}
