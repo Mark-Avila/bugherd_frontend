@@ -26,6 +26,7 @@ import { SnackbarProvider } from "notistack";
 import PrivateRoute from "./components/stateful/PrivateRoute";
 import { getDesignTokens, getThemedComponents } from "./utils/theme";
 // import PrivateRoute from "./components/stateful/PrivateRoute";
+import "./app.css";
 
 interface IColorModeContext {
   mode: "light" | "dark";
@@ -45,7 +46,7 @@ const router = createBrowserRouter(
         <Route
           path="/dashboard"
           element={
-            <DrawerLayout >
+            <DrawerLayout>
               <Dashboard />
             </DrawerLayout>
           }
@@ -55,7 +56,7 @@ const router = createBrowserRouter(
         <Route
           path="/project/:project_id"
           element={
-            <DrawerLayout >
+            <DrawerLayout>
               <Project />
             </DrawerLayout>
           }
@@ -65,7 +66,7 @@ const router = createBrowserRouter(
         <Route
           path="/ticket/:ticket_id"
           element={
-            <DrawerLayout >
+            <DrawerLayout>
               <Ticket />
             </DrawerLayout>
           }
@@ -75,7 +76,7 @@ const router = createBrowserRouter(
         <Route
           path="/profile"
           element={
-            <DrawerLayout >
+            <DrawerLayout>
               <Profile />
             </DrawerLayout>
           }
@@ -143,16 +144,6 @@ function App() {
     }),
     []
   );
-
-  // const theme = useMemo(
-  //   () =>
-  //     createTheme({
-  //       palette: {
-  //         mode,
-  //       },
-  //     }),
-  //   [mode]
-  // );
 
   const theme = useMemo(() => {
     const designTokens = getDesignTokens(mode);

@@ -3,6 +3,7 @@ import {
   Avatar,
   Badge,
   Box,
+  colors,
   CssBaseline,
   IconButton,
   Paper,
@@ -11,7 +12,7 @@ import {
   Toolbar,
 } from "@mui/material";
 import { NotifList, PageBreadcrumbs, PageDrawer } from "../components";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { Menu, Notifications } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
@@ -19,6 +20,7 @@ import {
   useLazyGetNotificationsOfUserQuery,
   useReadNotificationMutation,
 } from "../api/notifApiSlice";
+import { ColorModeContext } from "../App";
 
 const DRAWER_WIDTH = 240;
 
@@ -36,6 +38,7 @@ function DrawerLayout({ children }: Props) {
   const [notifAnchor, setNotifAnchor] = useState<HTMLButtonElement | null>(
     null
   );
+  const { mode } = useContext(ColorModeContext);
 
   useEffect(() => {
     if (auth.user) {
@@ -75,6 +78,11 @@ function DrawerLayout({ children }: Props) {
         sx={{
           width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
           ml: { sm: `${DRAWER_WIDTH}px` },
+          boxShadow: "none",
+          borderBottom:
+            "1px solid " +
+            (mode === "light" ? colors.grey[200] : colors.grey[900]),
+          backgroundColor: "transparent",
         }}
       >
         <Toolbar>

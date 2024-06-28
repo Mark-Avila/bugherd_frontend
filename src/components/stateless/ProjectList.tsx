@@ -4,9 +4,11 @@ import {
   Grid,
   List,
   ListItem,
+  Paper,
   Skeleton,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { ProjectWithUser } from "../../types";
 import ProjectListItem from "./ProjectListItem";
@@ -17,37 +19,32 @@ interface Props {
 }
 
 export default function ProjectList({ projects, includeDescr }: Props) {
-  // let combinedProjects = null;
-
-  // // if (projects) {
-  // //   const emptyProjects = Array.from(
-  // //     { length: 5 - projects.length },
-  // //     () => ({} as ProjectWithUser)
-  // //   );
-  // //   combinedProjects = projects.concat(emptyProjects);
-  // // }
+  const theme = useTheme();
 
   return (
     <Box>
-      <Card variant="outlined">
+      <Paper
+        variant="outlined"
+        sx={{ backgroundColor: theme.palette.background.paper }}
+      >
         <List disablePadding>
-          <ListItem divider>
+          <ListItem divider sx={{ height: "3rem" }}>
             <Box width="100%">
               <Stack direction="row" justifyContent="space-between">
                 <Box flex={1}>
-                  <Typography variant="body2" fontWeight="bold">
+                  <Typography variant="body2" fontWeight="500">
                     Title
                   </Typography>
                 </Box>
                 {includeDescr && (
                   <Box display={{ xs: "none", md: "block" }} flex={2}>
-                    <Typography variant="body2" fontWeight="bold">
+                    <Typography variant="body2" fontWeight="500">
                       Description
                     </Typography>
                   </Box>
                 )}
                 <Box flex={1}>
-                  <Typography variant="body2" fontWeight="bold">
+                  <Typography variant="body2" fontWeight="500">
                     Project Manager
                   </Typography>
                 </Box>
@@ -90,7 +87,7 @@ export default function ProjectList({ projects, includeDescr }: Props) {
                 </Grid>
               ))}
         </List>
-      </Card>
+      </Paper>
     </Box>
   );
 }

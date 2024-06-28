@@ -1,0 +1,7 @@
+.primary-gradient {
+    background: rgb(27,192,250);
+    background: -moz-linear-gradient(0deg, rgba(27,192,250,1) 0%, rgba(0,127,255,1) 100%);
+    background: -webkit-linear-gradient(0deg, rgba(27,192,250,1) 0%, rgba(0,127,255,1) 100%);
+    background: linear-gradient(0deg, rgba(27,192,250,1) 0%, rgba(0,127,255,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1bc0fa",endColorstr="#007fff",GradientType=1);
+}

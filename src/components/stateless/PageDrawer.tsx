@@ -1,25 +1,34 @@
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import {
+  AccountTree,
+  Assignment,
   AssignmentInd,
+  BugReport,
   DarkMode,
   Dashboard,
   LightMode,
   ListAlt,
   Logout,
+  Task,
 } from "@mui/icons-material";
 import {
+  alpha,
   Avatar,
   Box,
   Drawer,
+  Icon,
+  Link,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Stack,
   Switch,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useContext, useState } from "react";
 import { ColorModeContext } from "../../App";
@@ -36,14 +45,34 @@ interface IDrawerItem {
 }
 
 function DrawerItem({ text, icon, onClick }: IDrawerItem) {
+  const theme = useTheme();
+  const { mode } = useContext(ColorModeContext);
+
   return (
     <ListItem key={text} disablePadding>
-      <ListItemButton onClick={onClick}>
-        <ListItemIcon>{icon}</ListItemIcon>
+      <ListItemButton
+        onClick={onClick}
+        sx={{
+          px: "1.5rem",
+          // borderRadius: "6px",
+          ":hover": {
+            color: "white",
+            backgroundColor: theme.palette.primary[500],
+            "& .MuiListItemIcon-root": {
+              color: "white",
+            },
+          },
+          ":active": {
+            backgroundColor: alpha(theme.palette.primary[500], 0.3),
+          },
+        }}
+      >
+        <ListItemIcon sx={{ minWidth: "2.5rem" }}>{icon}</ListItemIcon>
         <ListItemText
           primary={text}
           primaryTypographyProps={{
             fontSize: 14,
+            fontWeight: "bold",
           }}
         />
       </ListItemButton>
@@ -57,7 +86,7 @@ interface IDrawerBody {
   user: {
     name?: string;
     email?: string;
-  }
+  };
   isAdmin: boolean;
   userClick: VoidFunction;
 }
@@ -65,9 +94,16 @@ interface IDrawerBody {
 /**
  * Drawer body or content component
  */
-function DrawerBody({ items, isAdmin, adminItems, user, userClick }: IDrawerBody) {
+function DrawerBody({
+  items,
+  isAdmin,
+  adminItems,
+  user,
+  userClick,
+}: IDrawerBody) {
   const { toggle, mode } = useContext(ColorModeContext);
   const [logoutDialog, setLogoutDialog] = useState(false);
+  const theme = useTheme();
 
   const dispatch = useDispatch();
 
@@ -96,20 +132,41 @@ function DrawerBody({ items, isAdmin, adminItems, user, userClick }: IDrawerBody
         }}
       />
       <Divider />
-      <Box sx={{ padding: "1em" }}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        gap={2}
+        sx={{ padding: "1em", minHeight: "64px" }}
+      >
+        <BugReport color="primary" />
         <Typography fontWeight="bold" fontFamily="montserrat" fontSize="1.2rem">
           Bugherd
         </Typography>
-      </Box>
+      </Stack>
       <Divider />
       <nav>
         <List>
-          <ListItemButton onClick={userClick}>
-            <ListItemIcon>
-              <Avatar />
-            </ListItemIcon>
-            <ListItemText primary={user.name || "..."} secondary={user.email || "..."} secondaryTypographyProps={{ fontSize: "12px" }}/>
-          </ListItemButton>
+          <ListItem>
+            <Stack width="100%" py={2} alignItems="center" gap={1}>
+              <Avatar sx={{ width: 64, height: 64 }} />
+              <Link
+                fontSize={14}
+                fontWeight="bold"
+                component="button"
+                onClick={userClick}
+              >
+                {user.name || "..."}
+              </Link>
+              <Typography
+                fontSize={12}
+                color={alpha(theme.palette.text.primary, 0.5)}
+              >
+                {user.email || "..."}
+              </Typography>
+            </Stack>
+          </ListItem>
+
+          <Divider sx={{ mb: 1 }} />
           {items.map((item, index) => (
             <DrawerItem
               key={index}
@@ -118,21 +175,23 @@ function DrawerBody({ items, isAdmin, adminItems, user, userClick }: IDrawerBody
               onClick={item.onClick}
             />
           ))}
-          {isAdmin && <>
-          <Divider />
-          <ListSubheader>Administration</ListSubheader>
-          {adminItems.map((item, index) => (
-            <DrawerItem
-              key={index}
-              text={item.text}
-              icon={item.icon}
-              onClick={item.onClick}
-            />
-          ))}
-          </>}
+          {isAdmin && (
+            <>
+              <Divider />
+              <ListSubheader>Administration</ListSubheader>
+              {adminItems.map((item, index) => (
+                <DrawerItem
+                  key={index}
+                  text={item.text}
+                  icon={item.icon}
+                  onClick={item.onClick}
+                />
+              ))}
+            </>
+          )}
         </List>
       </nav>
-      <Divider />
+      <Divider sx={{ mt: 1 }} />
       <List sx={{ mt: "auto" }}>
         <ListItem>
           <ListItemIcon>
@@ -164,12 +223,23 @@ function PageDrawer({ open, onClose, width }: Props) {
   const handleOnItemClick = (to: string) => {
     navigate(to);
   };
+  const theme = useTheme();
   const { user } = useSelector((state: RootState) => state.auth);
 
   const NavItems: IDrawerItem[] = [
     {
       text: "Dashboard",
-      icon: <Dashboard />,
+      icon: <Dashboard fontSize="small" />,
+      onClick: () => handleOnItemClick("/dashboard"),
+    },
+    {
+      text: "Tickets",
+      icon: <Assignment fontSize="small" />,
+      onClick: () => handleOnItemClick("/dashboard"),
+    },
+    {
+      text: "Projects",
+      icon: <AccountTree fontSize="small" />,
       onClick: () => handleOnItemClick("/dashboard"),
     },
   ];
@@ -204,7 +274,13 @@ function PageDrawer({ open, onClose, width }: Props) {
           },
         }}
       >
-        <DrawerBody items={NavItems} isAdmin={user?.role === 2} adminItems={AdminNavItems} userClick={() => handleOnItemClick("/profile")} user={{ name: user?.fname, email: user?.email }} />
+        <DrawerBody
+          items={NavItems}
+          isAdmin={user?.role === 2}
+          adminItems={AdminNavItems}
+          userClick={() => handleOnItemClick("/profile")}
+          user={{ name: user?.fname, email: user?.email }}
+        />
       </Drawer>
       <Drawer
         variant="permanent"
@@ -213,11 +289,18 @@ function PageDrawer({ open, onClose, width }: Props) {
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: width,
+            backgroundColor: theme.palette.background.default,
           },
         }}
         open
       >
-        <DrawerBody items={NavItems} isAdmin={user?.role === 2} adminItems={AdminNavItems} userClick={() => handleOnItemClick("/profile")} user={{ name: user?.fname, email: user?.email }} />
+        <DrawerBody
+          items={NavItems}
+          isAdmin={user?.role === 2}
+          adminItems={AdminNavItems}
+          userClick={() => handleOnItemClick("/profile")}
+          user={{ name: user?.fname, email: user?.email }}
+        />
       </Drawer>
     </>
   );

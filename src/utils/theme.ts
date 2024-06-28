@@ -37,13 +37,6 @@ declare module "@mui/material/styles/createTypography" {
   }
 }
 
-// TODO: enable this once types conflict is fixed
-// declare module '@mui/material/Button' {
-//   interface ButtonPropsVariantOverrides {
-//     code: true;
-//   }
-// }
-
 const defaultTheme = createTheme();
 
 export const blue = {
@@ -121,8 +114,8 @@ export const getDesignTokens = (mode: "light" | "dark") =>
       mode,
       ...(mode === "dark" && {
         background: {
-          default: blueDark[800],
-          paper: blueDark[900],
+          default: "hsl(210, 14%, 7%)",
+          paper: "hsl(211, 61%, 10%, 0.5)",
         },
       }),
       common: {
