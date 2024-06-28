@@ -3,9 +3,14 @@ import {
   Avatar,
   Badge,
   Box,
+  Button,
   colors,
   CssBaseline,
   IconButton,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   Paper,
   Popover,
   Stack,
@@ -13,7 +18,12 @@ import {
 } from "@mui/material";
 import { NotifList, PageBreadcrumbs, PageDrawer } from "../components";
 import { ReactNode, useContext, useEffect, useState } from "react";
-import { Menu, Notifications } from "@mui/icons-material";
+import {
+  AccountCircle,
+  Logout,
+  Menu,
+  Notifications,
+} from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import {
@@ -35,7 +45,11 @@ function DrawerLayout({ children }: Props) {
   const [readNotification] = useReadNotificationMutation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { breadcrumbs } = useSelector((root: RootState) => root.breadcrumbs);
+
   const [notifAnchor, setNotifAnchor] = useState<HTMLButtonElement | null>(
+    null
+  );
+  const [profileAnchor, setProfileAnchor] = useState<HTMLButtonElement | null>(
     null
   );
   const { mode } = useContext(ColorModeContext);
@@ -54,6 +68,13 @@ function DrawerLayout({ children }: Props) {
     setNotifAnchor(null);
   };
 
+  const handleProfileClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setProfileAnchor(event.currentTarget);
+  };
+
+  const handleProfileClose = () => {
+    setProfileAnchor(null);
+  };
   const handleReadNotif = async (notif_id: number) => {
     if (auth.user) {
       await readNotification(notif_id);
@@ -65,8 +86,12 @@ function DrawerLayout({ children }: Props) {
     }
   };
 
+  const profileOpen = Boolean(profileAnchor);
+  const profileId = profileOpen ? "notif-popover " : undefined;
+
   const notifOpen = Boolean(notifAnchor);
   const notifId = notifOpen ? "notif-popover " : undefined;
+
   const notifsOkay =
     notifs && notifs.isSuccess && !notifs.isLoading && !notifs.isFetching;
 
@@ -137,9 +162,47 @@ function DrawerLayout({ children }: Props) {
                   </Paper>
                 </Box>
               </Popover>
-              <IconButton>
+              <IconButton
+                aria-describedby={profileId}
+                onClick={handleProfileClick}
+              >
                 <Avatar sx={{ width: "24px", height: "24px" }} />
               </IconButton>
+              <Popover
+                id={profileId}
+                open={profileOpen}
+                anchorEl={profileAnchor}
+                onClose={handleProfileClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <Paper variant="outlined" sx={{ width: "200px" }}>
+                  <List disablePadding>
+                    <ListItemButton divider sx={{ py: 0.7 }}>
+                      <ListItemIcon>
+                        <AccountCircle />
+                      </ListItemIcon>
+                      <ListItemText primaryTypographyProps={{ fontSize: 14 }}>
+                        Profile
+                      </ListItemText>
+                    </ListItemButton>
+                    <ListItemButton divider sx={{ py: 0.7 }}>
+                      <ListItemIcon>
+                        <Logout />
+                      </ListItemIcon>
+                      <ListItemText primaryTypographyProps={{ fontSize: 14 }}>
+                        Sign out
+                      </ListItemText>
+                    </ListItemButton>
+                  </List>
+                </Paper>
+              </Popover>
             </Stack>
           </Stack>
         </Toolbar>

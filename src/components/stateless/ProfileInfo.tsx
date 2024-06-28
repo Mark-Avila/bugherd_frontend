@@ -7,6 +7,7 @@ import {
   Skeleton,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { User } from "../../types";
 import getRole from "../../utils/getRole";
@@ -17,6 +18,8 @@ interface Props {
 }
 
 function ProfileInfo({ user }: Props) {
+  const theme = useTheme();
+
   const getAge = (bday: string) => {
     const currentDate = dayjs().toISOString();
 
@@ -37,7 +40,10 @@ function ProfileInfo({ user }: Props) {
 
   return (
     <Box width="100%">
-      <Paper variant="outlined">
+      <Paper
+        sx={{ backgroundColor: theme.palette.background.paper }}
+        variant="outlined"
+      >
         <Stack>
           <Box display="flex" alignItems="center" gap={2} padding={2}>
             <Avatar sx={{ width: 86, height: 86 }} />

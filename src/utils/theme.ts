@@ -1,6 +1,7 @@
 import { deepmerge } from "@mui/utils";
 import ArrowDropDownRounded from "@mui/icons-material/ArrowDropDownRounded";
 import { createTheme, ThemeOptions, Theme, alpha } from "@mui/material/styles";
+import { colors } from "@mui/material";
 
 declare module "@mui/material/styles/createPalette" {
   interface ColorRange {
@@ -112,12 +113,16 @@ export const getDesignTokens = (mode: "light" | "dark") =>
       divider: mode === "dark" ? alpha(blue[100], 0.08) : grey[100],
       primaryDark: blueDark,
       mode,
-      ...(mode === "dark" && {
-        background: {
-          default: "hsl(210, 14%, 7%)",
-          paper: "hsl(211, 61%, 10%, 0.5)",
-        },
-      }),
+      background:
+        mode === "dark"
+          ? {
+              default: "hsl(210, 14%, 7%)",
+              paper: "hsl(211, 61%, 10%, 0.5)",
+            }
+          : {
+              default: blue[50],
+              paper: "white",
+            },
       common: {
         black: "#1D1D1D",
       },
