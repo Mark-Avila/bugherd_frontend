@@ -1,6 +1,7 @@
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import {
+  AccountCircle,
   AccountTree,
   Assignment,
   AssignmentInd,
@@ -16,8 +17,10 @@ import {
   alpha,
   Avatar,
   Box,
+  colors,
   Drawer,
   Icon,
+  IconButton,
   Link,
   ListItem,
   ListItemButton,
@@ -54,20 +57,19 @@ function DrawerItem({ text, icon, onClick }: IDrawerItem) {
         onClick={onClick}
         sx={{
           px: "1.5rem",
+          color: "white",
           // borderRadius: "6px",
           ":hover": {
-            color: "white",
-            backgroundColor: theme.palette.primary[500],
-            "& .MuiListItemIcon-root": {
-              color: "white",
-            },
+            backgroundColor: theme.palette.primary[600],
           },
           ":active": {
             backgroundColor: alpha(theme.palette.primary[500], 0.3),
           },
         }}
       >
-        <ListItemIcon sx={{ minWidth: "2.5rem" }}>{icon}</ListItemIcon>
+        <ListItemIcon sx={{ minWidth: "2.5rem", color: "white" }}>
+          {icon}
+        </ListItemIcon>
         <ListItemText
           primary={text}
           primaryTypographyProps={{
@@ -113,6 +115,8 @@ function DrawerBody({
 
   const closeLogout = () => setLogoutDialog(false);
 
+  const isDarkMode = mode === "dark";
+
   return (
     <>
       <ConfirmDialog
@@ -138,35 +142,66 @@ function DrawerBody({
         gap={2}
         sx={{ padding: "1em", minHeight: "64px" }}
       >
-        <BugReport color="primary" />
-        <Typography fontWeight="bold" fontFamily="montserrat" fontSize="1.2rem">
+        <BugReport
+          htmlColor={isDarkMode ? theme.palette.primary[500] : "white"}
+        />
+        <Typography
+          color="white"
+          fontWeight="bold"
+          fontFamily="montserrat"
+          fontSize="1.2rem"
+        >
           Bugherd
         </Typography>
       </Stack>
-      <Divider />
+      <Divider
+        sx={{
+          borderColor: isDarkMode
+            ? theme.palette.grey[900]
+            : theme.palette.primary[400],
+        }}
+      />
       <nav>
         <List>
           <ListItem>
             <Stack width="100%" py={2} alignItems="center" gap={1}>
-              <Avatar sx={{ width: 64, height: 64 }} />
+              <IconButton onClick={userClick}>
+                <AccountCircle
+                  sx={{ width: 96, height: 96 }}
+                  htmlColor={colors.lightBlue[200]}
+                />
+              </IconButton>
               <Link
                 fontSize={14}
                 fontWeight="bold"
                 component="button"
+                color={isDarkMode ? theme.palette.text.primary : "white"}
+                sx={{
+                  ":hover": {
+                    color: colors.lightBlue[200],
+                  },
+                }}
                 onClick={userClick}
               >
                 {user.name || "..."}
               </Link>
               <Typography
                 fontSize={12}
-                color={alpha(theme.palette.text.primary, 0.5)}
+                color={isDarkMode ? colors.grey[500] : colors.grey[100]}
               >
                 {user.email || "..."}
               </Typography>
             </Stack>
           </ListItem>
 
-          <Divider sx={{ mb: 1 }} />
+          <Divider
+            sx={{
+              mb: 1,
+              borderColor: isDarkMode
+                ? theme.palette.grey[900]
+                : theme.palette.primary[400],
+            }}
+          />
           {items.map((item, index) => (
             <DrawerItem
               key={index}
@@ -191,19 +226,35 @@ function DrawerBody({
           )}
         </List>
       </nav>
-      <Divider sx={{ mt: 1 }} />
-      <List sx={{ mt: "auto" }}>
+      <Divider
+        sx={{
+          mt: 1,
+          borderColor: isDarkMode
+            ? theme.palette.grey[900]
+            : theme.palette.primary[400],
+        }}
+      />
+      <List sx={{ mt: "auto", py: 2, px: 1 }}>
         <ListItem>
           <ListItemIcon>
-            {mode === "light" ? <LightMode /> : <DarkMode />}
+            {mode === "light" ? (
+              <LightMode htmlColor="white" />
+            ) : (
+              <DarkMode htmlColor="white" />
+            )}
           </ListItemIcon>
           <Switch
-            sx={{ margin: 0 }}
+            sx={{
+              margin: 0,
+              "& .MuiSwitch-track": {
+                backgroundColor: colors.blue[300],
+              },
+            }}
             onChange={toggle.toggleColorMode}
             checked={mode === "dark"}
           />
         </ListItem>
-        <DrawerItem text="Sign out" icon={<Logout />} onClick={openLogout} />
+        {/* <DrawerItem text="Sign out" icon={<Logout />} onClick={openLogout} /> */}
       </List>
     </>
   );
@@ -224,6 +275,7 @@ function PageDrawer({ open, onClose, width }: Props) {
     navigate(to);
   };
   const theme = useTheme();
+  const { mode } = useContext(ColorModeContext);
   const { user } = useSelector((state: RootState) => state.auth);
 
   const NavItems: IDrawerItem[] = [
@@ -289,7 +341,10 @@ function PageDrawer({ open, onClose, width }: Props) {
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: width,
-            backgroundColor: theme.palette.background.default,
+            backgroundColor:
+              mode === "light"
+                ? theme.palette.primary[500]
+                : theme.palette.background.default,
           },
         }}
         open
