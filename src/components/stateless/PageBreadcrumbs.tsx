@@ -21,7 +21,7 @@ function PageBreadcrumbs({ items }: Props) {
           key={index}
           underline="hover"
           fontSize="small"
-          color={theme.palette.text.primary}
+          color={theme.palette.text.secondary}
           component="button"
           onClick={() => handleOnItemClick(item.to)}
         >

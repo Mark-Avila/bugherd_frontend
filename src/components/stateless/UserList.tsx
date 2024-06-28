@@ -1,4 +1,4 @@
-import { List, Paper } from "@mui/material";
+import { List, Paper, useTheme } from "@mui/material";
 import UserListItem from "./UserListItem";
 import { User } from "../../types";
 
@@ -9,8 +9,13 @@ interface Props {
 }
 
 function UserList({ isButton, users, lead }: Props) {
+  const theme = useTheme();
   return (
-    <Paper variant="outlined" elevation={0}>
+    <Paper
+      variant="outlined"
+      sx={{ backgroundColor: theme.palette.background.paper }}
+      elevation={0}
+    >
       <List sx={{ overflow: "auto" }} disablePadding>
         {users &&
           users.map((user) => (
