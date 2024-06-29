@@ -301,12 +301,12 @@ function PageDrawer({ open, onClose, width }: Props) {
     {
       text: "Tickets",
       icon: <Assignment fontSize="small" />,
-      onClick: () => handleOnItemClick("/dashboard"),
+      onClick: () => handleOnItemClick("/profile/tickets"),
     },
     {
       text: "Projects",
       icon: <AccountTree fontSize="small" />,
-      onClick: () => handleOnItemClick("/dashboard"),
+      onClick: () => handleOnItemClick("/profile/projects"),
     },
   ];
 

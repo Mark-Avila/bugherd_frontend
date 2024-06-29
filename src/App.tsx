@@ -72,12 +72,28 @@ const router = createBrowserRouter(
           }
         />
       </Route>
-      <Route element={<PrivateRoute />} path="">
+      <Route element={<PrivateRoute />}>
         <Route
           path="/profile"
           element={
             <DrawerLayout>
               <Profile />
+            </DrawerLayout>
+          }
+        />
+        <Route
+          path="/profile/tickets"
+          element={
+            <DrawerLayout>
+              <Profile viewMode="tickets" />
+            </DrawerLayout>
+          }
+        />
+        <Route
+          path="/profile/projects"
+          element={
+            <DrawerLayout>
+              <Profile viewMode="projects" />
             </DrawerLayout>
           }
         />

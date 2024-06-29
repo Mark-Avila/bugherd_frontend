@@ -9,7 +9,11 @@ import { RootState } from "../store";
 import { useEffect, useState } from "react";
 import { setBreadcrumbs } from "../slices/breadSlice";
 
-function Profile() {
+interface Props {
+  viewMode?: "tickets" | "projects";
+}
+
+function Profile({ viewMode }: Props) {
   const [getTickets, tickets] = useLazyGetTicketsOfCurrentUserQuery();
   const projects = useGetCurrentProjectQuery();
   const { user } = useSelector((state: RootState) => state.auth);
@@ -60,30 +64,36 @@ function Profile() {
   return (
     <Stack width="100%" direction="column">
       <Grid container width="100%" spacing={2}>
-        <Grid item lg={4}>
-          <PageSection title="User Details" width="100%">
-            <ProfileInfo user={user} />
-          </PageSection>
-        </Grid>
-        <Grid item lg={8}>
+        {!viewMode && (
+          <Grid item lg={4}>
+            <PageSection title="User Details" width="100%">
+              <ProfileInfo user={user} />
+            </PageSection>
+          </Grid>
+        )}
+        <Grid item lg={viewMode ? 12 : 8}>
           <Stack spacing={4}>
-            <PageSection title="Projects Assigned">
-              <ProjectList
-                projects={
-                  projects.data && (projects.data.data as ProjectWithUser[])
-                }
-              />
-            </PageSection>
-            <PageSection title="Tickets created">
-              {<TicketList tickets={tickets.data && tickets.data.data} />}
-              <Box mt={2}>
-                <Pagination
-                  count={maxPage}
-                  onChange={handlePagination}
-                  page={currPage}
+            {(!viewMode || viewMode === "projects") && (
+              <PageSection title="Projects Assigned">
+                <ProjectList
+                  projects={
+                    projects.data && (projects.data.data as ProjectWithUser[])
+                  }
                 />
-              </Box>
-            </PageSection>
+              </PageSection>
+            )}
+            {(!viewMode || viewMode === "tickets") && (
+              <PageSection title="Tickets created">
+                {<TicketList tickets={tickets.data && tickets.data.data} />}
+                <Box mt={2}>
+                  <Pagination
+                    count={maxPage}
+                    onChange={handlePagination}
+                    page={currPage}
+                  />
+                </Box>
+              </PageSection>
+            )}
           </Stack>
         </Grid>
       </Grid>
