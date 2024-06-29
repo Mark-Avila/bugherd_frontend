@@ -1,4 +1,4 @@
-import { List, Paper, Stack, Typography } from "@mui/material";
+import { List, Paper, Stack, Typography, useTheme } from "@mui/material";
 import { User } from "../../types";
 import { ManageProjectUserItem } from "..";
 
@@ -8,8 +8,16 @@ interface Props {
 }
 
 function ManageProjectUserList({ users, onItemClick }: Props) {
+  const theme = useTheme();
   return (
-    <Paper variant="outlined" sx={{ maxHeight: 300, overflowY: "auto" }}>
+    <Paper
+      variant="outlined"
+      sx={{
+        maxHeight: 300,
+        overflowY: "auto",
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
       <List disablePadding>
         {users.length >= 1 ? (
           users.map((assignedMember) => (

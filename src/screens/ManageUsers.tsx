@@ -1,4 +1,12 @@
-import { Divider, Grid, List, Paper, Stack, Typography } from "@mui/material";
+import {
+  Divider,
+  Grid,
+  List,
+  Paper,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import PageSection from "../components/stateless/PageSection";
 import {
   ConfirmDialog,
@@ -51,6 +59,7 @@ function ManageUsers() {
   const [confUnArchDialog, setConfUnArchDialog] = useState<boolean>(false);
 
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   useEffect(() => {
     getUsers({
@@ -240,7 +249,11 @@ function ManageUsers() {
           >
             <Paper
               variant="outlined"
-              sx={{ maxHeight: 500, overflowY: "auto" }}
+              sx={{
+                maxHeight: 500,
+                overflowY: "auto",
+                backgroundColor: theme.palette.background.paper,
+              }}
             >
               <List disablePadding>
                 {userData.map((user) => (

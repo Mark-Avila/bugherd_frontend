@@ -1,5 +1,7 @@
 import { Stack, TextField } from "@mui/material";
 import { FormikProps } from "formik";
+import { useContext } from "react";
+import { ColorModeContext } from "../../App";
 
 interface Props {
   formik: FormikProps<{
@@ -9,6 +11,8 @@ interface Props {
 }
 
 function ManageProjectsForm({ formik }: Props) {
+  const { mode } = useContext(ColorModeContext);
+
   return (
     <Stack spacing={2}>
       <TextField

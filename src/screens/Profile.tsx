@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { setBreadcrumbs } from "../slices/breadSlice";
 
 function Profile() {
-  const tickets = useGetTicketsOfCurrentUserQuery({ limit: 10, offset: 0 });
+  const tickets = useGetTicketsOfCurrentUserQuery({ limit: 5, offset: 0 });
   const projects = useGetCurrentProjectQuery();
   const { user } = useSelector((state: RootState) => state.auth);
 

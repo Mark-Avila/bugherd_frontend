@@ -1,5 +1,5 @@
 import { KeyboardArrowRight } from "@mui/icons-material";
-import { ListItemButton, ListItemText } from "@mui/material";
+import { ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 
 interface Props {
   id: number;
@@ -12,7 +12,9 @@ function ManageProjectsItem({ id, title, descr, onClick }: Props) {
   return (
     <ListItemButton divider onClick={onClick}>
       <ListItemText primary={title} secondary={`#${id} - ${descr}`} />
-      <KeyboardArrowRight />
+      <ListItemIcon>
+        <KeyboardArrowRight />
+      </ListItemIcon>
     </ListItemButton>
   );
 }

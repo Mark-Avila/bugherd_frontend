@@ -25,7 +25,10 @@ function DataCard({ data, title }: Props) {
     <Box flex={1} minHeight={220}>
       <Paper
         variant="outlined"
-        sx={{ height: "100%", backgroundColor: theme.palette.background.paper }}
+        sx={{
+          height: "100%",
+          backgroundColor: theme.palette.background.paper,
+        }}
       >
         <Stack justifyContent="space-between" minHeight="100%">
           <Box marginX={1.5} marginTop={1.5}>

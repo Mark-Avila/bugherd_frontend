@@ -2,9 +2,11 @@ import {
   Avatar,
   ListItemAvatar,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
 } from "@mui/material";
 import { User } from "../../types";
+import { ChevronRight } from "@mui/icons-material";
 
 interface Props {
   user: User;
@@ -23,6 +25,9 @@ function ManageUsersItem({ user, onClick }: Props) {
         primaryTypographyProps={{ fontSize: "small" }}
         secondaryTypographyProps={{ fontSize: "small" }}
       />
+      <ListItemIcon>
+        <ChevronRight />
+      </ListItemIcon>
     </ListItemButton>
   );
 }

@@ -374,6 +374,21 @@ export function getThemedComponents(theme: Theme): {
           },
         ],
       },
+      MuiTextField: {
+        variants: [
+          {
+            props: { color: "primary" },
+            style: {
+              backgroundColor:
+                theme.palette.mode === "dark"
+                  ? theme.palette.background.default
+                  : "white",
+              borderRadius: 8,
+              borderColor: colors.blue[500],
+            },
+          },
+        ],
+      },
       MuiIconButton: {
         variants: [
           {
@@ -413,10 +428,7 @@ export function getThemedComponents(theme: Theme): {
             elevation: 0,
             color: theme.palette.text.secondary,
             backgroundImage: "none",
-            backgroundColor:
-              theme.palette.mode === "dark"
-                ? theme.palette.primaryDark[900]
-                : theme.palette.background.paper,
+            backgroundColor: theme.palette.background.paper,
             border: `1px solid ${
               theme.palette.mode === "dark"
                 ? theme.palette.primaryDark[700]

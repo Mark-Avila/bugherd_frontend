@@ -7,6 +7,7 @@ import {
   Skeleton,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import PageSection from "../components/stateless/PageSection";
 import {
@@ -74,8 +75,7 @@ function ManageProjects() {
   const [confirmUnarchDialog, setConfirmUnarchDialog] = useState(false);
   const [createNotification] = useCreateNotificationMutation();
   const { user } = useSelector((root: RootState) => root.auth);
-
-  //Debouce value of projectSearch to reduce search queries
+  const theme = useTheme();
   const debouncedSearch = useDebounce(projectSearch, 500);
   1;
   const [getProjects, projects] = useLazyGetProjectsQuery();
@@ -397,7 +397,11 @@ function ManageProjects() {
               {projects.isSuccess && !projects.isLoading && projects.data && (
                 <Paper
                   variant="outlined"
-                  sx={{ maxHeight: 550, overflowY: "auto" }}
+                  sx={{
+                    maxHeight: 550,
+                    overflowY: "auto",
+                    backgroundColor: theme.palette.background.paper,
+                  }}
                 >
                   <List disablePadding>
                     {projects.data.data.map((item: Project) => (

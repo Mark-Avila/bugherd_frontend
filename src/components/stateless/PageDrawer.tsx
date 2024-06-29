@@ -212,8 +212,22 @@ function DrawerBody({
           ))}
           {isAdmin && (
             <>
-              <Divider />
-              <ListSubheader>Administration</ListSubheader>
+              <Divider
+                sx={{
+                  my: 1,
+                  borderColor: isDarkMode
+                    ? theme.palette.grey[900]
+                    : theme.palette.primary[400],
+                }}
+              />
+              <ListSubheader
+                sx={{
+                  backgroundColor: theme.palette.primary[500],
+                  color: "white",
+                }}
+              >
+                Administration
+              </ListSubheader>
               {adminItems.map((item, index) => (
                 <DrawerItem
                   key={index}
