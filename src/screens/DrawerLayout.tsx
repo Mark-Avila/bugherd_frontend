@@ -3,7 +3,6 @@ import {
   Avatar,
   Badge,
   Box,
-  Button,
   colors,
   CssBaseline,
   IconButton,
@@ -46,73 +45,95 @@ interface Props {
   children: ReactNode;
 }
 
+/**
+ * This serves as the primary page layout for all pages for handling the
+ * sidebar/drawer both in mobile and desktop.
+ */
 function DrawerLayout({ children }: Props) {
-  const theme = useTheme();
-  const navigate = useNavigate();
-  const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
+  // User authentication state
   const auth = useSelector((root: RootState) => root.auth);
+
+  // User notification data fetching method and response object
   const [getNotifications, notifs] = useLazyGetNotificationsOfUserQuery();
+
+  // Method for setting user notification as 'read'
   const [readNotification] = useReadNotificationMutation();
-  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Get breadcrumbs route
   const { breadcrumbs } = useSelector((root: RootState) => root.breadcrumbs);
 
+  // MUI Theme object
+  const theme = useTheme();
+
+  // For route navigation
+  const navigate = useNavigate();
+
+  // Toggle mobile drawer render state
+  const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
+
+  // Notification list popover anchor
   const [notifAnchor, setNotifAnchor] = useState<HTMLButtonElement | null>(
     null
   );
+
+  // Profile popover anchor
   const [profileAnchor, setProfileAnchor] = useState<HTMLButtonElement | null>(
     null
   );
-  const { mode } = useContext(ColorModeContext);
-  const [logoutDialog, setLogoutDialog] = useState(false);
 
+  // Get theme mode (light or dark mode)
+  const { mode } = useContext(ColorModeContext);
+
+  // Conditional render states
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoutDialog, setLogoutDialog] = useState(false);
+  const profileOpen = Boolean(profileAnchor);
+  const profileId = profileOpen ? "notif-popover " : undefined;
+  const notifOpen = Boolean(notifAnchor);
+  const notifId = notifOpen ? "notif-popover " : undefined;
+
+  // Fetch user notification data
   useEffect(() => {
     if (auth.user) {
       getNotifications(auth.user.id!.toString(), true);
     }
   }, []);
 
-  const handleNotifClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setNotifAnchor(event.currentTarget);
-  };
-
-  const handleNotifClose = () => {
-    setNotifAnchor(null);
-  };
-
-  const handleProfileClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setProfileAnchor(event.currentTarget);
-  };
-
-  const handleProfileClose = () => {
-    setProfileAnchor(null);
-  };
-
+  // Method for handling when user 'reads' a notification
   const handleReadNotif = async (notif_id: number) => {
     if (auth.user) {
+      // Update read status in backend
       await readNotification(notif_id);
+      // Reload notification data
       await getNotifications(auth.user.id!.toString());
 
+      // If user reads last notification, close the popover
       if (notifs.data?.data.length === 0) {
         handleNotifClose();
       }
     }
   };
 
+  // Logout method
   const dispatch = useDispatch();
-
   const handleLogOut = () => dispatch(logout());
 
+  // Other handler methods that don't need an explanation
   const openLogout = () => setLogoutDialog(true);
-
   const closeLogout = () => setLogoutDialog(false);
-
   const handleProfile = () => navigate("/profile");
-
-  const profileOpen = Boolean(profileAnchor);
-  const profileId = profileOpen ? "notif-popover " : undefined;
-
-  const notifOpen = Boolean(notifAnchor);
-  const notifId = notifOpen ? "notif-popover " : undefined;
+  const handleNotifClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setNotifAnchor(event.currentTarget);
+  };
+  const handleNotifClose = () => {
+    setNotifAnchor(null);
+  };
+  const handleProfileClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setProfileAnchor(event.currentTarget);
+  };
+  const handleProfileClose = () => {
+    setProfileAnchor(null);
+  };
 
   const notifsOkay =
     notifs && notifs.isSuccess && !notifs.isLoading && !notifs.isFetching;
@@ -264,18 +285,22 @@ function DrawerLayout({ children }: Props) {
           component="main"
           sx={{
             width: { xs: "100%", lg: `calc(100% - ${DRAWER_WIDTH}px)` },
-            padding: {
-              xs: 1,
-              md: 3,
-            },
             display: "flex",
             position: "relative",
             flexDirection: "column",
+            minHeight: "100%",
           }}
           aria-label="main-body"
         >
           <Toolbar />
-          {children}
+          <Box
+            padding={{
+              xs: 1,
+              md: 3,
+            }}
+          >
+            {children}
+          </Box>
         </Box>
       </Box>
     </>

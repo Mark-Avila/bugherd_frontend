@@ -24,15 +24,26 @@ import { useGetCurrentTicketStatsQuery } from "../api/userApiSlice";
 import { RootState } from "../store";
 import { setBreadcrumbs } from "../slices/breadSlice";
 
+/**
+ * The user dashboard. Displays the user ticket statistics
+ * and project information
+ */
 export default function Dashboard() {
+  //Project data fetching method and data
   const [getProjects, projects] = useLazyGetCurrentProjectQuery();
+
+  //Fetch user ticket statistics
   const ticketStats = useGetCurrentTicketStatsQuery();
+
+  // Authentication state
   const { user } = useSelector((state: RootState) => state.auth);
 
+  // Conditional flag for rendering 'new project' button
   const [isProjToggled, toggleProj] = useToggle(false);
+
+  //Project list pagination states
   const [maxPage, setMaxPage] = useState(0);
   const [currPage, setCurrPage] = useState(1);
-
   const PAGE_LIMIT = 5;
 
   const isSmallScreen = useMediaQuery((theme: Theme) =>
@@ -42,10 +53,10 @@ export default function Dashboard() {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
+    // Fetch projects on initial page load
     getProjects({ offset: 0, limit: PAGE_LIMIT });
-  }, []);
 
-  useEffect(() => {
+    // Set also breadcrumbs
     dispatch(
       setBreadcrumbs([
         {
@@ -56,6 +67,7 @@ export default function Dashboard() {
     );
   }, []);
 
+  // User ticket statistics data fetch error handling
   useEffect(() => {
     const { isError, isLoading, error } = ticketStats;
 
@@ -76,6 +88,7 @@ export default function Dashboard() {
     }
   }, [ticketStats]);
 
+  // User projects statistics data fetch error handling
   useEffect(() => {
     const { isError, isLoading, error, isSuccess } = projects;
 
@@ -94,19 +107,22 @@ export default function Dashboard() {
         });
       }
     } else if (!isError && !isLoading && isSuccess) {
+      // If no errors occured, set maximum pages count for pagination
       const pages: number = (projects.data.count as number) / PAGE_LIMIT;
       setMaxPage(Math.floor(pages));
     }
   }, [projects]);
 
+  /**
+   * Fetch or reload project data when user
+   * successfully creates a new project
+   */
   const handleOnSuccess = () => {
     getProjects({ offset: 0, limit: PAGE_LIMIT });
   };
 
-  const handlePagination = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  // Project Pagination onChange handling
+  const handlePagination = (_: React.ChangeEvent<unknown>, value: number) => {
     if (value <= maxPage && value >= 0) {
       setCurrPage(value);
       getProjects({ offset: (value - 1) * PAGE_LIMIT, limit: PAGE_LIMIT });

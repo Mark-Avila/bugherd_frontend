@@ -52,42 +52,86 @@ const validationSchema = yup.object({
     .required("Please enter a description"),
 });
 
+/**
+ * Screen for updating user details.
+ * Only available for users with the role of 'admin'
+ */
 function ManageProjects() {
-  const { snackbarError } = useSnackError();
-  const { enqueueSnackbar } = useSnackbar();
+  // User authentication state
+  const { user } = useSelector((root: RootState) => root.auth);
+
+  // Fetching method and object for users assigned to the project
   const [getProjectUsers, projectUsers] = useLazyGetProjectAssignQuery();
+
+  // Projects data fetching method and object
+  const [getProjects, projects] = useLazyGetProjectsQuery();
+
+  // Method or mutation for updating project data
   const [updateProject] = useUpdateProjectMutation();
+
+  // Method or mutation for removing a user assigned to a project
   const [deleteAssign] = useDeleteProjectAssignMutation();
+
+  // Method or mutation for assigning a user to a project
   const [createAssign] = useCreateProjectAssignMutation();
+
+  // Method or mutation for setting the archive status of a project
   const [archiveProject] = useArchiveProjectMutation();
+
+  // State for storing the user's currently selected project
   const [currProj, setCurrProj] = useState<Project | null>(null);
-  const [addMemberModal, setAddMemberModal] = useState(false);
+
+  // Method or mutation for creating or sending notifications
+  const [createNotification] = useCreateNotificationMutation();
+
+  // State for storing currently assigned members for the selected project in 'currProj'
+  const [currMembers, setCurrMembers] = useState<User[]>([] as User[]);
+
+  // States for storing user ids that an admin plans to removing an assigned user or the opposite
   const [idsToRemove, setIdsToRemove] = useState<number[]>([]);
   const [idsToAdd, setIdsToAdd] = useState<number[]>([]);
-  const [currMembers, setCurrMembers] = useState<User[]>([] as User[]);
+
+  /**
+   * State for storing project details before editing.
+   * Used to confirm if the admin has changed any details about the project
+   */
   const [ogData, setOgData] = useState<{ title: string; description: string }>({
     title: "",
     description: "",
   });
+
+  // State for storing project search field input
   const [projectSearch, setProjectSearch] = useState<string>("");
+
+  // Snackbar hooks
+  const { snackbarError } = useSnackError();
+  const { enqueueSnackbar } = useSnackbar();
+
+  // State for handling rendering for modals and dialogs
   const [confirmEditDialog, setConfirmEditDialog] = useState(false);
   const [confirmArchDialog, setConfirmArchDialog] = useState(false);
   const [confirmUnarchDialog, setConfirmUnarchDialog] = useState(false);
-  const [createNotification] = useCreateNotificationMutation();
-  const { user } = useSelector((root: RootState) => root.auth);
+  const [addMemberModal, setAddMemberModal] = useState(false);
+
+  // MUI theme object
   const theme = useTheme();
+
+  // Debounce hook for applying delay before fetching project data when using search
   const debouncedSearch = useDebounce(projectSearch, 500);
-  1;
-  const [getProjects, projects] = useLazyGetProjectsQuery();
+
   const dispatch = useDispatch();
 
+  // Fetch projects list data, updates when user types in the search field
   useEffect(() => {
     getProjects({
       title: debouncedSearch,
       limit: 20,
       offset: 0,
     }).unwrap();
+  }, [debouncedSearch]);
 
+  // Set breadcrumbs in the navbar on initial load
+  useEffect(() => {
     dispatch(
       setBreadcrumbs([
         {
@@ -102,6 +146,7 @@ function ManageProjects() {
     );
   }, []);
 
+  // Error handling assigned users data fetching
   useEffect(() => {
     const { data, isLoading, error, isFetching, isSuccess, isError } =
       projectUsers;
@@ -117,6 +162,7 @@ function ManageProjects() {
     }
   }, [projectUsers.data]);
 
+  // Formik hook for project details edit and assigned members form validation and handling
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -133,10 +179,10 @@ function ManageProjects() {
       }
 
       const { title, description } = values;
-
       let error_flag = false;
       const projectId = currProj.id!.toString();
 
+      // Update project with new details
       try {
         await updateProject({
           project_id: projectId,
@@ -148,6 +194,7 @@ function ManageProjects() {
         snackbarError(err as FetchBaseQueryError, "Failed to update project");
       }
 
+      // If there is any set, remove users assigned to the project
       if (idsToRemove.length >= 1) {
         for await (const userId of idsToRemove) {
           try {
@@ -165,6 +212,7 @@ function ManageProjects() {
         }
       }
 
+      // If there is any set, assign users to the project
       if (idsToAdd.length >= 1) {
         for await (const userId of idsToAdd) {
           try {
@@ -182,17 +230,27 @@ function ManageProjects() {
         }
       }
 
+      // If no errors occured
       if (!error_flag) {
         enqueueSnackbar("Successfully Updated Project Information", {
           variant: "success",
         });
 
-        await getProjects({
-          title: debouncedSearch,
-          limit: 20,
-          offset: 0,
-        });
+        try {
+          // Reload project list data
+          await getProjects({
+            title: debouncedSearch,
+            limit: 20,
+            offset: 0,
+          });
+        } catch (err: unknown) {
+          snackbarError(
+            err as FetchBaseQueryError,
+            "Failed to reload projects data"
+          );
+        }
 
+        // Create or send a notification for each member assigned to the project
         for await (const member of currMembers) {
           try {
             await createNotification({
@@ -213,17 +271,11 @@ function ManageProjects() {
           setCurrMembers([]);
           setConfirmEditDialog(false);
         }
-
-        // await createNotification({
-        //   body: `A project `,
-        //   to_id: member.id as number,
-        //   from_id: user!.id as number,
-        //   view_path: `/ticket/${response.data[0].id}`,
-        // })
       }
     },
   });
 
+  // Method for handling selecting a project to update details
   const handleProjectSelect = (project: Project) => {
     if (project) {
       setCurrProj(project);
@@ -247,11 +299,14 @@ function ManageProjects() {
     setAddMemberModal(true);
   };
 
+  // Method for handling removing assigned users (UI side)
   const removeMember = (user: User) => {
     if (user.id) {
+      //Remove instance of the user id in the state array
       const newArray = currMembers.filter((obj) => obj.id !== user.id);
       setCurrMembers(newArray);
 
+      // If the user being remove is set in the idsToAdd state, remove it there also
       if (idsToAdd.indexOf(user.id) !== -1) {
         const newIds = idsToAdd.filter((obj) => obj !== user.id);
         setIdsToAdd(newIds);
@@ -264,21 +319,30 @@ function ManageProjects() {
     }
   };
 
+  // Method for handling assigning new users to the project (UI side)
   const addMember = (user: User) => {
-    if (currMembers.some((obj) => obj["id"] === user.id)) {
-      enqueueSnackbar("User is already a team member", { variant: "warning" });
-      return;
-    }
-
     if (user.id) {
+      // Notify admin if user being added is already in the original members
+      if (currMembers.some((obj) => obj["id"] === user.id)) {
+        enqueueSnackbar("User is already a team member", {
+          variant: "warning",
+        });
+        return;
+      }
+
+      // Add user to the users to be assigned to the project
       setCurrMembers((prev) => [...prev, user]);
 
+      // If user id exists in the idsToRemove state, remove the user
       if (idsToRemove.indexOf(user.id) !== -1) {
         const newIds = idsToRemove.filter((obj) => obj !== user.id);
         setIdsToRemove(newIds);
       }
 
+      // Add user ids to be assigned to the project
       setIdsToAdd((prev) => [...prev, user.id!]);
+
+      // Close modal
       handleModalClose();
     }
   };
@@ -287,6 +351,7 @@ function ManageProjects() {
     setProjectSearch(e.target.value);
   };
 
+  // Method for checking if any information was altered before opening the 'confirm' dialog
   const openEditConfirm = () => {
     const { title, description } = formik.values;
 
@@ -303,45 +368,51 @@ function ManageProjects() {
     setConfirmEditDialog(true);
   };
 
+  // Methods for handling dialog conditional rendering
   const closeEditConfirm = () => setConfirmEditDialog(false);
-
   const openArchiveConfirm = () => setConfirmArchDialog(true);
   const closeArchiveConfirm = () => setConfirmArchDialog(false);
-
   const openUnArchiveConfirm = () => setConfirmUnarchDialog(true);
   const closeUnArchiveConfirm = () => setConfirmUnarchDialog(false);
 
-  const handleArchiveProject = (archive: boolean) => {
+  // Method for setting the archive status of the project
+  const handleArchiveProject = async (archive: boolean) => {
     if (!currProj) {
       return;
     }
 
-    archiveProject({
-      project_id: currProj.id!.toString(),
-      archive: archive,
-    })
-      .unwrap()
-      .then((res) => {
-        if (res.success) {
-          enqueueSnackbar("Successfully archived Project", {
-            variant: "success",
-          });
-        }
-      })
-      .finally(() => {
+    // Archive project
+    try {
+      const response = await archiveProject({
+        project_id: currProj.id!.toString(),
+        archive: archive,
+      }).unwrap();
+      if (response.success) {
+        enqueueSnackbar("Successfully archived Project", {
+          variant: "success",
+        });
         closeArchiveConfirm();
         closeUnArchiveConfirm();
         setCurrProj(null);
         setCurrMembers([]);
-        getProjects({
-          title: debouncedSearch,
-          limit: 20,
-          offset: 0,
-        }).unwrap();
-      })
-      .catch((err: FetchBaseQueryError) => {
-        snackbarError(err);
+      }
+    } catch (err: unknown) {
+      snackbarError(err as FetchBaseQueryError, "Failed to archive project");
+    }
+
+    // Reload project data
+    try {
+      await getProjects({
+        title: debouncedSearch,
+        limit: 20,
+        offset: 0,
       });
+    } catch (err: unknown) {
+      snackbarError(
+        err as FetchBaseQueryError,
+        "Failed to reload projects data"
+      );
+    }
   };
 
   return (

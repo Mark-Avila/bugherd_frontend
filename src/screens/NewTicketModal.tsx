@@ -46,7 +46,6 @@ const validationSchema = yup.object({
 
 /**
  * Modal UI component for creating a new ticket
- * @prop {VoidFunction} onClose Function to execute when the "close"
  */
 function NewTicketModal({
   onClose,

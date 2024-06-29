@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import { useUpdateProjectMutation } from "../api/projectApiSlice";
 import { useSnackError } from "../hooks";
 import { useSnackbar } from "notistack";
-import { ResponseBody } from "../types";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 
 interface Props {
   open: boolean;
@@ -27,6 +27,10 @@ const validationSchema = yup.object({
     .required("Please enter a description"),
 });
 
+/**
+ * Modal form for updating a user's created project.
+ * Used in the 'Project' screen
+ */
 function EditProjectModal({
   open,
   onClose,
@@ -34,10 +38,14 @@ function EditProjectModal({
   title,
   description,
 }: Props) {
+  // Update project method
   const [updateProject] = useUpdateProjectMutation();
-  const { snackbarError } = useSnackError();
-  const { enqueueSnackbar } = useSnackbar();
 
+  // Snackbar hooks
+  const { snackbarError } = useSnackError(); // For handling displaying errors
+  const { enqueueSnackbar } = useSnackbar(); // For displaying successes
+
+  // Formik hook for form validation and handling
   const formik = useFormik({
     initialValues: {
       title: title,
@@ -51,19 +59,17 @@ function EditProjectModal({
         descr: values.description,
       };
 
-      await updateProject(payload)
-        .unwrap()
-        .then((res: ResponseBody<unknown>) => {
-          if (res.success) {
-            enqueueSnackbar("Successfully updated user", {
-              variant: "success",
-            });
-          }
-        })
-        .finally(() => onClose())
-        .catch((err) => {
-          snackbarError(err);
-        });
+      try {
+        //Update project with new data
+        const response = await updateProject(payload).unwrap();
+        if (response.success) {
+          enqueueSnackbar("Successfully updated user", {
+            variant: "success",
+          });
+        }
+      } catch (err: unknown) {
+        snackbarError(err as FetchBaseQueryError);
+      }
     },
   });
 

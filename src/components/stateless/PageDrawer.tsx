@@ -10,16 +10,11 @@ import {
   Dashboard,
   LightMode,
   ListAlt,
-  Logout,
-  Task,
 } from "@mui/icons-material";
 import {
   alpha,
-  Avatar,
-  Box,
   colors,
   Drawer,
-  Icon,
   IconButton,
   Link,
   ListItem,
@@ -49,7 +44,6 @@ interface IDrawerItem {
 
 function DrawerItem({ text, icon, onClick }: IDrawerItem) {
   const theme = useTheme();
-  const { mode } = useContext(ColorModeContext);
 
   return (
     <ListItem key={text} disablePadding>
@@ -110,8 +104,6 @@ function DrawerBody({
   const dispatch = useDispatch();
 
   const handleLogOut = () => dispatch(logout());
-
-  const openLogout = () => setLogoutDialog(true);
 
   const closeLogout = () => setLogoutDialog(false);
 

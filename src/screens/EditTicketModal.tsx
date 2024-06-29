@@ -7,14 +7,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Priority, Project, ResponseBody, Ticket, Type, User } from "../types";
+import { Priority, ResponseBody, Ticket, Type, User } from "../types";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
-import {
-  useLazyGetTicketByIdQuery,
-  useUpdateTicketMutation,
-} from "../api/ticketApiSlice";
+import { useEffect } from "react";
+import { useUpdateTicketMutation } from "../api/ticketApiSlice";
 import { useSnackbar } from "notistack";
 import { useSnackError } from "../hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -47,15 +44,45 @@ const validationSchema = yup.object({
   est: yup.number().moreThan(0, "Must be greater than 0"),
 });
 
+/**
+ * Modal form editing or updating ticket details.
+ * Used in the 'Ticket' screen
+ */
 function EditTicketModal({ open, onClose, ticket }: Props) {
-  const [ticketId, setTicketId] = useState<string | null>(null);
+  // Method or mutation for updating ticket data
   const [updateTicket] = useUpdateTicketMutation();
-  const { enqueueSnackbar } = useSnackbar();
-  const { snackbarError } = useSnackError();
+
+  /**
+   * Method for fetching users assigned to a project.
+   * Used for sending notifications to the assigned users
+   */
   const [getAssigned] = useLazyGetProjectAssignQuery();
+
+  // Method or mutation for creating/sending notifications
   const [createNotification] = useCreateNotificationMutation();
+
+  // User authentication state
   const { user } = useSelector((root: RootState) => root.auth);
 
+  // Snackbar hooks
+  const { enqueueSnackbar } = useSnackbar();
+  const { snackbarError } = useSnackError();
+
+  // Set ticket data on initial load
+  useEffect(() => {
+    if (ticket) {
+      formik.setValues({
+        title: ticket.title,
+        desc: ticket.descr,
+        status: ticket.status ? 1 : 0,
+        priority: ticket.priority,
+        type: ticket.issue_type,
+        est: ticket.est,
+      });
+    }
+  }, []);
+
+  // Formik hook for form validation and handling
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -67,9 +94,10 @@ function EditTicketModal({ open, onClose, ticket }: Props) {
     },
     validationSchema,
     onSubmit: async (values) => {
-      if (ticket && ticketId) {
+      if (ticket) {
         const { title, desc, status, priority, est, type } = values;
 
+        // New ticket data
         const data: Ticket = {
           title: title,
           descr: desc,
@@ -83,15 +111,20 @@ function EditTicketModal({ open, onClose, ticket }: Props) {
 
         let response: ResponseBody<unknown> | null = null;
 
+        // Update ticket information
         try {
           response = (await updateTicket({
-            id: ticketId,
+            id: ticket.id!,
             data: data,
           }).unwrap()) as ResponseBody<Ticket[]>;
         } catch (err: unknown) {
           snackbarError(err as FetchBaseQueryError, "Failed to update ticket");
         }
 
+        /**
+         * If updating the ticket was successful, fetch the user data of those
+         * assigned to the project the ticket is in
+         */
         if (response && response.success) {
           try {
             response = (await getAssigned(
@@ -105,6 +138,10 @@ function EditTicketModal({ open, onClose, ticket }: Props) {
           }
         }
 
+        /**
+         * If fetching user data was successful, create or send a notification
+         * for each user id
+         */
         if (response && response.success) {
           let projectMembers: User[] = (response as ResponseBody<User[]>).data;
 
@@ -138,21 +175,6 @@ function EditTicketModal({ open, onClose, ticket }: Props) {
       }
     },
   });
-
-  useEffect(() => {
-    if (ticket) {
-      formik.setValues({
-        title: ticket.title,
-        desc: ticket.descr,
-        status: ticket.status ? 1 : 0,
-        priority: ticket.priority,
-        type: ticket.issue_type,
-        est: ticket.est,
-      });
-
-      setTicketId(ticket.id!);
-    }
-  }, [ticket]);
 
   const handleSubmit = () => formik.handleSubmit();
 
