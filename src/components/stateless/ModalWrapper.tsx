@@ -7,6 +7,8 @@ import {
   DialogTitle,
   IconButton,
 } from "@mui/material";
+import { useContext } from "react";
+import { ColorModeContext } from "../../App";
 
 type Props = DialogProps & {
   title: string;
@@ -19,8 +21,16 @@ type Props = DialogProps & {
  * Wrapper for modal components for cleaner code
  */
 function ModalWrapper({ title, children, action, onClose, ...props }: Props) {
+  const { mode } = useContext(ColorModeContext);
   return (
-    <Dialog {...props}>
+    <Dialog
+      {...props}
+      sx={{
+        "& .MuiPaper-root": {
+          background: mode === "dark" ? "#0F1214" : "white",
+        },
+      }}
+    >
       <DialogTitle>{title}</DialogTitle>
       <IconButton
         onClick={onClose}

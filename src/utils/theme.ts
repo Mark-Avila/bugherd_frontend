@@ -659,6 +659,14 @@ export function getThemedComponents(theme: Theme): {
       MuiSelect: {
         defaultProps: {
           IconComponent: ArrowDropDownRounded,
+          MenuProps: {
+            MenuListProps: {
+              sx: {
+                backgroundColor:
+                  theme.palette.mode === "dark" ? "#0F1214" : "white",
+              },
+            },
+          },
         },
         styleOverrides: {
           iconFilled: {

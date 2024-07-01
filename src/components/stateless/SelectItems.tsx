@@ -6,6 +6,8 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { SelectItemBody, Type } from "../../types";
+import { useContext } from "react";
+import { ColorModeContext } from "../../App";
 
 interface Props {
   value: string;
