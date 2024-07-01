@@ -13,6 +13,7 @@ import {
 } from "@mui/icons-material";
 import {
   alpha,
+  Avatar,
   colors,
   Drawer,
   IconButton,
@@ -85,6 +86,7 @@ interface IDrawerBody {
   };
   isAdmin: boolean;
   userClick: VoidFunction;
+  pictureSrc?: string;
 }
 
 /**
@@ -95,6 +97,7 @@ function DrawerBody({
   isAdmin,
   adminItems,
   user,
+  pictureSrc,
   userClick,
 }: IDrawerBody) {
   const { toggle, mode } = useContext(ColorModeContext);
@@ -158,10 +161,14 @@ function DrawerBody({
           <ListItem>
             <Stack width="100%" py={2} alignItems="center" gap={1}>
               <IconButton onClick={userClick}>
-                <AccountCircle
-                  sx={{ width: 96, height: 96 }}
-                  htmlColor={colors.lightBlue[200]}
-                />
+                {pictureSrc ? (
+                  <Avatar sx={{ width: 96, height: 96 }} src={pictureSrc} />
+                ) : (
+                  <AccountCircle
+                    sx={{ width: 96, height: 96 }}
+                    htmlColor={colors.lightBlue[200]}
+                  />
+                )}
               </IconButton>
               <Link
                 fontSize={14}
@@ -214,8 +221,8 @@ function DrawerBody({
               />
               <ListSubheader
                 sx={{
-                  backgroundColor: theme.palette.primary[500],
-                  color: "white",
+                  backgroundColor: theme.palette.background.default,
+                  color: theme.palette.primary[400],
                 }}
               >
                 Administration
@@ -269,13 +276,14 @@ function DrawerBody({
 interface Props {
   open: boolean;
   onClose: VoidFunction;
+  pictureSrc?: string;
   width: number;
 }
 
 /**
  * Drawer or sidebar UI component
  */
-function PageDrawer({ open, onClose, width }: Props) {
+function PageDrawer({ open, onClose, width, pictureSrc }: Props) {
   const navigate = useNavigate();
   const handleOnItemClick = (to: string) => {
     navigate(to);
@@ -338,6 +346,7 @@ function PageDrawer({ open, onClose, width }: Props) {
           adminItems={AdminNavItems}
           userClick={() => handleOnItemClick("/profile")}
           user={{ name: user?.fname, email: user?.email }}
+          pictureSrc={pictureSrc}
         />
       </Drawer>
       <Drawer
@@ -361,6 +370,7 @@ function PageDrawer({ open, onClose, width }: Props) {
           adminItems={AdminNavItems}
           userClick={() => handleOnItemClick("/profile")}
           user={{ name: user?.fname, email: user?.email }}
+          pictureSrc={pictureSrc}
         />
       </Drawer>
     </>

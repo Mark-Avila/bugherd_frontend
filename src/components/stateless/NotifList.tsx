@@ -69,7 +69,7 @@ function NotifList({ notifs, handleCloseNotif, handleReadNotif }: Props) {
               >
                 <Stack gap={1} width="100%" pr={1}>
                   <Link
-                    component="text"
+                    component="p"
                     variant="body2"
                     fontSize="small"
                     textAlign="left"

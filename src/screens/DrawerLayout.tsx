@@ -37,7 +37,8 @@ import {
 } from "../api/notifApiSlice";
 import { ColorModeContext } from "../App";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../slices/authSlice";
+import { logout, setUser } from "../slices/authSlice";
+import pictureApi from "../api/userPictureApi";
 
 const DRAWER_WIDTH = 240;
 
@@ -84,6 +85,9 @@ function DrawerLayout({ children }: Props) {
   // Get theme mode (light or dark mode)
   const { mode } = useContext(ColorModeContext);
 
+  // User profile picture state
+  const [userPicture, setUserPicture] = useState<string | undefined>();
+
   // Conditional render states
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoutDialog, setLogoutDialog] = useState(false);
@@ -97,6 +101,20 @@ function DrawerLayout({ children }: Props) {
     if (auth.user) {
       getNotifications(auth.user.id!.toString(), true);
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchUserPicture = async () => {
+      if (auth.user) {
+        const userPictureData: string | null =
+          await pictureApi.fetchUserPicture(auth.user.id!.toString());
+        if (userPictureData !== null) {
+          setUserPicture(userPictureData);
+        }
+      }
+    };
+
+    fetchUserPicture();
   }, []);
 
   // Method for handling when user 'reads' a notification
@@ -221,7 +239,10 @@ function DrawerLayout({ children }: Props) {
                   aria-describedby={profileId}
                   onClick={handleProfileClick}
                 >
-                  <Avatar sx={{ width: "24px", height: "24px" }} />
+                  <Avatar
+                    sx={{ width: "36px", height: "36px" }}
+                    src={userPicture}
+                  />
                 </IconButton>
                 <Popover
                   id={profileId}
@@ -279,6 +300,7 @@ function DrawerLayout({ children }: Props) {
             onClose={handleDrawerToggle}
             open={mobileOpen}
             width={DRAWER_WIDTH}
+            pictureSrc={userPicture}
           />
         </Box>
         <Box
