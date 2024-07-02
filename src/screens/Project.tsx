@@ -1,4 +1,12 @@
-import { Box, Button, Divider, Grid, Pagination } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Pagination,
+  Skeleton,
+  Stack,
+} from "@mui/material";
 import {
   ProjectHeader,
   UserList,
@@ -29,26 +37,44 @@ import { setBreadcrumbs } from "../slices/breadSlice";
 //TODO: Auth check on all submits
 
 function Project() {
+  //Routing
+  const { project_id } = useParams();
+  const navigate = useNavigate();
+
+  //Data fetching
+  const [getAssigned, assigned] = useLazyGetProjectAssignQuery();
+  const [getTickets, tickets] = useLazyGetTicketByProjectIdQuery();
+  const [createAssign] = useCreateProjectAssignMutation();
+  const project = useGetProjectByIdQuery(project_id!);
+
+  //User authentication
+  const auth = useSelector((state: RootState) => state.auth);
+
+  //Data storing
+  const [projectData, setProjectData] = useState<ProjectType | null>(null);
+
+  //Snackbars
+  const { enqueueSnackbar } = useSnackbar();
+  const { snackbarError } = useSnackError();
+
+  //Pagination
+  const [maxPage, setMaxPage] = useState(0);
+  const [currPage, setCurrPage] = useState(1);
+  const [tempUser, setTempUser] = useState<User | null>(null);
+
+  //Loading states
+  const [projectLoading, setProjectLoading] = useState(true);
+  const [assignedLoading, setAssignedLoading] = useState(true);
+  const [ticketLoading, setTicketLoading] = useState(true);
+
+  //Visibility states
   const [ticketModal, setTicketModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [editConfirm, setEditConfirm] = useState(false);
   const [memberModal, setMemberModal] = useState(false);
-  const [projectData, setProjectData] = useState<ProjectType | null>(null);
+
   const toggleTicketModal = () => setTicketModal((prev) => !prev);
   const handleOnClose = () => setTicketModal(false);
-  const { project_id } = useParams();
-  const navigate = useNavigate();
-  const [maxPage, setMaxPage] = useState(0);
-  const [currPage, setCurrPage] = useState(1);
-  const { enqueueSnackbar } = useSnackbar();
-  const { snackbarError } = useSnackError();
-  const [tempUser, setTempUser] = useState<User | null>(null);
-
-  const auth = useSelector((state: RootState) => state.auth);
-  const project = useGetProjectByIdQuery(project_id!);
-  const [getAssigned, assigned] = useLazyGetProjectAssignQuery();
-  const [getTickets, tickets] = useLazyGetTicketByProjectIdQuery();
-  const [createAssign] = useCreateProjectAssignMutation();
 
   const TICKET_LIMIT = 5;
 
@@ -96,14 +122,23 @@ function Project() {
     }
   }, [tickets]);
 
-  if (
-    project.isLoading ||
-    project.isError ||
-    !project.isSuccess ||
-    !projectData
-  ) {
-    return <LoadingScreen />;
-  }
+  useEffect(() => {
+    if (!project.isLoading && !project.isFetching && project.data) {
+      setProjectLoading(false);
+    }
+  }, [project]);
+
+  useEffect(() => {
+    if (!tickets.isLoading && !tickets.isFetching && tickets.data) {
+      setTicketLoading(false);
+    }
+  }, [tickets]);
+
+  useEffect(() => {
+    if (!assigned.isLoading && !assigned.isFetching && assigned.data) {
+      setAssignedLoading(false);
+    }
+  }, [assigned]);
 
   const handlePagination = (
     event: React.ChangeEvent<unknown>,
@@ -131,7 +166,7 @@ function Project() {
   };
 
   const handleAddMember = () => {
-    if (tempUser) {
+    if (tempUser && projectData) {
       createAssign({ user_id: tempUser.id!, project_id: projectData.id! })
         .unwrap()
         .then((res: ResponseBody<unknown>) => {
@@ -157,11 +192,11 @@ function Project() {
 
   return (
     <>
-      {projectData.id && (
+      {!projectLoading && (
         <EditProjectModal
           title={projectData?.title || "..."}
-          description={projectData?.descr || "..."}
-          project_id={projectData.id?.toString()}
+          description={projectData!.descr || "..."}
+          project_id={projectData!.id!.toString()}
           open={editModal}
           onClose={() => handleEditModal(false)}
         />
@@ -182,30 +217,47 @@ function Project() {
           existingIds={assigned.data.data.map((item) => item.id!)}
         />
       )}
-      <ProjectHeader
-        title={projectData?.title || "..."}
-        desc={projectData?.descr || ""}
-        onEditClick={() => handleEditModal(true)}
-        archived={projectData?.archived}
-      />
+      {projectLoading ? (
+        <Stack gap={1}>
+          <Skeleton variant="text" width={500} height={50} />
+          <Skeleton variant="text" width={700} />
+          <Stack direction="row" gap={1}>
+            <Skeleton variant="text" width={100} />
+            <Skeleton variant="text" width={100} />
+          </Stack>
+        </Stack>
+      ) : (
+        <ProjectHeader
+          title={projectData?.title || "..."}
+          desc={projectData?.descr || ""}
+          onEditClick={() => handleEditModal(true)}
+          archived={projectData?.archived}
+        />
+      )}
       <Divider sx={{ marginY: 4 }} />
       <Grid container spacing={2} component="main">
         <Grid item xs={12} md={6} lg={9}>
           <PageSection
             title="Tickets"
             action={
-              <Button
-                onClick={toggleTicketModal}
-                variant="contained"
-                size="small"
-                disabled={projectData?.archived}
-              >
-                New ticket
-              </Button>
+              ticketLoading ? (
+                <></>
+              ) : (
+                <Button
+                  onClick={toggleTicketModal}
+                  variant="contained"
+                  size="small"
+                  disabled={projectData?.archived}
+                >
+                  New ticket
+                </Button>
+              )
             }
           >
-            {tickets.data && !tickets.isLoading && (
-              <TicketList tickets={tickets.data.data} />
+            {ticketLoading ? (
+              <Skeleton variant="rounded" height={300} width="100%" />
+            ) : (
+              <TicketList tickets={tickets.data!.data} />
             )}
             {maxPage > 1 && (
               <Box mt={2}>
@@ -219,36 +271,49 @@ function Project() {
           </PageSection>
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
-          <PageSection
-            title="Team"
-            action={
-              auth.user?.id?.toString() === projectData.user_id?.toString() ||
-              auth.user?.role === 2 ? (
-                <Button
-                  variant="contained"
-                  size="small"
-                  disabled={projectData?.archived}
-                  onClick={() => handleMemberModal(true)}
-                >
-                  Add member
-                </Button>
-              ) : (
+          {projectLoading ? (
+            <PageSection title="Team">
+              <Skeleton width="100%" height={200} variant="rounded" />
+            </PageSection>
+          ) : (
+            <PageSection
+              title="Team"
+              action={
+                auth.user?.id?.toString() ===
+                  projectData!.user_id?.toString() || auth.user?.role === 2 ? (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    disabled={projectData?.archived}
+                    onClick={() => handleMemberModal(true)}
+                  >
+                    Add member
+                  </Button>
+                ) : (
+                  <></>
+                )
+              }
+            >
+              {assignedLoading ? (
                 <></>
-              )
-            }
-          >
-            {assigned.data && (
-              <UserList users={assigned.data.data} lead={projectData.user_id} />
-            )}
-          </PageSection>
+              ) : (
+                assigned.data && (
+                  <UserList
+                    users={assigned.data.data}
+                    lead={projectData!.user_id}
+                  />
+                )
+              )}
+            </PageSection>
+          )}
         </Grid>
       </Grid>
 
-      {assigned && assigned.data && project && (
+      {!assignedLoading && !projectLoading && (
         <NewTicketModal
           open={ticketModal}
-          project={project.data.data[0]}
-          projectMembers={assigned.data.data}
+          project={project.data!.data[0]}
+          projectMembers={assigned.data!.data}
           onClose={handleOnClose}
           onSuccess={handleOnSuccess}
         />
