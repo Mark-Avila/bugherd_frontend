@@ -3,6 +3,7 @@ import {
   Box,
   Chip,
   Divider,
+  IconButton,
   Paper,
   Skeleton,
   Stack,
@@ -12,12 +13,15 @@ import {
 import { User } from "../../types";
 import getRole from "../../utils/getRole";
 import dayjs from "dayjs";
+import { Edit } from "@mui/icons-material";
 
 interface Props {
   user?: User | null;
+  onProfileClick?: VoidFunction;
+  userPictureSrc?: string;
 }
 
-function ProfileInfo({ user }: Props) {
+function ProfileInfo({ user, onProfileClick, userPictureSrc }: Props) {
   const theme = useTheme();
 
   const getAge = (bday: string) => {
@@ -46,7 +50,9 @@ function ProfileInfo({ user }: Props) {
       >
         <Stack>
           <Box display="flex" alignItems="center" gap={2} padding={2}>
-            <Avatar sx={{ width: 86, height: 86 }} />
+            <IconButton onClick={onProfileClick}>
+              <Avatar sx={{ width: 86, height: 86 }} src={userPictureSrc} />
+            </IconButton>
             <Stack minWidth={300}>
               {user ? (
                 <Typography>{`${user.fname} ${user.lname}`}</Typography>
@@ -55,7 +61,7 @@ function ProfileInfo({ user }: Props) {
               )}
               {user ? (
                 <Typography variant="body2" color="text.secondary">
-                  avilamark96@gmail.com
+                  {user.email}
                 </Typography>
               ) : (
                 <Skeleton variant="text" width="60%" />
