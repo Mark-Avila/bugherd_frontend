@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton, Tooltip } from "@mui/material";
+import { Box, Grid, IconButton, Skeleton, Stack, Tooltip } from "@mui/material";
 import { CommentSection, TicketDetails, TicketHeader } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import TicketDescription from "../components/stateless/TicketDescription";
@@ -12,7 +12,7 @@ import {
 } from "../api/commentApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { Refresh } from "@mui/icons-material";
+import { Pages, Refresh } from "@mui/icons-material";
 import dayjs from "dayjs";
 import EditTicketModal from "./EditTicketModal";
 import { setBreadcrumbs } from "../slices/breadSlice";
@@ -26,6 +26,9 @@ function Ticket() {
   const auth = useSelector((state: RootState) => state.auth);
   const ticket = useGetTicketByIdQuery(ticket_id!);
   const comments = useGetCommentsByTicketIdQuery(ticket_id!);
+
+  // const [ticketLoading, setTicketLoading] = useState(true);
+  // const [commentsLoading, setcommentLoading] = useState(true);
 
   const [updateComments] = useLazyGetCommentsByTicketIdQuery();
 
@@ -82,7 +85,7 @@ function Ticket() {
       )}
       <Box>
         <Box component="header">
-          {ticketData && ticketData.num && (
+          {ticketData && ticketData.num ? (
             <TicketHeader
               issueNumber={ticketData.num.toString()}
               issueProject={ticketData.project_title!.toString()}
@@ -99,48 +102,82 @@ function Ticket() {
               }
               isAuthor={isAuthor}
             />
+          ) : (
+            <Stack>
+              <Skeleton variant="text" width={100} />
+              <Skeleton variant="text" width={500} height={50} />
+              <Stack mt={1} direction="row" gap={1}>
+                <Skeleton width={100} />
+                <Skeleton width={100} />
+              </Stack>
+            </Stack>
           )}
         </Box>
         <Grid container spacing={2} mt={2}>
           <Grid item xs={9}>
-            <TicketDescription
-              description={ticketData ? ticketData.descr : ""}
-            />
+            {ticketData ? (
+              <TicketDescription description={ticketData.descr} />
+            ) : (
+              <Skeleton height={200} width="99%" variant="rounded" />
+            )}
           </Grid>
           <Grid item xs={3}>
             <Box>
-              {ticketData && (
+              {ticketData ? (
                 <TicketDetails
                   status={ticketData.status}
                   type={ticketData.issue_type}
                   time={ticketData.est}
                   priority={ticketData.priority}
                 />
+              ) : (
+                <Stack>
+                  <Skeleton variant="text" height={50} width="70%" />
+                  <Skeleton variant="text" height={50} width="70%" />
+                  <Skeleton variant="text" height={50} width="70%" />
+                  <Skeleton variant="text" height={50} width="70%" />
+                </Stack>
               )}
             </Box>
           </Grid>
         </Grid>
-        <PageSection
-          title="Comments"
-          marginTop={3}
-          action={
-            <Tooltip title="Refresh comments">
-              <IconButton onClick={handleUpdateComments}>
-                <Refresh />
-              </IconButton>
-            </Tooltip>
-          }
-        >
-          {auth.user && auth.user.id && ticketData && (
-            <CommentSection
-              comments={commentsData}
-              user_id={auth.user.id.toString()}
-              ticket={ticketData}
-              onSubmit={handleUpdateComments}
-              archived={ticketData.project_archived}
-            />
-          )}
-        </PageSection>
+        {!comments.isLoading ? (
+          <PageSection
+            title="Comments"
+            marginTop={3}
+            action={
+              <Tooltip title="Refresh comments">
+                <IconButton onClick={handleUpdateComments}>
+                  <Refresh />
+                </IconButton>
+              </Tooltip>
+            }
+          >
+            {auth.user && auth.user.id && ticketData && (
+              <CommentSection
+                comments={commentsData}
+                user_id={auth.user.id.toString()}
+                ticket={ticketData}
+                onSubmit={handleUpdateComments}
+                archived={ticketData.project_archived}
+              />
+            )}
+          </PageSection>
+        ) : (
+          <PageSection title="Comments" marginTop={3}>
+            <Stack gap={1}>
+              {[1, 2, 3].map((item) => (
+                <Stack key={item} direction="row" alignItems="center" gap={1}>
+                  <Skeleton variant="circular" height={48} width={48} />
+                  <Stack>
+                    <Skeleton variant="text" height={20} width={100} />
+                    <Skeleton variant="text" height={20} width={400} />
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </PageSection>
+        )}
       </Box>
     </>
   );
