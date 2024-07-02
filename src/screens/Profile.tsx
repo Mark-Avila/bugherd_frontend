@@ -13,6 +13,10 @@ interface Props {
   viewMode?: "tickets" | "projects";
 }
 
+/**
+ * TODO: Upload profile picture UI
+ */
+
 function Profile({ viewMode }: Props) {
   const [getTickets, tickets] = useLazyGetTicketsOfCurrentUserQuery();
   const projects = useGetCurrentProjectQuery();

@@ -28,6 +28,8 @@ import {
   Logout,
   Menu,
   Notifications,
+  NotificationsActive,
+  NotificationsNoneOutlined,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
@@ -197,7 +199,12 @@ function DrawerLayout({ children }: Props) {
               width="100%"
             >
               <PageBreadcrumbs items={breadcrumbs} />
-              <Stack direction="row" gap={3}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                gap={3}
+              >
                 <IconButton
                   aria-describedby={notifId}
                   onClick={handleNotifClick}
@@ -206,7 +213,11 @@ function DrawerLayout({ children }: Props) {
                     badgeContent={notifs.data ? notifs.data.data.length : 0}
                     color="primary"
                   >
-                    <Notifications sx={{ width: "24px", height: "24px" }} />
+                    {notifs.data && notifs.data.data.length !== 0 ? (
+                      <NotificationsActive />
+                    ) : (
+                      <NotificationsNoneOutlined />
+                    )}
                   </Badge>
                 </IconButton>
                 <Popover
