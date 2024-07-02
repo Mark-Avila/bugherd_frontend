@@ -5,6 +5,7 @@ import {
   Grid,
   IconButton,
   Pagination,
+  Skeleton,
   Stack,
   TextField,
 } from "@mui/material";
@@ -47,6 +48,8 @@ function Profile({ viewMode }: Props) {
   const [previewFileName, setPreviewFileName] = useState<string | null>(null);
   const [hasPicture, setHasPicture] = useState<boolean>(false);
 
+  const [isPageLoading, setPageLoading] = useState<boolean>(true);
+
   //Ticket Pagination
   const [maxPage, setMaxPage] = useState(0);
   const [currPage, setCurrPage] = useState(1);
@@ -81,6 +84,18 @@ function Profile({ viewMode }: Props) {
 
     fetchUserPicture();
   }, []);
+
+  useEffect(() => {
+    if (
+      !tickets.isLoading &&
+      tickets.isSuccess &&
+      !projects.isLoading &&
+      projects.isSuccess &&
+      user
+    ) {
+      setPageLoading(false);
+    }
+  }, [tickets, projects, user]);
 
   const handlePagination = (
     event: React.ChangeEvent<unknown>,
@@ -221,11 +236,15 @@ function Profile({ viewMode }: Props) {
           {!viewMode && (
             <Grid item lg={4}>
               <PageSection title="User Details" width="100%">
-                <ProfileInfo
-                  user={user}
-                  onProfileClick={openUploadModal}
-                  userPictureSrc={userPicture}
-                />
+                {isPageLoading ? (
+                  <Skeleton height={400} variant="rounded" />
+                ) : (
+                  <ProfileInfo
+                    user={user}
+                    onProfileClick={openUploadModal}
+                    userPictureSrc={userPicture}
+                  />
+                )}
               </PageSection>
             </Grid>
           )}
@@ -233,23 +252,34 @@ function Profile({ viewMode }: Props) {
             <Stack spacing={4}>
               {(!viewMode || viewMode === "projects") && (
                 <PageSection title="Projects Assigned">
-                  <ProjectList
-                    projects={
-                      projects.data && (projects.data.data as ProjectWithUser[])
-                    }
-                  />
+                  {isPageLoading ? (
+                    <Skeleton height={200} variant="rounded" />
+                  ) : (
+                    <ProjectList
+                      projects={
+                        projects.data &&
+                        (projects.data.data as ProjectWithUser[])
+                      }
+                    />
+                  )}
                 </PageSection>
               )}
               {(!viewMode || viewMode === "tickets") && (
                 <PageSection title="Tickets created">
-                  {<TicketList tickets={tickets.data && tickets.data.data} />}
-                  <Box mt={2}>
-                    <Pagination
-                      count={maxPage}
-                      onChange={handlePagination}
-                      page={currPage}
-                    />
-                  </Box>
+                  {isPageLoading ? (
+                    <Skeleton height={200} variant="rounded" />
+                  ) : (
+                    <>
+                      <TicketList tickets={tickets.data && tickets.data.data} />
+                      <Box mt={2}>
+                        <Pagination
+                          count={maxPage}
+                          onChange={handlePagination}
+                          page={currPage}
+                        />
+                      </Box>
+                    </>
+                  )}
                 </PageSection>
               )}
             </Stack>
