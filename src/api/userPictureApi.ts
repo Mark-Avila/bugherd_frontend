@@ -7,7 +7,9 @@ const fetchUserPicture = async (userId: string): Promise<string | null> => {
       }
     );
 
-    if (res.ok) {
+    const contentType = res.headers.get("content-type");
+
+    if (res.ok && contentType?.includes("image")) {
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       return url;

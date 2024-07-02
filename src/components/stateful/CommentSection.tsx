@@ -89,9 +89,10 @@ function CommentSection({
         {comments.map((comment: Comment) => (
           <CommentItem
             key={comment.id}
+            userId={comment.user_id}
             name={comment.fname + " " + comment.lname}
             message={comment.msg}
-            date={comment.created_at}
+            date={comment.created_at!}
           />
         ))}
       </List>

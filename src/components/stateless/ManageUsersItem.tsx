@@ -7,6 +7,8 @@ import {
 } from "@mui/material";
 import { User } from "../../types";
 import { ChevronRight } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import pictureApi from "../../api/userPictureApi";
 
 interface Props {
   user: User;
@@ -14,10 +16,26 @@ interface Props {
 }
 
 function ManageUsersItem({ user, onClick }: Props) {
+  const [userPicture, setUserPicture] = useState<string>();
+
+  useEffect(() => {
+    const fetchUserPicture = async () => {
+      if (user) {
+        const userPictureData: string | null =
+          await pictureApi.fetchUserPicture(user.id!.toString());
+        if (userPictureData !== null) {
+          setUserPicture(userPictureData);
+        }
+      }
+    };
+
+    fetchUserPicture();
+  }, []);
+
   return (
     <ListItemButton divider onClick={onClick ? () => onClick(user) : () => {}}>
       <ListItemAvatar>
-        <Avatar />
+        <Avatar src={userPicture} />
       </ListItemAvatar>
       <ListItemText
         primary={`${user.fname} ${user.lname}`}

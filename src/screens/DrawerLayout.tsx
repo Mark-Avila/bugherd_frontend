@@ -27,7 +27,6 @@ import {
   AccountCircle,
   Logout,
   Menu,
-  Notifications,
   NotificationsActive,
   NotificationsNoneOutlined,
 } from "@mui/icons-material";
@@ -39,7 +38,7 @@ import {
 } from "../api/notifApiSlice";
 import { ColorModeContext } from "../App";
 import { useNavigate } from "react-router-dom";
-import { logout, setUser } from "../slices/authSlice";
+import { logout } from "../slices/authSlice";
 import pictureApi from "../api/userPictureApi";
 
 const DRAWER_WIDTH = 240;

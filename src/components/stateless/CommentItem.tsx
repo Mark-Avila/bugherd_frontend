@@ -9,14 +9,32 @@ import {
   Skeleton,
 } from "@mui/material";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import pictureApi from "../../api/userPictureApi";
 
 interface Props {
-  name?: string;
-  date?: string;
-  message?: string;
+  userId: string;
+  name: string;
+  date: string;
+  message: string;
 }
 
-function CommentItem({ name, date, message }: Props) {
+function CommentItem({ name, date, message, userId }: Props) {
+  const [userPicture, setUserPicture] = useState<string>();
+
+  useEffect(() => {
+    const fetchUserPicture = async () => {
+      const userPictureData: string | null = await pictureApi.fetchUserPicture(
+        userId.toString()
+      );
+      if (userPictureData !== null) {
+        setUserPicture(userPictureData);
+      }
+    };
+
+    fetchUserPicture();
+  }, []);
+
   return (
     <ListItem
       secondaryAction={
@@ -34,7 +52,7 @@ function CommentItem({ name, date, message }: Props) {
       }}
     >
       <ListItemAvatar>
-        <Avatar alt="markavila-pic" />
+        <Avatar alt="markavila-pic" src={userPicture} />
       </ListItemAvatar>
       <ListItemText
         primary={

@@ -20,12 +20,11 @@ import { useGetCurrentProjectQuery } from "../api/projectApiSlice";
 import { ProjectWithUser } from "../types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { setBreadcrumbs } from "../slices/breadSlice";
-import { Edit, FileUploadOutlined } from "@mui/icons-material";
+import { FileUploadOutlined } from "@mui/icons-material";
 import pictureApi from "../api/userPictureApi";
 import { useSnackbar } from "notistack";
-import { useSnackError } from "../hooks";
 
 interface Props {
   viewMode?: "tickets" | "projects";

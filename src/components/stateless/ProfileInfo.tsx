@@ -13,7 +13,6 @@ import {
 import { User } from "../../types";
 import getRole from "../../utils/getRole";
 import dayjs from "dayjs";
-import { Edit } from "@mui/icons-material";
 
 interface Props {
   user?: User | null;
