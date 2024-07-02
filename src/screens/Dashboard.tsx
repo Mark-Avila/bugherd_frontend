@@ -52,6 +52,8 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
+  const [isPageLoading, setPageLoading] = useState<boolean>(true);
+
   useEffect(() => {
     // Fetch projects on initial page load
     getProjects({ offset: 0, limit: PAGE_LIMIT });
@@ -66,6 +68,17 @@ export default function Dashboard() {
       ])
     );
   }, []);
+
+  useEffect(() => {
+    if (
+      !projects.isLoading &&
+      !projects.isFetching &&
+      !ticketStats.isFetching &&
+      !ticketStats.isLoading
+    ) {
+      setPageLoading(false);
+    }
+  }, [projects, ticketStats]);
 
   // User ticket statistics data fetch error handling
   useEffect(() => {
@@ -139,7 +152,7 @@ export default function Dashboard() {
       <Stack spacing={2}>
         <PageSection title="Personal statistics">
           <Stack direction={isSmallScreen ? "column" : "row"} spacing={2}>
-            {ticketStats.data ? (
+            {!isPageLoading && ticketStats.data ? (
               <>
                 <DataCard
                   data={ticketStats.data?.data[0].type}
@@ -156,9 +169,9 @@ export default function Dashboard() {
               </>
             ) : (
               <>
-                <Skeleton variant="rounded" width="100%" height={200} />
-                <Skeleton variant="rounded" width="100%" height={200} />
-                <Skeleton variant="rounded" width="100%" height={200} />
+                <Skeleton variant="rounded" width="100%" height={220} />
+                <Skeleton variant="rounded" width="100%" height={220} />
+                <Skeleton variant="rounded" width="100%" height={220} />
               </>
             )}
           </Stack>
@@ -177,7 +190,7 @@ export default function Dashboard() {
           }
           title="Projects assigned"
         >
-          {!projects.isLoading && !projects.isFetching && projects.isSuccess ? (
+          {projects && !isPageLoading ? (
             <ProjectList
               includeDescr
               projects={
