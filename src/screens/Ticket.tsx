@@ -114,14 +114,14 @@ function Ticket() {
           )}
         </Box>
         <Grid container spacing={2} mt={2}>
-          <Grid item xs={9}>
+          <Grid item xs={12} lg={9} order={{ xs: 1, lg: 0 }}>
             {ticketData ? (
               <TicketDescription description={ticketData.descr} />
             ) : (
               <Skeleton height={200} width="99%" variant="rounded" />
             )}
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} lg={3}>
             <Box>
               {ticketData ? (
                 <TicketDetails

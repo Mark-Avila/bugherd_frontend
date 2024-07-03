@@ -14,6 +14,7 @@ import {
   Popover,
   Stack,
   Toolbar,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import {
@@ -88,6 +89,8 @@ function DrawerLayout({ children }: Props) {
 
   // User profile picture state
   const [userPicture, setUserPicture] = useState<string | undefined>();
+
+  const smallScreen = useMediaQuery(theme.breakpoints.between("xs", "sm"));
 
   // Conditional render states
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -182,22 +185,24 @@ function DrawerLayout({ children }: Props) {
           }}
         >
           <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { lg: "none" } }}
-            >
-              <Menu />
-            </IconButton>
             <Stack
               direction="row"
               justifyContent="space-between"
               alignItems="center"
               width="100%"
             >
-              <PageBreadcrumbs items={breadcrumbs} />
+              <Stack direction="row" alignItems="center">
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  edge="start"
+                  onClick={handleDrawerToggle}
+                  sx={{ mr: 2, display: { lg: "none" } }}
+                >
+                  <Menu />
+                </IconButton>
+                {!smallScreen && <PageBreadcrumbs items={breadcrumbs} />}
+              </Stack>
               <Stack
                 direction="row"
                 justifyContent="space-between"
@@ -321,10 +326,16 @@ function DrawerLayout({ children }: Props) {
             position: "relative",
             flexDirection: "column",
             minHeight: "100%",
+            px: { xs: 1, md: 0 },
           }}
           aria-label="main-body"
         >
           <Toolbar />
+          {smallScreen && (
+            <Box p={1} mt={1}>
+              <PageBreadcrumbs items={breadcrumbs} />
+            </Box>
+          )}
           <Box
             padding={{
               xs: 1,

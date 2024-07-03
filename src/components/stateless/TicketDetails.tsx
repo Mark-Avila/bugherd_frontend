@@ -1,5 +1,5 @@
 import { Adjust } from "@mui/icons-material";
-import { Typography, Box, Stack } from "@mui/material";
+import { Typography, Box, Stack, Grid } from "@mui/material";
 
 interface Props {
   status: boolean;
@@ -22,9 +22,9 @@ function TicketDetails({ status, priority, type, time }: Props) {
   };
 
   return (
-    <Box>
-      <Box>
-        <Typography fontSize="small" color="text.secondary">
+    <Grid container>
+      <Grid item xs={6}>
+        <Typography mb={1} fontSize={{ lg: "small" }} color="text.secondary">
           Status
         </Typography>
         <Stack direction="row" spacing={1}>
@@ -33,9 +33,9 @@ function TicketDetails({ status, priority, type, time }: Props) {
             {status ? "Open" : "Closed"}
           </Typography>
         </Stack>
-      </Box>
-      <Box mt={2}>
-        <Typography fontSize="small" color="text.secondary">
+      </Grid>
+      <Grid item xs={6}>
+        <Typography mb={1} fontSize={{ lg: "small" }} color="text.secondary">
           Priority
         </Typography>
         <Stack direction="row" spacing={1}>
@@ -44,20 +44,20 @@ function TicketDetails({ status, priority, type, time }: Props) {
             {getPriority(priority)}
           </Typography>
         </Stack>
-      </Box>
-      <Box mt={2}>
-        <Typography fontSize="small" color="text.secondary">
+      </Grid>
+      <Grid item xs={6} mt={{ xs: 2 }}>
+        <Typography mb={1} fontSize={{ lg: "small" }} color="text.secondary">
           Type
         </Typography>
         <Typography variant="body1">{type}</Typography>
-      </Box>
-      <Box mt={2}>
-        <Typography fontSize="small" color="text.secondary">
+      </Grid>
+      <Grid item xs={6} mt={{ xs: 2 }}>
+        <Typography mb={1} fontSize={{ lg: "small" }} color="text.secondary">
           Time estimated
         </Typography>
         <Typography variant="body1">{time} hours</Typography>
-      </Box>
-    </Box>
+      </Grid>
+    </Grid>
   );
 }
 
