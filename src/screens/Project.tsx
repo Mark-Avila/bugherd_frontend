@@ -234,9 +234,9 @@ function Project() {
           archived={projectData?.archived}
         />
       )}
-      <Divider sx={{ marginY: 4 }} />
-      <Grid container spacing={2} component="main">
-        <Grid item xs={12} md={6} lg={9}>
+      <Divider sx={{ marginY: { xs: 2, md: 4 } }} />
+      <Grid container spacing={2} component="main" maxWidth={1200}>
+        <Grid item xs={12} md={8} lg={9} order={{ xs: 1, md: 0 }}>
           <PageSection
             title="Tickets"
             action={
@@ -270,7 +270,7 @@ function Project() {
             )}
           </PageSection>
         </Grid>
-        <Grid item xs={12} md={6} lg={3}>
+        <Grid item xs={12} md={4} lg={3}>
           {projectLoading ? (
             <PageSection title="Team">
               <Skeleton width="100%" height={200} variant="rounded" />

@@ -1,4 +1,5 @@
 import {
+  Box,
   ListItem,
   ListItemButton,
   ListItemText,
@@ -49,7 +50,12 @@ function TicketListItem(props: Props) {
             }}
           />
           {smallScreen && (
-            <TicketItemChips status={props.status} priority={props.priority} />
+            <Box mt={2} mb={1}>
+              <TicketItemChips
+                status={props.status}
+                priority={props.priority}
+              />
+            </Box>
           )}
         </Stack>
       </ListItemButton>
