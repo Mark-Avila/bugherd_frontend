@@ -26,7 +26,10 @@ function DataCard({ data, title }: Props) {
       <Paper
         variant="outlined"
         sx={{
-          height: "100%",
+          height: {
+            xs: 300,
+            lg: "100%",
+          },
           backgroundColor: theme.palette.background.paper,
         }}
       >
@@ -36,7 +39,9 @@ function DataCard({ data, title }: Props) {
           </Box>
           {!hasData && (
             <Stack justifyContent="center" alignItems="center" flex={1}>
-              <Typography color="text.disabled">No data available</Typography>
+              <Typography color="text.disabled">
+                No Tickets created yet
+              </Typography>
             </Stack>
           )}
           {hasData ? (

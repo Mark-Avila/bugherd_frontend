@@ -172,7 +172,7 @@ function DrawerLayout({ children }: Props) {
         <AppBar
           position="fixed"
           sx={{
-            width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
+            width: { lg: `calc(100% - ${DRAWER_WIDTH}px)` },
             ml: { sm: `${DRAWER_WIDTH}px` },
             boxShadow: "none",
             borderBottom:
@@ -187,7 +187,7 @@ function DrawerLayout({ children }: Props) {
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: "none" } }}
+              sx={{ mr: 2, display: { lg: "none" } }}
             >
               <Menu />
             </IconButton>

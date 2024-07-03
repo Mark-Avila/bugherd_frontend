@@ -1,4 +1,11 @@
-import { ListItem, ListItemButton, ListItemText } from "@mui/material";
+import {
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Stack,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import TicketItemChips from "./TicketItemChips";
 import { useNavigate } from "react-router-dom";
 import { Priority } from "../../types";
@@ -15,6 +22,8 @@ interface Props {
 
 function TicketListItem(props: Props) {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const smallScreen = useMediaQuery(theme.breakpoints.between("xs", "sm"));
 
   const handleOnClick = () => {
     navigate(`/ticket/${props.id}`);
@@ -25,17 +34,24 @@ function TicketListItem(props: Props) {
       disablePadding
       divider
       secondaryAction={
-        <TicketItemChips status={props.status} priority={props.priority} />
+        !smallScreen && (
+          <TicketItemChips status={props.status} priority={props.priority} />
+        )
       }
     >
       <ListItemButton onClick={handleOnClick}>
-        <ListItemText
-          primary={props.title}
-          secondary={`#${props.number} - ${props.author} - opened on ${props.created}`}
-          secondaryTypographyProps={{
-            fontSize: "small",
-          }}
-        />
+        <Stack>
+          <ListItemText
+            primary={props.title}
+            secondary={`#${props.number} - ${props.author} - opened on ${props.created}`}
+            secondaryTypographyProps={{
+              fontSize: "small",
+            }}
+          />
+          {smallScreen && (
+            <TicketItemChips status={props.status} priority={props.priority} />
+          )}
+        </Stack>
       </ListItemButton>
     </ListItem>
   );

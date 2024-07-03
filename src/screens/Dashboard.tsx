@@ -151,7 +151,7 @@ export default function Dashboard() {
       />
       <Stack spacing={2}>
         <PageSection title="Personal statistics">
-          <Stack direction={isSmallScreen ? "column" : "row"} spacing={2}>
+          <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
             {!isPageLoading && ticketStats.data ? (
               <>
                 <DataCard
