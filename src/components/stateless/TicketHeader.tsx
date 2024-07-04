@@ -26,7 +26,11 @@ function TicketHeader({
       <Typography variant="body2" color="text.secondary">
         {`${issueProject} #${issueNumber}`}
       </Typography>
-      <Stack direction="row" justifyContent="space-between">
+      <Stack
+        direction={{ xs: "column", lg: "row" }}
+        justifyContent="space-between"
+        alignItems={"flex-start"}
+      >
         <Stack direction="row" spacing={2} alignItems="center">
           <Typography mt={2} variant="h4">
             {title}
@@ -38,7 +42,12 @@ function TicketHeader({
           )}
         </Stack>
         {isAuthor && onUpdateClick && (
-          <Button variant="contained" size="small" onClick={onUpdateClick}>
+          <Button
+            variant="contained"
+            sx={{ display: { xs: "none", lg: "block" } }}
+            size="small"
+            onClick={onUpdateClick}
+          >
             Update Ticket
           </Button>
         )}
@@ -51,6 +60,16 @@ function TicketHeader({
           {createdAt}
         </Typography>
       </Stack>
+      {isAuthor && onUpdateClick && (
+        <Button
+          variant="contained"
+          size="small"
+          sx={{ display: { xs: "block", lg: "none" }, mt: 2, mx: 0.2 }}
+          onClick={onUpdateClick}
+        >
+          Update Ticket
+        </Button>
+      )}
     </>
   );
 }
