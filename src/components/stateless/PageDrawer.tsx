@@ -122,14 +122,6 @@ function DrawerBody({
         onNo={closeLogout}
         onYes={handleLogOut}
       />
-      <Toolbar
-        sx={{
-          display: {
-            xs: "block",
-            md: "none",
-          },
-        }}
-      />
       <Divider />
       <Stack
         direction="row"
@@ -162,7 +154,19 @@ function DrawerBody({
             <Stack width="100%" py={2} alignItems="center" gap={1}>
               <IconButton onClick={userClick}>
                 {pictureSrc ? (
-                  <Avatar sx={{ width: 96, height: 96 }} src={pictureSrc} />
+                  <Avatar
+                    sx={{
+                      width: {
+                        xs: 84,
+                        lg: 96,
+                      },
+                      height: {
+                        xs: 84,
+                        lg: 96,
+                      },
+                    }}
+                    src={pictureSrc}
+                  />
                 ) : (
                   <AccountCircle
                     sx={{ width: 96, height: 96 }}
@@ -221,8 +225,10 @@ function DrawerBody({
               />
               <ListSubheader
                 sx={{
-                  backgroundColor: theme.palette.background.default,
-                  color: theme.palette.primary[400],
+                  backgroundColor: isDarkMode
+                    ? theme.palette.background.default
+                    : theme.palette.primary[500],
+                  color: isDarkMode ? theme.palette.primary[400] : "white",
                 }}
               >
                 Administration
@@ -337,6 +343,14 @@ function PageDrawer({ open, onClose, width, pictureSrc }: Props) {
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: width,
+          },
+        }}
+        PaperProps={{
+          sx: {
+            backgroundColor:
+              theme.palette.mode === "light"
+                ? theme.palette.primary[500]
+                : theme.palette.background.default,
           },
         }}
       >

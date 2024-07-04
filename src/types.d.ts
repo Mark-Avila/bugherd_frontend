@@ -41,7 +41,7 @@ export interface User {
   email: string;
   password?: string;
   contact: string;
-  role: 0 | 1 | 2;
+  role: 0 | 1 | 2 | number;
   bday: string;
   createdat?: string;
   archived?: boolean;

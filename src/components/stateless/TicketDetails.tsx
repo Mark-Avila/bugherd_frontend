@@ -1,5 +1,5 @@
 import { Adjust } from "@mui/icons-material";
-import { Typography, Box, Stack, Grid } from "@mui/material";
+import { Typography, Stack, Grid } from "@mui/material";
 
 interface Props {
   status: boolean;

@@ -17,7 +17,10 @@ import {
 import PageSection from "../components/stateless/PageSection";
 import { useEffect, useState } from "react";
 import NewTicketModal from "./NewTicketModal";
-import { useGetProjectByIdQuery } from "../api/projectApiSlice";
+import {
+  useGetProjectByIdQuery,
+  useLazyGetProjectByIdQuery,
+} from "../api/projectApiSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { Project as ProjectType, ResponseBody, User } from "../types";
 import {
@@ -81,8 +84,16 @@ function Project() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getTickets({ offset: 0, limit: 10, project_id: project_id as string });
-  }, []);
+    if (project.isError) {
+      enqueueSnackbar("An error occured while fetching Project data", {
+        variant: "error",
+      });
+      navigate("/dashboard");
+    } else {
+      getAssigned(project_id!);
+      getTickets({ offset: 0, limit: 10, project_id: project_id as string });
+    }
+  }, [project]);
 
   useEffect(() => {
     dispatch(
@@ -102,16 +113,13 @@ function Project() {
   useEffect(() => {
     if (project.data) {
       if (project.data.data.length === 0) {
+        enqueueSnackbar("Project data not found", { variant: "error" });
         navigate("/dashboard");
       }
 
       setProjectData(project.data.data[0]);
     }
   }, [project.data]);
-
-  useEffect(() => {
-    getAssigned(project_id!);
-  }, [assigned.data]);
 
   useEffect(() => {
     const { isError, isLoading, isSuccess } = tickets;
@@ -140,10 +148,7 @@ function Project() {
     }
   }, [assigned]);
 
-  const handlePagination = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handlePagination = (_: React.ChangeEvent<unknown>, value: number) => {
     if (value <= maxPage && value >= 0 && value !== currPage) {
       setCurrPage(value);
       getTickets({

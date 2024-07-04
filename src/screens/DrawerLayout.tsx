@@ -326,7 +326,7 @@ function DrawerLayout({ children }: Props) {
             position: "relative",
             flexDirection: "column",
             minHeight: "100%",
-            px: { xs: 1, md: 0 },
+            p: { xs: 1, md: 0 },
           }}
           aria-label="main-body"
         >

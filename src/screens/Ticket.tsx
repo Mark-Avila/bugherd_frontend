@@ -3,7 +3,7 @@ import { CommentSection, TicketDetails, TicketHeader } from "../components";
 import PageSection from "../components/stateless/PageSection";
 import TicketDescription from "../components/stateless/TicketDescription";
 import { useGetTicketByIdQuery } from "../api/ticketApiSlice";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Comment, Ticket as TicketType } from "../types";
 import {
@@ -12,16 +12,17 @@ import {
 } from "../api/commentApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { Pages, Refresh } from "@mui/icons-material";
+import { Refresh } from "@mui/icons-material";
 import dayjs from "dayjs";
 import EditTicketModal from "./EditTicketModal";
 import { setBreadcrumbs } from "../slices/breadSlice";
+import { useSnackbar } from "notistack";
 
 function Ticket() {
+  const { ticket_id } = useParams();
   const [ticketData, setTicketData] = useState<TicketType | null>(null);
   const [commentsData, setComments] = useState<Comment[]>([]);
   const [editModal, setEditModal] = useState(false);
-  const { ticket_id } = useParams();
 
   const auth = useSelector((state: RootState) => state.auth);
   const ticket = useGetTicketByIdQuery(ticket_id!);
@@ -33,6 +34,24 @@ function Ticket() {
   const [updateComments] = useLazyGetCommentsByTicketIdQuery();
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    if (ticket.isError) {
+      enqueueSnackbar("Failed to retrieve project data", { variant: "error" });
+      navigate("/dashboard");
+    }
+  }, [ticket]);
+
+  useEffect(() => {
+    if (ticket.data) {
+      if (ticket.data.data.length === 0) {
+        enqueueSnackbar("Ticket data not found", { variant: "error" });
+        navigate("/dashboard");
+      }
+    }
+  }, [ticket.data]);
 
   useEffect(() => {
     dispatch(

@@ -1,4 +1,5 @@
 import {
+  Navigate,
   Route,
   RouterProvider,
   createBrowserRouter,
@@ -138,6 +139,7 @@ const router = createBrowserRouter(
           }
         />
       </Route>
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </>
   )
 );

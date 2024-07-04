@@ -27,8 +27,10 @@ import dayjs, { Dayjs } from "dayjs";
 import { useSnackError } from "../hooks";
 import { useSnackbar } from "notistack";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumbs } from "../slices/breadSlice";
+import { useCreateNotificationMutation } from "../api/notifApiSlice";
+import { RootState } from "../store";
 // import { useGetUsersQuery } from "../api/userApiSlice";
 
 const validationSchema = yup.object({
@@ -50,10 +52,12 @@ function ManageUsers() {
   const { snackbarError } = useSnackError();
   const { enqueueSnackbar } = useSnackbar();
 
+  const { user } = useSelector((root: RootState) => root.auth);
   const [currUser, setCurrUser] = useState<User | null>(null);
   const [updateUserArchive] = useUpdateUserArchiveMutation();
   const [getUsers, users] = useLazyGetUsersQuery();
   const [updateUser] = useUpdateUserMutation();
+  const [createNotification] = useCreateNotificationMutation();
 
   const [confArchDialog, setConfArchDialog] = useState<boolean>(false);
   const [confUnArchDialog, setConfUnArchDialog] = useState<boolean>(false);
@@ -108,24 +112,42 @@ function ManageUsers() {
         return;
       }
 
-      const payload = {
+      const payload: User = {
         ...values,
-        bday: bday.value?.toISOString(),
+        bday: bday.value!.toISOString(),
         contact: contact.value.replace(/\s+/g, ""),
       };
 
-      updateUser({ userId: currUser.id, payload })
-        .unwrap()
-        .then((res: ResponseBody<unknown>) => {
-          if (res.success) {
-            enqueueSnackbar("Successfully updated user", {
-              variant: "success",
-            });
-          }
-        })
-        .catch((err) => {
-          snackbarError(err);
-        });
+      let isSuccess = false;
+
+      try {
+        const updateRes = await updateUser({
+          userId: currUser.id!.toString(),
+          payload,
+        }).unwrap();
+
+        if (updateRes.success) {
+          enqueueSnackbar("Successfully updated user", {
+            variant: "success",
+          });
+          isSuccess = true;
+        }
+      } catch (err: unknown) {
+        snackbarError(err as FetchBaseQueryError, "Failed to update user");
+      }
+
+      if (isSuccess) {
+        try {
+          await createNotification({
+            body: "An admin has updated your Profile details",
+            to_id: currUser.id!,
+            from_id: user!.id as number,
+            view_path: "/profile",
+          });
+        } catch (err: unknown) {
+          snackbarError(err as FetchBaseQueryError, "Failed to notify user");
+        }
+      }
 
       resetBday();
       resetContact();
