@@ -21,7 +21,7 @@ function useSnackError() {
     } else if ("message" in (err.data as ErrorBody)) {
       if (message) {
         enqueueSnackbar(message, {
-          variant: "error",
+            variant: "error",
         });
       }
       enqueueSnackbar((err.data as ErrorBody).message, {

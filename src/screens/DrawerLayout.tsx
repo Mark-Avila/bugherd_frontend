@@ -253,6 +253,7 @@ function DrawerLayout({ children }: Props) {
                 <IconButton
                   aria-describedby={profileId}
                   onClick={handleProfileClick}
+                  id="bh-header-logout"
                 >
                   <Avatar
                     sx={{ width: "36px", height: "36px" }}
